@@ -1,0 +1,32 @@
+--extra-index-url https://download.pytorch.org/whl/cu121
+# --extra-index-url https://download.pytorch.org/whl/cpu
+
+# Compute & Core ML
+torch>=2.2.0
+torchvision>=0.17.0
+einops==0.7.0
+bitsandbytes>=0.43.0
+
+# Hugging Face Stack
+transformers>=4.57.0
+accelerate>=0.27.0
+tokenizers>=0.15.0
+qwen-vl-utils>=0.0.8
+sentencepiece>=0.2.0
+protobuf>=4.25.0
+
+# Interpretability & Interventions
+nnsight>=0.5.0
+
+# Math & Data Processing
+numpy>=1.26.0
+scikit-learn>=1.4.0
+scipy>=1.12.0
+
+# Visualization & Data Generation
+Pillow==10.2.0
+matplotlib>=3.8.0
+plotly>=5.19.0
+
+# Colab / Notebook Support
+ipykernel>=6.29.0

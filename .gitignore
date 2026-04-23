@@ -1,0 +1,44 @@
+# --- Python Environment ---
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+build/
+dist/
+*.egg-info/
+
+# --- Model Weights & Large Data (CRITICAL) ---
+# Never upload weights; they should be pulled from HF Hub or D: drive
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.onnx
+model_weights/
+data/raw/
+outputs/
+
+# --- Hugging Face & Tokenizers ---
+.cache/
+huggingface/
+.huggingface_cache/
+
+# --- Notebooks & Visualization ---
+.ipynb_checkpoints
+.plotly_temp/
+figures/*.png
+figures/*.pdf
+
+# --- IDEs & OS Files ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Configuration & Secrets ---
+.env
+# Keep your main configs, but ignore local overrides
+configs/local_*.yaml
+.temp

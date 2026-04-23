@@ -1,0 +1,38 @@
+# ==============================================================================
+# Verify the interpretability pipeline locally without crashing.
+# Hardware Target: CPU Fallback or local GPU via BitsAndBytes 4-bit.
+# ==============================================================================
+
+pipeline:
+  tier: "local"              # Instructs src/utils/hardware.py to use CPU/4-bit
+  debug_mode: true           # Triggers a forced batch size limit (e.g., 2 images)
+
+model:
+  family: "llava"
+  huggingface_id: "bczhou/tiny-llava-v1-hf"
+  
+  # The exact PyTorch module path nnsight uses to attach intervention hooks.
+  # TinyLLaVA uses a LLaMA backbone, so the hidden states live here:
+  layer_path_template: "model.language_model.layers[{}]"
+  
+  # The tokenization anchor. The AutoProcessor replaces this exact string 
+  # with the 256/576 vision projection tokens. We will use this to find the 
+  # sequence indices to slice out our "Spatial IDs".
+  vision_token_anchor: "<image>"
+
+mechanistic_interp:
+  # To avoid local OOM errors, we only trace a subset of layers.
+  # Assouel et al. note that Spatial IDs (position tracking) generally peak 
+  # in the middle layers before feature binding occurs in later layers.
+  trace_layers: [8, 10, 12, 14]
+  
+  pca_components: 2          # The number of principal components to extract 
+  
+dataset:
+  base_prompt: "<image>\nIn this image, there is a blue circle and a red"
+  target_token: " square"    # The expected correct completion
+  contrast_token: " circle"  # The expected incorrect completion during causal swap
+
+  # Standard CLIP ViT resolution. We will use this to generate random noise 
+  # tensors locally so we don't have to download a real image dataset just to debug.
+  dummy_image_shape: [3, 336, 336]

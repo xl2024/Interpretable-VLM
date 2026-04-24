@@ -137,7 +137,7 @@ def compute_rsa_scores(
             obj_matrix = np.stack(obj_states)
             
             cosine_distances = pdist(obj_matrix, metric='cosine')
-            model_rsm_i = 1.0 - squareform(cosine_distances) # Convert distance to similarity
+            model_rsm_i = 1.0 - squareform(cosine_distances) / 2 # Convert distance to similarity
             np.fill_diagonal(model_rsm_i, 1.0) # Standardize diagonal
             model_obj_flats.append(model_rsm_i[lower_tri_idx])  # model_rsm_i[lower_tri_idx]: a flat 1D array
             

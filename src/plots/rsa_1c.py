@@ -90,12 +90,12 @@ def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[st
     """
     prefix = f"<image>\nIn this image, there is a {colors[0]} {shapes[0]},"
     tokens_prefix = processor.tokenizer.encode(prefix)
-    indices = [len(tokens_prefix) - 1]
+    indices = [{'color': colors[0], 'shape': shapes[0], 'index': len(tokens_prefix) - 1}]
     for i in range(1, len(coords)):
         if i < len(coords)-1:
             prefix = f"{prefix} {colors[i]} {shapes[i]},"
             tokens_prefix = processor.tokenizer.encode(prefix)
-            indices.append(len(tokens_prefix) - 1)
+            indices.append({'color': colors[i], 'shape': shapes[i], 'index': len(tokens_prefix) - 1})
         else:
             prefix = f"{prefix} and {colors[i]}"
     

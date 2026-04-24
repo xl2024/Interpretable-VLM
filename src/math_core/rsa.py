@@ -98,7 +98,7 @@ def compute_rsa_scores(
     """
     num_trials = len(metadata_list)
     num_objects = len(metadata_list[0])
-    trial_object_ids = _build_object_ids(metadata_list)
+    trial_object_ids, token_object_ids = _build_object_ids(metadata_list)
     
     # 1. Build the 3D Target RSMs
     target_rsms = build_target_rsms(metadata_list, trial_object_ids)

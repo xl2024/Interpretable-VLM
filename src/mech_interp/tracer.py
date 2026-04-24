@@ -183,9 +183,8 @@ def rsa_tracer(
 
                         for object_position, object_id in enumerate(object_ids):
                             # Grab prompt token for this object id
-                            for token_object, obj_index in enumerate(obj_indices):
+                            for token_object, obj_index in obj_indices.items():
                                 if object_id == token_object:
-                                    print(token_object, obj_index)
                                     prompt_states[layer_idx][object_id] = hs[obj_index, :].save()
 
                             # Grab the last token for this object id

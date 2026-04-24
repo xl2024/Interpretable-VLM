@@ -165,6 +165,7 @@ def rsa_tracer(
             # List of indices where the model reads the objects (e.g., [14, 22])
             obj_indices = token_object_ids[trial_idx] 
             object_ids = trial_object_ids[trial_idx]
+            print(obj_indices)
             
             prompt_states = {}
             last_states = {}
@@ -186,7 +187,6 @@ def rsa_tracer(
                             for token_object, obj_index in enumerate(obj_indices):
                                 if object_id == token_object:
                                     prompt_states[layer_idx][object_id] = hs[obj_index, :].save()
-                                    print('tracer: ',obj_index,hs.shape, prompt_states[layer_idx][object_id].shape)
 
                             # Grab the last token for this object id
                             last_states[layer_idx][object_id] = hs[-1, :].save()

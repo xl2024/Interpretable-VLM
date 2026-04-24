@@ -83,21 +83,21 @@ def load_config(config_path: str = "configs/local.yaml"):
     with open(config_path, "r") as f:
         return yaml.safe_load(f)
     
-def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[str], coords: List[tuple[int, int]]):
+def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[str], coords: List[tuple[int, int]], last_object: Dict[str, str]):
     """
     Dynamically calculates the exact sequence indices of the target objects
     by measuring token lengths, bypassing sub-word tokenization quirks.
     """
-    prefix = f"<image>\nIn this image, there is a {colors[0]} {shapes[0]},"
+    indices = []
+    prefix = f"<image>\nIn this image, there is"
     tokens_prefix = processor.tokenizer.encode(prefix)
-    indices = [{'color': colors[0], 'shape': shapes[0], 'index': len(tokens_prefix) - 1}]
-    for i in range(1, len(coords)):
-        if i < len(coords)-1:
-            prefix = f"{prefix} {colors[i]} {shapes[i]},"
+    for i in range(len(coords)):
+        if not (colors[i] == last_object['color'] and shapes[i] == last_object['shape']):
+            prefix = f"{prefix} a {colors[i]} {shapes[i]},"
             tokens_prefix = processor.tokenizer.encode(prefix)
-        else:
-            prefix = f"{prefix} and {colors[i]}"
-        indices.append({'color': colors[i], 'shape': shapes[i], 'index': len(tokens_prefix) - 1})
+            indices.append({'color': colors[i], 'shape': shapes[i], 'index': len(tokens_prefix) - 1})
+        
+    prefix = f"{prefix} and {last_object['color']}"
 
     return indices, prefix
 
@@ -149,7 +149,8 @@ def main():
     # Create combinations for the left and right objects
     all_permutations = list(itertools.product(colors, shapes, colors, shapes))
     permutations = [p for p in all_permutations if not (p[0] == p[2] and p[1] == p[3])]
-    
+    last_object = {'color': permutations[0][2], 'shape': permutations[0][3]}
+
     # To save memory in local mode, we will slice the first 10 permutations. 
     # Increase this for a smoother correlation curve.
     for p in permutations:
@@ -160,7 +161,7 @@ def main():
         coords = [(0,0), (0,1), (1,0), (1,1)]
 
         obj_indices, text_prompt = get_dynamic_token_indices(
-            processor, colors=colors, shapes=shapes, coords=coords
+            processor, colors=colors, shapes=shapes, coords=coords, last_object = last_object
         )
 
         img = generate_custom_image(

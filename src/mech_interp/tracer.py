@@ -31,7 +31,7 @@ def _build_object_ids(metadata_list: List[List[Dict[str, Any]]], trials: List[Di
     return trial_object_ids, token_object_ids
 
 
-def _resolve_trial_object_index(object_token_indices: List[Dict[str: Any]], object_position: int) -> int:
+def _resolve_trial_object_index(object_token_indices: List[Dict[str, Any]], object_position: int) -> int:
     """
     Resolve token index for a given object position within a trial.
     Fallback to the last available index when fewer indices are provided.

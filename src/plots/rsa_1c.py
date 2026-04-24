@@ -98,7 +98,7 @@ def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[st
             indices.append({'color': colors[i], 'shape': shapes[i], 'index': len(tokens_prefix) - 1})
         else:
             prefix = f"{prefix} and {colors[i]}"
-    print(type(indices))
+
     return indices, prefix
 
 def get_num_hidden_layers(model: Any) -> int:

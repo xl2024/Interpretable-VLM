@@ -41,4 +41,7 @@ Thumbs.db
 .env
 # Keep your main configs, but ignore local overrides
 configs/local_*.yaml
+
+# Others
 .temp
+runner.ipynb

@@ -56,22 +56,6 @@ def slice_spatial_states(
     spatial_states = hidden_states[start_idx:end_idx, :]
     return spatial_states
 
-
-def prepare_for_pca(spatial_states: torch.Tensor) -> torch.Tensor:
-    """
-    Reshapes the 3D hidden states into a 2D matrix required by scikit-learn PCA.
-    
-    Args:
-        spatial_states: Tensor of shape (batch, vision_seq_len, hidden_dim)
-        
-    Returns:
-        Tensor of shape (batch * vision_seq_len, hidden_dim)
-    """
-    # scikit-learn PCA requires a flat 2D matrix: (samples, features)
-    # We fuse the batch and sequence dimensions.
-    return einops.rearrange(spatial_states, 'b s d -> (b s) d')
-
-
 def reshape_for_causal_patching(
     hidden_states: torch.Tensor, 
     num_heads: int

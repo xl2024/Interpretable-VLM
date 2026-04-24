@@ -51,8 +51,7 @@ def load_vlm(model_id: str, tier: str):
     print(f"Loading and tracing model weights with {hw_config['dtype']}...")
     hf_model = AutoModelForImageTextToText.from_pretrained(
         model_id,
-        device_map="auto",
-        dtype=torch.float16 # Safest precision for local ViTs
+        **load_kwargs
     )
     model = LanguageModel(hf_model)
     print("Load sequence complete. Model is ready for intervention.")

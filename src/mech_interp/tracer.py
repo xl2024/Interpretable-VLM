@@ -1,6 +1,40 @@
 import torch
 from nnsight import LanguageModel
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Tuple
+import gc
+
+def _build_object_ids(metadata_list: List[List[Dict[str, Any]]]) -> List[List[int]]:
+    """
+    Build stable object ids from (color, shape) pairs.
+    Objects sharing the same (color, shape) get the same object_id.
+    """
+    object_id_by_feature: Dict[Tuple[str, str], int] = {}
+    trial_object_ids: List[List[int]] = []
+
+    for trial in metadata_list:
+        ids_for_trial: List[int] = []
+        for obj in trial:
+            key = (obj['color'], obj['shape'])
+            if key not in object_id_by_feature:
+                object_id_by_feature[key] = len(object_id_by_feature)
+            ids_for_trial.append(object_id_by_feature[key])
+        trial_object_ids.append(ids_for_trial)
+
+    return trial_object_ids
+
+
+def _resolve_trial_object_index(object_token_indices: List[int], object_position: int) -> int:
+    """
+    Resolve token index for a given object position within a trial.
+    Fallback to the last available index when fewer indices are provided.
+    """
+    if len(object_token_indices) == 0:
+        raise ValueError("trial_data['object_token_indices'] cannot be empty.")
+
+    if object_position < len(object_token_indices):
+        return object_token_indices[object_position]
+
+    return object_token_indices[-1]
 
 def _resolve_layer_path(model: LanguageModel, path_string: str):
     """
@@ -52,7 +86,9 @@ def extract_hidden_states(
         text=text_prompt, 
         images=image, 
         return_tensors="pt"   # lists -> PyTorch Tensors
-    ).to(model.device) # Move raw inputs to the active hardware device
+    )  # .to(model.device) # Move raw inputs to the active hardware device
+    
+    inputs = {k: v.to('cuda') if hasattr(v, 'to') else v for k, v in inputs.items()}
     
     trace_layers: List[int] = config['mechanistic_interp']['trace_layers']
     layer_template: str = config['model']['layer_path_template']
@@ -84,3 +120,64 @@ def extract_hidden_states(
     }
     
     return final_states
+
+def rsa_tracer(
+    model: LanguageModel,
+    config: Dict[str, Any],
+    num_layers: int,
+    metadata_list: List[List[Dict]],
+    trials: List[Dict[str, Any]]
+) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+    """
+    extracts hidden states via nnsight.
+    """
+    # 1. Initialize storage for both token types
+    hidden_states_prompt_by_trial = []
+    hidden_states_last_by_trial = []
+    trial_object_ids = _build_object_ids(metadata_list)
+    
+    print(f"Extracting hidden states across {len(trials)} trials...")
+    with torch.no_grad():
+        for trial_idx, trial_data in enumerate(trials):
+            inputs = trial_data['inputs']
+            # List of indices where the model reads the objects (e.g., [14, 22])
+            obj_indices = trial_data['object_token_indices'] 
+            object_ids = trial_object_ids[trial_idx]
+            
+            prompt_states = {}
+            last_states = {}
+            
+            with model.trace() as tracer:
+                with tracer.invoke(**inputs):
+                    for layer_idx in range(num_layers):
+                        # local debug
+                        if layer_idx < 5 and layer_idx % 3 == 1:
+                            continue
+                        layer_path = config['model']['layer_path_template'].format(layer_idx)
+                        layer_module = _resolve_layer_path(model, layer_path)
+                        
+                        # The hidden state tensor for this layer
+                        hs = layer_module.output[0]
+
+                        prompt_states[layer_idx] = {}
+                        last_states[layer_idx] = {}
+
+                        for object_position, object_id in enumerate(object_ids):
+                            # Grab prompt token for this object id
+                            prompt_states[layer_idx][object_id] = hs[obj_indices, :].save()
+
+                            # Grab the last token for this object id
+                            last_states[layer_idx][object_id] = hs[-1, :].save()
+                    
+            # Append the resolved dictionaries to main lists
+            hidden_states_prompt_by_trial.append(prompt_states)
+            hidden_states_last_by_trial.append(last_states)
+
+            # Force clear the memory before the next trial begins
+            gc.collect()
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+        
+    print("Extraction complete!")
+    return hidden_states_prompt_by_trial, hidden_states_last_by_trial
+    

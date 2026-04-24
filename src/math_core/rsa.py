@@ -26,12 +26,12 @@ def build_target_rsms(metadata_list: List[List[Dict]], trial_object_ids: List[Li
     num_trials = len(metadata_list)
     # Assumes every trial has the same number of objects 'i' being tracked
     num_objects = len(metadata_list[0]) 
-    
+    num = num_trials - num_trials // num_objects
     target_rsms = {
-        'pos': np.zeros((num_objects, num_trials-num_objects, num_trials-num_objects)),
-        'color': np.zeros((num_objects, num_trials-num_objects, num_trials-num_objects)),
-        'shape': np.zeros((num_objects, num_trials-num_objects, num_trials-num_objects)),
-        'feat': np.zeros((num_objects, num_trials-num_objects, num_trials-num_objects))
+        'pos': np.zeros((num_objects, num, num)),
+        'color': np.zeros((num_objects, num, num)),
+        'shape': np.zeros((num_objects, num, num)),
+        'feat': np.zeros((num_objects, num, num))
     }
     pos_done = np.zeros(num_objects)
     for t in range(num_trials):
@@ -104,7 +104,7 @@ def compute_rsa_scores(
     target_rsms = build_target_rsms(metadata_list, trial_object_ids)
     
     # extract the lower triangle indices (excluding diagonal) to prevent correlation bias
-    lower_tri_idx = np.tril_indices(num_trials-num_objects, k=-1)  # k=0: include the main diagonal
+    lower_tri_idx = np.tril_indices(num_trials-num_trials//num_objects, k=-1)  # k=0: include the main diagonal
     
     # Flatten the target lower triangles across all objects into 1D arrays for Pearson correlation
     target_flats = {}

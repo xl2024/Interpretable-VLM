@@ -3,7 +3,7 @@ from nnsight import LanguageModel
 from typing import Dict, Any, List, Tuple
 import gc
 
-def _build_object_ids(metadata_list: List[List[Dict[str, Any]]], trials: List[Dict[str, Any]]) -> List[List[int]]:
+def _build_object_ids(metadata_list: List[List[Dict[str, Any]]], trials: List[Dict[str, Any]] = None) -> List[List[int]]:
     """
     Build stable object ids from (color, shape) pairs.
     Objects sharing the same (color, shape) get the same object_id.
@@ -21,12 +21,13 @@ def _build_object_ids(metadata_list: List[List[Dict[str, Any]]], trials: List[Di
         trial_object_ids.append(ids_for_trial)
 
     token_object_ids: List[List[int]] = []
-    for trial in trials:
-        ids_for_token: List[int] = []
-        for i in range(len(trial['object_token_indices'])):
-            key = (trial['object_token_indices'][i]['color'], trial['object_token_indices'][i]['shape'])
-            ids_for_token.append((object_id_by_feature[key], trial['object_token_indices'][i]['index']))
-        token_object_ids.append(ids_for_token)
+    if trials is not None:
+        for trial in trials:
+            ids_for_token: List[int] = []
+            for i in range(len(trial['object_token_indices'])):
+                key = (trial['object_token_indices'][i]['color'], trial['object_token_indices'][i]['shape'])
+                ids_for_token.append((object_id_by_feature[key], trial['object_token_indices'][i]['index']))
+            token_object_ids.append(ids_for_token)
 
     return trial_object_ids, token_object_ids
 

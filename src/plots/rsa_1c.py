@@ -83,24 +83,23 @@ def load_config(config_path: str = "configs/local.yaml"):
     with open(config_path, "r") as f:
         return yaml.safe_load(f)
     
-def get_dynamic_token_indices(processor: Any, left_color: str, left_shape: str, right_color: str):
+def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[str], coords: List[tuple[int, int]]):
     """
     Dynamically calculates the exact sequence indices of the target objects
     by measuring token lengths, bypassing sub-word tokenization quirks.
     """
-    # 1. Build the string up to the first target (Left Shape)
-    prefix_left = f"<image>\nIn this image, there is a {left_color} {left_shape},"
+    prefix = f"<image>\nIn this image, there is a {colors[0]} {shapes[0]},"
+    tokens_prefix = processor.tokenizer.encode(prefix)
+    indices = [len(tokens_prefix) - 1]
+    for i in range(1, len(coords)):
+        if i < len(coords)-1:
+            prefix = f"{prefix} {colors[i]} {shapes[i]},"
+            tokens_prefix = processor.tokenizer.encode(prefix)
+            indices.append(len(tokens_prefix) - 1)
+        else:
+            prefix = f"{prefix} and {colors[i]}"
     
-    # 2. Build the full string up to the second target (Right Color)
-    full_prompt = f"{prefix_left} and a {right_color}"
-    
-    # Encode both strings.
-    tokens_left = processor.tokenizer.encode(prefix_left)
-    
-    # The target index is simply the length of the sequence minus 1 (to be 0-indexed)
-    idx_left = len(tokens_left) - 1
-    
-    return [idx_left], full_prompt
+    return indices, prefix
 
 def get_num_hidden_layers(model: Any) -> int:
     """
@@ -154,15 +153,15 @@ def main():
     # To save memory in local mode, we will slice the first 10 permutations. 
     # Increase this for a smoother correlation curve.
     for p in permutations:
-        left_color, left_shape, right_color, right_shape = p
+        color1, shape1, color2, shape2 = p
+
+        shapes = [shape1, shape2, shape1, shape2]
+        colors = [color1, color1, color2, color2]
+        coords = [(0,0), (0,1), (1,0), (1,1)]
 
         obj_indices, text_prompt = get_dynamic_token_indices(
-            processor, left_color, left_shape, right_color
+            processor, colors=colors, shapes=shapes, coords=coords
         )
-
-        shapes = [left_shape, right_shape, left_shape, right_shape]
-        colors = [left_color, left_color, right_color, right_color]
-        coords = [(0,0), (0,1), (1,0), (1,1)]
 
         img = generate_custom_image(
             cols=2, 

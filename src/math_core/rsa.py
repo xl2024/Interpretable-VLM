@@ -133,6 +133,7 @@ def compute_rsa_scores(
                 if object_id in hidden_states_by_trial[t][layer_idx]:
                     state = hidden_states_by_trial[t][layer_idx][object_id].detach().cpu().float().squeeze().numpy()
                     obj_states.append(state)
+                    print('rsa: ', state.shape)
                 
             obj_matrix = np.stack(obj_states)
             

@@ -26,12 +26,12 @@ def build_target_rsms(metadata_list: List[List[Dict]], trial_object_ids: List[Li
     num_trials = len(metadata_list)
     # Assumes every trial has the same number of objects 'i' being tracked
     num_objects = len(metadata_list[0]) 
-    num = num_trials - num_trials // num_objects
+
     target_rsms = {
-        'pos': np.zeros((num_objects, num, num)),
-        'color': np.zeros((num_objects, num, num)),
-        'shape': np.zeros((num_objects, num, num)),
-        'feat': np.zeros((num_objects, num, num))
+        'pos': np.zeros((num_objects-1, num_trials, num_trials)),
+        'color': np.zeros((num_objects-1, num_trials, num_trials)),
+        'shape': np.zeros((num_objects-1, num_trials, num_trials)),
+        'feat': np.zeros((num_objects-1, num_trials, num_trials))
     }
     pos_done = np.zeros(num_objects)
     for t in range(num_trials):
@@ -43,7 +43,7 @@ def build_target_rsms(metadata_list: List[List[Dict]], trial_object_ids: List[Li
                 # --- Equation (2): Position-based RSM for Object ---
                 coords_i = []
                 for mid, trial in enumerate(metadata_list):
-                    for tid in range(len(trial)-1):
+                    for tid in range(len(trial)):
                         oid = _resolve_trial_object_index(trial_object_ids[mid], tid)
                         if oid == object_id:
                             coords_i.append(trial[tid]['coord'])
@@ -64,12 +64,12 @@ def build_target_rsms(metadata_list: List[List[Dict]], trial_object_ids: List[Li
             for t2 in range(num_trials):
                 oid1, oid2 = None, None
                 obj_indices1 = trial_object_ids[t1]
-                for i in range(len(obj_indices1)-1):
+                for i in range(len(obj_indices1)):
                     if _resolve_trial_object_index(obj_indices1, i) == object_id:
                         oid1 = i
                         break
                 obj_indices2 = trial_object_ids[t2]
-                for i in range(len(obj_indices2)-1):
+                for i in range(len(obj_indices2)):
                     if _resolve_trial_object_index(obj_indices2, i) == object_id:
                         oid2 = i
                         break
@@ -104,7 +104,7 @@ def compute_rsa_scores(
     target_rsms = build_target_rsms(metadata_list, trial_object_ids)
     
     # extract the lower triangle indices (excluding diagonal) to prevent correlation bias
-    lower_tri_idx = np.tril_indices(num_trials-num_trials//num_objects, k=-1)  # k=0: include the main diagonal
+    lower_tri_idx = np.tril_indices(num_trials, k=-1)  # k=0: include the main diagonal
     
     # Flatten the target lower triangles across all objects into 1D arrays for Pearson correlation
     target_flats = {}

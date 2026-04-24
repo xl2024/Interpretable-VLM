@@ -95,9 +95,9 @@ def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[st
         if i < len(coords)-1:
             prefix = f"{prefix} {colors[i]} {shapes[i]},"
             tokens_prefix = processor.tokenizer.encode(prefix)
-            indices.append({'color': colors[i], 'shape': shapes[i], 'index': len(tokens_prefix) - 1})
         else:
             prefix = f"{prefix} and {colors[i]}"
+        indices.append({'color': colors[i], 'shape': shapes[i], 'index': len(tokens_prefix) - 1})
 
     return indices, prefix
 

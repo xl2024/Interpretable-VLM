@@ -6,7 +6,7 @@ from transformers import AutoProcessor
 
 # Import custom modules
 from src.model.loader import load_vlm
-from src.data.synthetic_generator import generate_spatial_binding_image
+from src.data.synthetic_generator import generate_custom_image
 from src.mech_interp.tracer import extract_hidden_states
 from src.utils.einops_utils import get_vision_sequence_indices, slice_spatial_states
 from src.math_core.spatial_pca import compute_spatial_pca
@@ -26,9 +26,10 @@ def main():
     
     # 2. Generate the exact synthetic test from the paper
     print("\n[1/5] Generating synthetic image...")
-    image = generate_spatial_binding_image(
-        left_shape="circle", left_color="blue",
-        right_shape="square", right_color="red"
+    image = generate_custom_image(
+        shapes=["circle", "square"],
+        colors=["blue", "red"],
+        coords=[(0,0), (0,1)]
     )
     
     # 3. Load Model and Processor

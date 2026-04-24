@@ -6,7 +6,7 @@ import itertools
 from src.math_core.rsa import compute_rsa_scores
 from src.mech_interp.tracer import rsa_tracer
 from src.model.loader import load_vlm
-from src.data.synthetic_generator import generate_spatial_binding_image
+from src.data.synthetic_generator import generate_custom_image
 
 def plot_rsa_figure_1c(
     rsa_scores_prompt: Dict[str, List[float]],
@@ -148,36 +148,37 @@ def main():
     shapes = ["circle", "square"]
     
     # Create combinations for the left and right objects
-    all_permutations = list(itertools.product(colors, shapes[1:], colors, shapes[1:]))
+    all_permutations = list(itertools.product(colors, shapes, colors, shapes))
     permutations = [p for p in all_permutations if not (p[0] == p[2] and p[1] == p[3])]
     
     # To save memory in local mode, we will slice the first 10 permutations. 
     # Increase this for a smoother correlation curve.
-    for p in permutations[:]:
+    for p in permutations:
         left_color, left_shape, right_color, right_shape = p
 
         obj_indices, text_prompt = get_dynamic_token_indices(
             processor, left_color, left_shape, right_color
         )
 
-        img = generate_spatial_binding_image(
-            left_shape=left_shape, left_color=left_color,
-            right_shape=right_shape, right_color=right_color
+        shapes = [left_shape, right_shape, left_shape, right_shape]
+        colors = [left_color, left_color, right_color, right_color]
+        coords = [(0,0), (0,1), (1,0), (1,1)]
+
+        img = generate_custom_image(
+            cols=2, 
+            rows=2, 
+            shapes=shapes,
+            colors=colors,
+            coords=coords
         )
         
         # Process the inputs into PyTorch tensors
         inputs = processor(text=text_prompt, images=img, return_tensors="pt")
         inputs = {k: v.to('cuda') if hasattr(v, 'to') else v for k, v in inputs.items()}
-
-        # Map the proportional spatial coordinates from synthetic_generator.py (Assuming 336x336)
-        left_coord = (int(336 * 0.3), 336 // 2)
-        right_coord = (int(336 * 0.7), 336 // 2)
         
-        # Object 0 = Left Object, Object 1 = Right Object
-        trial_meta = [
-            {"coord": left_coord, "color": left_color, "shape": left_shape},
-            {"coord": right_coord, "color": right_color, "shape": right_shape}
-        ]
+        trial_meta = []
+        for i in range(len(coords)):
+            trial_meta.append({"coord": coords[i], "color": colors[i], "shape": shapes[i]})
         metadata_list.append(trial_meta)
         
         trials.append({

@@ -17,8 +17,8 @@ dist/
 *.safetensors
 *.onnx
 model_weights/
-data/raw/
-outputs/
+# data/raw/
+# outputs/
 
 # --- Hugging Face & Tokenizers ---
 .cache/

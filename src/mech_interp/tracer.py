@@ -41,6 +41,7 @@ def _resolve_trial_object_index(object_token_indices: List[Dict[str, Any]], obje
         raise ValueError("trial_data['object_token_indices'] cannot be empty.")
 
     if object_position < len(object_token_indices):
+        print('object_token_indices:', object_token_indices)
         return object_token_indices[object_position]['index']
 
     return object_token_indices[-1]['index']

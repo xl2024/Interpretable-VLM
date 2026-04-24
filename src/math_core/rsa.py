@@ -118,9 +118,6 @@ def compute_rsa_scores(
     print(f"Executing 3D RSA Correlation across {num_trials} trials and {num_objects} objects...")
     
     for layer_idx in range(num_layers):
-        # local debug
-        if layer_idx < 5 and layer_idx % 3 == 1:
-            continue
         # 2. Build the Model RSM for this layer
         model_obj_flats = []
         

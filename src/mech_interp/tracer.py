@@ -87,7 +87,7 @@ def extract_hidden_states(
         images=image, 
         return_tensors="pt"   # lists -> PyTorch Tensors
     )  # .to(model.device) # Move raw inputs to the active hardware device
-    
+
     inputs = {k: v.to('cuda') if hasattr(v, 'to') else v for k, v in inputs.items()}
     
     trace_layers: List[int] = config['mechanistic_interp']['trace_layers']
@@ -150,9 +150,6 @@ def rsa_tracer(
             with model.trace() as tracer:
                 with tracer.invoke(**inputs):
                     for layer_idx in range(num_layers):
-                        # local debug
-                        if layer_idx < 5 and layer_idx % 3 == 1:
-                            continue
                         layer_path = config['model']['layer_path_template'].format(layer_idx)
                         layer_module = _resolve_layer_path(model, layer_path)
                         

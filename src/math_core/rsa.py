@@ -84,7 +84,8 @@ def build_target_rsms(metadata_list: List[List[Dict]], trial_object_ids: List[Li
                     
                     # Eq (5): Feature average
                     target_rsms['feat'][object_id, t1, t2] = 0.5 * (color_match + shape_match)
-
+    print('target rsms pos: ',target_rsms['pos'].shape)
+    print('target rsms feat: ',target_rsms['feat'].shape)
     return target_rsms
 
 def compute_rsa_scores(
@@ -135,6 +136,7 @@ def compute_rsa_scores(
                     obj_states.append(state)
                 
             obj_matrix = np.stack(obj_states)
+            print('obj_matrix.shape :',obj_matrix.shape)
             
             cosine_distances = pdist(obj_matrix, metric='cosine')
             model_rsm_i = 1.0 - squareform(cosine_distances) / 2 # Convert distance to similarity
@@ -143,10 +145,12 @@ def compute_rsa_scores(
             
         # Concatenate the model's lower triangles across all objects
         model_flat = np.concatenate(model_obj_flats)
+        print('model_flat.shape : ', model_flat.shape)
         
         # 3. Correlate the Model RSM with the Target RSMs
         for feature in ['pos', 'color', 'shape', 'feat']:
             target_flat = target_flats[feature]
+            print('target,',feature, '.shape : ', target_flat.shape)
             
             # If a matrix has no variance, Pearson correlation is mathematically undefined
             if np.std(target_flat) == 0 or np.std(model_flat) == 0:

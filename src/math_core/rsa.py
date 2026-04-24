@@ -58,7 +58,7 @@ def build_target_rsms(metadata_list: List[List[Dict]], trial_object_ids: List[Li
                 else:
                     target_rsms['pos'][object_id] = np.ones((num_trials, num_trials))
     
-    for object_id, _ in target_rsms['pos']:
+    for object_id, _ in enumerate(target_rsms['pos']):
         # --- Equations (3), (4), and (5): Semantic Features for Object i ---
         for t1 in range(num_trials):
             for t2 in range(num_trials):

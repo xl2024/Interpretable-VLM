@@ -28,10 +28,10 @@ def build_target_rsms(metadata_list: List[List[Dict]], trial_object_ids: List[Li
     num_objects = len(metadata_list[0]) 
 
     target_rsms = {
-        'pos': np.zeros((num_objects-1, num_trials, num_trials)),
-        'color': np.zeros((num_objects-1, num_trials, num_trials)),
-        'shape': np.zeros((num_objects-1, num_trials, num_trials)),
-        'feat': np.zeros((num_objects-1, num_trials, num_trials))
+        'pos': np.zeros((num_objects, num_trials, num_trials)),
+        'color': np.zeros((num_objects, num_trials, num_trials)),
+        'shape': np.zeros((num_objects, num_trials, num_trials)),
+        'feat': np.zeros((num_objects, num_trials, num_trials))
     }
     pos_done = np.zeros(num_objects)
     for t in range(num_trials):

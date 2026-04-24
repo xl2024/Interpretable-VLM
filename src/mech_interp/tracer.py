@@ -188,7 +188,7 @@ def rsa_tracer(
                                     prompt_states[layer_idx][object_id] = hs[obj_index, :].save()
 
                             # Grab the last token for this object id
-                            last_states[layer_idx][object_id] = hs[-1, :].save()
+                            last_states[layer_idx][0] = hs[-1, :].save()
                     
             # Append the resolved dictionaries to main lists
             hidden_states_prompt_by_trial.append(prompt_states)

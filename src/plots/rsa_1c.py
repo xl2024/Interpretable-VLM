@@ -50,6 +50,7 @@ def run_rsa_pipeline(
     num_layers: int,
     trials: List[Dict[str, Any]],
     metadata_list: List[List[Dict[str, Any]]],
+    metadata_list_last: List[List[Dict[str, Any]]],
     save_path: str = "outputs/rsa_figure_1c.png"
 ) -> None:
     """
@@ -69,7 +70,7 @@ def run_rsa_pipeline(
     rsa_scores_prompt = compute_rsa_scores(hidden_states_prompt_by_trial, metadata_list, num_layers)
     
     print("Calculating RSA for the Last Token...")
-    rsa_scores_last_token = compute_rsa_scores(hidden_states_last_by_trial, metadata_list, num_layers)
+    rsa_scores_last_token = compute_rsa_scores(hidden_states_last_by_trial, metadata_list_last, num_layers)
     
     # 3. Visualization
     plot_rsa_figure_1c(
@@ -142,22 +143,36 @@ def main():
     # We generate a permutation matrix of shapes and colors to build the correlation variance.
     trials = []
     metadata_list = []
+    metadata_list_last = []
     
     colors = ["red", "blue"]
     shapes = ["circle", "square"]
     
-    # Create combinations for the left and right objects
-    all_permutations = list(itertools.product(colors, shapes, colors, shapes))
-    permutations = [p for p in all_permutations if not (p[0] == p[2] and p[1] == p[3])]
-    last_object = {'color': permutations[0][2], 'shape': permutations[0][3]}
+    objects = []
+    for color in colors:
+        for shape in shapes:
+            objects.append({'color': color, 'shape': shape})
+    last_object = objects[-1]
+    permutations = []
+    for i in range(4):
+        object1 = objects[i]
+        for j in range(4):
+            if i not in [j]:
+                object2 = objects[j]
+                for k in range(4):
+                    if k not in [i, j]:
+                        object3 = objects[k]
+                        for z in range(4):
+                            if z not in [i, j, k]:
+                                permutations.append([object1, object2, object3, objects[z]])
 
     # To save memory in local mode, we will slice the first 10 permutations. 
     # Increase this for a smoother correlation curve.
     for p in permutations:
-        color1, shape1, color2, shape2 = p
+        o1, o2, o3, o4 = p
 
-        shapes = [shape1, shape2, shape1, shape2]
-        colors = [color1, color1, color2, color2]
+        shapes = [o1['shape'], o2['shape'], o3['shape'], o4['shape']]
+        colors = [o1['color'], o2['color'], o3['color'], o4['color']]
         coords = [(0,0), (0,1), (1,0), (1,1)]
 
         obj_indices, text_prompt = get_dynamic_token_indices(
@@ -174,12 +189,17 @@ def main():
         
         # Process the inputs into PyTorch tensors
         inputs = processor(text=text_prompt, images=img, return_tensors="pt")
-        inputs = {k: v.to('cuda') if hasattr(v, 'to') else v for k, v in inputs.items()}
+        # inputs = {k: v.to('cuda') if hasattr(v, 'to') else v for k, v in inputs.items()}
         
         trial_meta = []
+        trial_meta_last = []
         for i in range(len(coords)):
-            trial_meta.append({"coord": coords[i], "color": colors[i], "shape": shapes[i]})
+            if not (colors[i] == last_object['color'] and shapes[i] == last_object['shape']):
+                trial_meta.append({"coord": coords[i], "color": colors[i], "shape": shapes[i]})
+            else:
+                trial_meta_last.append({"coord": coords[i], "color": colors[i], "shape": shapes[i]})
         metadata_list.append(trial_meta)
+        metadata_list_last.append(trial_meta_last)
         
         trials.append({
             'inputs': inputs,
@@ -194,6 +214,7 @@ def main():
         num_layers=num_layers,
         trials=trials,
         metadata_list=metadata_list,
+        metadata_list_last = metadata_list_last,
         save_path="outputs/rsa_figure_1c.png"
     )
 

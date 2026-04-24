@@ -25,7 +25,7 @@ def build_target_rsms(metadata_list: List[List[Dict]], trial_object_ids: List[Li
     """
     num_trials = len(metadata_list)
     # Assumes every trial has the same number of objects 'i' being tracked
-    num_objects = len(metadata_list[0]) 
+    num_objects = len(metadata_list[0])  # N-1
 
     target_rsms = {
         'pos': np.zeros((num_objects, num_trials, num_trials)),

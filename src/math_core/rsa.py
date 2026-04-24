@@ -130,8 +130,9 @@ def compute_rsa_scores(
 
                 # Extract state for object_id at the current layer
                 # Ensure the tensor is squeezed to a 1D vector of shape [hidden_dim]
-                state = hidden_states_by_trial[t][layer_idx][object_id].detach().cpu().float().squeeze().numpy()
-                obj_states.append(state)
+                if object_id in state = hidden_states_by_trial[t][layer_idx]:
+                    state = hidden_states_by_trial[t][layer_idx][object_id].detach().cpu().float().squeeze().numpy()
+                    obj_states.append(state)
                 
             obj_matrix = np.stack(obj_states)
             

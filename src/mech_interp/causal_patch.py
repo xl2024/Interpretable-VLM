@@ -22,6 +22,7 @@ def calculate_shift_vector(
     """
     delta = target_coord - source_coord
     shift_vector = (delta[0] * components[0]) + (delta[1] * components[1])
+    shift_vector = shift_vector.to('cuda')
 
     return shift_vector
 

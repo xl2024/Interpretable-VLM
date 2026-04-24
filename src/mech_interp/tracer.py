@@ -142,7 +142,7 @@ def rsa_tracer(
     # 1. Initialize storage for both token types
     hidden_states_prompt_by_trial = []
     hidden_states_last_by_trial = []
-    trial_object_ids, token_object_ids = _build_object_ids(metadata_list)
+    trial_object_ids, token_object_ids = _build_object_ids(metadata_list, trials)
     
     print(f"Extracting hidden states across {len(trials)} trials...")
     with torch.no_grad():

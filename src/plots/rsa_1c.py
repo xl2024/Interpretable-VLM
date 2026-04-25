@@ -28,11 +28,6 @@ def plot_rsa_figure_1c(
     ax.plot(layers, rsa_scores_prompt['pos'], label='Position (Prompt Tokens)', color='blue')
     ax.plot(layers, rsa_scores_last_token['pos'], label='Position (Last Token)', color='red')
     ax.plot(layers, rsa_scores_last_token['feat'], label='Feature (Last Token)', color='green')
-    ax.plot(layers, rsa_scores_last_token['color'], label='Color (Last Token)')
-    ax.plot(layers, rsa_scores_last_token['shape'], label='Shape (Last Token)')
-    ax.plot(layers, rsa_scores_prompt['color'], label='Color (Prompt Token)')
-    ax.plot(layers, rsa_scores_prompt['shape'], label='Shape (Prompt Token)')
-    ax.plot(layers, rsa_scores_prompt['feat'], label='Feat (Prompt Token)')
     
     # Style the axes
     ax.set_xlabel('Layer', fontsize=12)

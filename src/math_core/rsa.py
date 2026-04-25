@@ -86,6 +86,8 @@ def build_target_rsms(metadata_list: List[List[Dict]], trial_object_ids: List[Li
                     target_rsms['feat'][object_id, t1, t2] = 0.5 * (color_match + shape_match)
     print('target rsms pos: ',target_rsms['pos'].shape)
     print('target rsms feat: ',target_rsms['feat'].shape)
+    print('target rsms pos: ', target_rsms['pos'][0])
+    print('target rsms feat: ', target_rsms['feat'][0])
     return target_rsms
 
 def compute_rsa_scores(

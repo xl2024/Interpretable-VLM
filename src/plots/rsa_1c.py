@@ -142,7 +142,7 @@ def main():
     trials = []
     
     colors = ["red", "blue"]
-    shapes = ["circle", "square"]
+    shapes = ["circle", "triangle"]
     
     objects = []
     for color in colors:

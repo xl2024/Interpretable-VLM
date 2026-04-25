@@ -123,8 +123,10 @@ def compute_rsa_scores(
             obj_states = []
             for t in range(num_trials):
                 obj_indices = token_object_ids[t]
+                print('********', i, t, obj_indices)
                 for j in range(len(obj_indices)):
                     if i == obj_indices[j]:
+                        print('************', i, t)
                         state = hidden_states_by_trial[t][layer_idx][j].detach().cpu().float().squeeze().numpy()
                         obj_states.append(state)
                         break

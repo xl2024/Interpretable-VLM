@@ -2,7 +2,7 @@ import torch
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
 from scipy.stats import pearsonr
-from typing import Dict, List
+from typing import Dict, List, Any
 
 from src.mech_interp.tracer import _build_object_ids, _resolve_trial_object_index, _resolve_token_object_index
 
@@ -80,6 +80,7 @@ def build_target_rsms(metadata_list: List[List[Dict]], trial_object_ids: List[Li
 def compute_rsa_scores(
     hidden_states_by_trial: List[Dict[int, Dict[int, torch.Tensor]]], 
     metadata_list: List[List[Dict]],
+    trials: List[Dict[str, Any]],
     num_layers: int
 ) -> Dict[str, List[float]]:
     """
@@ -88,7 +89,7 @@ def compute_rsa_scores(
     """
     num_trials = len(metadata_list)
     num_objects = len(metadata_list[0])
-    trial_object_ids, token_object_ids = _build_object_ids(metadata_list)
+    trial_object_ids, token_object_ids = _build_object_ids(metadata_list, trials)
     
     # 1. Build the 3D Target RSMs
     target_rsms = build_target_rsms(metadata_list, trial_object_ids)

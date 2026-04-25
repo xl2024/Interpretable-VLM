@@ -66,7 +66,7 @@ def run_rsa_pipeline(
 
     # 2. Math Execution
     print("Calculating RSA for Prompt Tokens...")
-    rsa_scores_prompt, rsa_scores_last_token = compute_rsa_scores(hidden_states_by_trial, metadata_list, num_layers)
+    rsa_scores_prompt, rsa_scores_last_token = compute_rsa_scores(hidden_states_by_trial, metadata_list, trials, num_layers)
     
     # 3. Visualization
     plot_rsa_figure_1c(

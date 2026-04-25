@@ -67,8 +67,6 @@ def build_target_rsms(trials: List[Dict[str, Any]], trial_object_ids: List[List[
     print('target rsms feat: ',target_rsms['feat'].shape)
     print('target rsms pos: ', target_rsms['pos'][0])
     print('target rsms feat: ', target_rsms['feat'][0])
-    target_rsms_prompt_pos = target_rsms['pos'][:-1,:,:].mean(axis=0)
-    print("+++++++++", target_rsms_prompt_pos.shape)
     return target_rsms, target_rsms_last_pos
 
 def compute_rsa_scores(
@@ -86,6 +84,7 @@ def compute_rsa_scores(
     
     # 1. Build the 3D Target RSMs
     target_rsms, target_rsms_last_pos = build_target_rsms(trials, trial_object_ids)
+    target_rsms_prompt_pos = [target_rsms['pos'][:-1,:,:].mean(axis=0)]
     
     # extract the lower triangle indices (excluding diagonal) to prevent correlation bias
     lower_tri_idx = np.tril_indices(num_trials, k=-1)  # k=0: include the main diagonal
@@ -101,9 +100,13 @@ def compute_rsa_scores(
         obj_flats_last.append(target_rsms[feature][-1][lower_tri_idx])
         target_flats[feature] = np.concatenate(obj_flats)
         target_flats_last[feature] = np.concatenate(obj_flats_last)
+
     target_flats_last_pos = []
     target_flats_last_pos.append(target_rsms_last_pos[0][lower_tri_idx])
     target_flats_last_pos = np.concatenate(target_flats_last_pos)
+    
+    target_flats_prompt_pos = [target_rsms_prompt_pos[0][lower_tri_idx]]
+    target_flats_prompt_pos = np.concatenate(target_flats_prompt_pos)
         
     rsa_scores_prompt = {'pos': [], 'feat': []}
     rsa_scores_last_token = {'pos': [], 'feat': []}
@@ -182,6 +185,13 @@ def compute_rsa_scores(
         else:
             correlation_score, _ = pearsonr(model_flat_last_feat, target_flat_last_pos)
             rsa_scores_last_token['pos'].append(correlation_score)
+
+        target_flats_prompt_pos = target_flats_prompt_pos
+        if np.std(target_flats_prompt_pos) == 0 or np.std(model_flat_last_feat) == 0:
+            rsa_scores_prompt['pos'].append(0.0)
+        else:
+            correlation_score, _ = pearsonr(model_flat_last_feat, target_flats_prompt_pos)
+            rsa_scores_prompt['pos'].append(correlation_score)
 
     print("3D RSA correlation scoring complete.")
     return rsa_scores_prompt, rsa_scores_last_token

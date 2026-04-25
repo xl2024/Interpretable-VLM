@@ -61,8 +61,7 @@ def build_target_rsms(trials: List[Dict[str, Any]], trial_object_ids: List[List[
                 shape_match = 1.0 if trials[t1]['trial'][pos_id]['shape'] == trials[t2]['trial'][pos_id]['shape'] else 0.0
                 target_rsms['shape'][pos_id, t1, t2] = shape_match
 
-                # target_rsms['feat'][pos_id, t1, t2] = 0.5 * (color_match + shape_match)
-                target_rsms['feat'][pos_id, t1, t2] = shape_match
+                target_rsms['feat'][pos_id, t1, t2] = 0.5 * (color_match + shape_match)
 
     print('target rsms pos: ',target_rsms['pos'].shape)
     print('target rsms feat: ',target_rsms['feat'].shape)

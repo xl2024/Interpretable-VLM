@@ -1,6 +1,7 @@
 from typing import Dict, List, Any
 import matplotlib.pyplot as plt
 import yaml
+import numpy as np
 import itertools
 
 from src.math_core.rsa import compute_rsa_scores, _build_object_ids, build_target_rsms
@@ -88,14 +89,15 @@ def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[st
     indices = []
     prefix = f"<image>\nIn this image, there is"
     tokens_prefix = processor.tokenizer.encode(prefix)
+    shuffle = np.random.permutation(len(coords))
     for i in range(len(coords)-1):
-        prefix = f"{prefix} a {colors[i]} {shapes[i]},"
+        prefix = f"{prefix} a {colors[shuffle[i]]} {shapes[shuffle[i]]},"
         tokens_prefix = processor.tokenizer.encode(prefix)
-        indices.append({'color': colors[i], 'shape': shapes[i], 'index': len(tokens_prefix) - 1})
+        indices.append({'color': colors[shuffle[i]], 'shape': shapes[shuffle[i]], 'index': len(tokens_prefix) - 1})
         
-    prefix = f"{prefix} and a {colors[-1]}"
+    prefix = f"{prefix} and a {colors[shuffle[-1]]}"
     tokens_prefix = processor.tokenizer.encode(prefix)
-    indices.append({'color': colors[-1], 'shape': shapes[-1], 'index': len(tokens_prefix) - 1})
+    indices.append({'color': colors[shuffle[-1]], 'shape': shapes[shuffle[-1]], 'index': len(tokens_prefix) - 1})
 
     return indices, prefix
 

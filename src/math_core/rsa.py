@@ -67,7 +67,7 @@ def build_target_rsms(trials: List[Dict[str, Any]], trial_object_ids: List[List[
     print('target rsms feat: ',target_rsms['feat'].shape)
     print('target rsms pos: ', target_rsms['pos'][0])
     print('target rsms feat: ', target_rsms['feat'][0])
-    target_rsms_prompt_pos = target_rsms[:-1,:,:].mean(axis=0)
+    target_rsms_prompt_pos = target_rsms['pos'][:-1,:,:].mean(axis=0)
     print("+++++++++", target_rsms_prompt_pos.shape)
     return target_rsms, target_rsms_last_pos
 

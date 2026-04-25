@@ -9,7 +9,8 @@ pipeline:
 
 model:
   family: "llava"
-  huggingface_id: "bczhou/tiny-llava-v1-hf"
+  # huggingface_id: "bczhou/tiny-llava-v1-hf"
+  huggingface_id: "llava-hf/llava-1.5-7b-hf"
   
   # The exact PyTorch module path nnsight uses to attach intervention hooks.
   # TinyLLaVA uses a LLaMA backbone, so the hidden states live here:

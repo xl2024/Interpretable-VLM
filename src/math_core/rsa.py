@@ -148,7 +148,7 @@ def compute_rsa_scores(
         model_obj_flats_last_feat = []
         obj_states = []
         for t in range(num_trials):
-            state = hidden_states_by_trial[t][layer_idx][num_objects].detach().cpu().float().squeeze().numpy()
+            state = hidden_states_by_trial[t][layer_idx][num_objects-1].detach().cpu().float().squeeze().numpy()
             obj_states.append(state)
             
         obj_matrix = np.stack(obj_states)

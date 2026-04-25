@@ -8,6 +8,7 @@ from src.math_core.rsa import compute_rsa_scores, _build_object_ids, build_targe
 from src.mech_interp.tracer import rsa_tracer
 from src.model.loader import load_vlm
 from src.data.synthetic_generator import generate_custom_image
+from src.utils.tools import predict
 
 def plot_rsa_figure_1c(
     rsa_scores_prompt: Dict[str, List[float]],
@@ -50,7 +51,6 @@ def run_rsa_pipeline(
     config: Dict[str, Any],
     num_layers: int,
     trials: List[Dict[str, Any]],
-    metadata_list: List[List[Dict[str, Any]]],
     save_path: str = "outputs/rsa_figure_1c.png"
 ) -> None:
     """
@@ -61,13 +61,12 @@ def run_rsa_pipeline(
         model,
         config,
         num_layers,
-        metadata_list,
         trials
     )
 
     # 2. Math Execution
     print("Calculating RSA for Prompt Tokens...")
-    rsa_scores_prompt, rsa_scores_last_token = compute_rsa_scores(hidden_states_by_trial, metadata_list, trials, num_layers)
+    rsa_scores_prompt, rsa_scores_last_token = compute_rsa_scores(hidden_states_by_trial, trials, num_layers)
     
     # 3. Visualization
     plot_rsa_figure_1c(
@@ -93,11 +92,11 @@ def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[st
     for i in range(len(coords)-1):
         prefix = f"{prefix} a {colors[shuffle[i]]} {shapes[shuffle[i]]},"
         tokens_prefix = processor.tokenizer.encode(prefix)
-        indices.append({'color': colors[shuffle[i]], 'shape': shapes[shuffle[i]], 'index': len(tokens_prefix) - 1})
+        indices.append({'coords': coords[shuffle[i]], 'color': colors[shuffle[i]], 'shape': shapes[shuffle[i]], 'index': len(tokens_prefix) - 1})
         
     prefix = f"{prefix} and a {colors[shuffle[-1]]}"
     tokens_prefix = processor.tokenizer.encode(prefix)
-    indices.append({'color': colors[shuffle[-1]], 'shape': shapes[shuffle[-1]], 'index': len(tokens_prefix) - 1})
+    indices.append({'coords': coords[shuffle[-1]], 'color': colors[shuffle[-1]], 'shape': shapes[shuffle[-1]], 'index': len(tokens_prefix) - 1})
 
     return indices, prefix
 
@@ -141,7 +140,6 @@ def main():
     # 2. Synthesize Trials for RSA
     # We generate a permutation matrix of shapes and colors to build the correlation variance.
     trials = []
-    metadata_list = []
     
     colors = ["red", "blue"]
     shapes = ["circle", "square"]
@@ -150,12 +148,13 @@ def main():
     for color in colors:
         for shape in shapes:
             objects.append({'color': color, 'shape': shape})
+    print("all objects:", objects)
 
     permutations = []
     for i in range(4):
         object1 = objects[i]
         for j in range(4):
-            if i not in [j]:
+            if j not in [i]:
                 object2 = objects[j]
                 for k in range(4):
                     if k not in [i, j]:
@@ -189,19 +188,12 @@ def main():
         inputs = processor(text=text_prompt, images=img, return_tensors="pt")
         # inputs = {k: v.to('cuda') if hasattr(v, 'to') else v for k, v in inputs.items()}
         
-        trial_meta = []
-        for i in range(len(coords)):
-            trial_meta.append({"coord": coords[i], "color": colors[i], "shape": shapes[i]})
-        metadata_list.append(trial_meta)
-        
         trials.append({
             'inputs': inputs,
-            'object_token_indices': obj_indices
+            'trial': obj_indices
         })
 
-    print('=============meta_list==================')
-    trial_object_ids, token_object_ids = _build_object_ids(metadata_list)
-    target_rsms = build_target_rsms(metadata_list, trial_object_ids)
+        print(f"Prediction({len(trials)}): {predict(model, processor, img, text_prompt).strip()} (target: {obj_indices[-1]['shape']})")
 
     # 3. Execute Pipeline
     print(f"\nExecuting 3D RSA across {len(trials)} trials and {num_layers} layers...")
@@ -210,7 +202,6 @@ def main():
         config=config,
         num_layers=num_layers,
         trials=trials,
-        metadata_list=metadata_list,
         save_path="outputs/rsa_figure_1c.png"
     )
 

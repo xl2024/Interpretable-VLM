@@ -3,7 +3,7 @@ from nnsight import LanguageModel
 from typing import Dict, Any, List, Tuple
 import gc
 
-def _build_object_ids(metadata_list: List[List[Dict[str, Any]]], trials: List[Dict[str, Any]] = None) -> List[List[int]]:
+def _build_object_ids(trials: List[Dict[str, Any]] = None) -> List[List[int]]:
     """
     Build stable object ids from (color, shape) pairs.
     Objects sharing the same (color, shape) get the same object_id.
@@ -11,7 +11,8 @@ def _build_object_ids(metadata_list: List[List[Dict[str, Any]]], trials: List[Di
     object_id_by_feature: Dict[Tuple[str, str], int] = {}
     trial_object_ids: List[List[int]] = []
 
-    for trial in metadata_list:
+    for t in trials:
+        trial = t['trial']
         ids_for_trial: List[int] = []
         for obj in trial:
             key = (obj['color'], obj['shape'])
@@ -24,9 +25,9 @@ def _build_object_ids(metadata_list: List[List[Dict[str, Any]]], trials: List[Di
     if trials is not None:
         for trial in trials:
             ids_for_token: List[int] = []
-            for i in range(len(trial['object_token_indices'])):
-                key = (trial['object_token_indices'][i]['color'], trial['object_token_indices'][i]['shape'])
-                ids_for_token.append((object_id_by_feature[key], trial['object_token_indices'][i]['index']))
+            for i in range(len(trial['trial'])):
+                key = (trial['trial'][i]['color'], trial['trial'][i]['shape'])
+                ids_for_token.append((object_id_by_feature[key], trial['trial'][i]['index']))
             token_object_ids.append(ids_for_token)
     print('*** object_id_by_feature *** \n', object_id_by_feature)
     return trial_object_ids, token_object_ids
@@ -38,7 +39,7 @@ def _resolve_trial_object_index(object_token_indices: List[int], object_position
     Fallback to the last available index when fewer indices are provided.
     """
     if len(object_token_indices) == 0:
-        raise ValueError("trial_data['object_token_indices'] cannot be empty.")
+        raise ValueError("trial_data['trial'] cannot be empty.")
 
     if object_position < len(object_token_indices):
         return object_token_indices[object_position]
@@ -51,7 +52,7 @@ def _resolve_token_object_index(object_token_indices: List[Dict[str, Any]], obje
     Fallback to the last available index when fewer indices are provided.
     """
     if len(object_token_indices) == 0:
-        raise ValueError("trial_data['object_token_indices'] cannot be empty.")
+        raise ValueError("trial_data['trial'] cannot be empty.")
 
     if object_position < len(object_token_indices):
         return object_token_indices[object_position]['index']
@@ -147,7 +148,6 @@ def rsa_tracer(
     model: LanguageModel,
     config: Dict[str, Any],
     num_layers: int,
-    metadata_list: List[List[Dict]],
     trials: List[Dict[str, Any]]
 ) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
     """
@@ -155,7 +155,7 @@ def rsa_tracer(
     """
     # 1. Initialize storage for both token types
     hidden_states_by_trial = []
-    trial_object_ids, token_object_ids = _build_object_ids(metadata_list, trials)
+    trial_object_ids, token_object_ids = _build_object_ids(trials)
     
     print(f"Extracting hidden states across {len(trials)} trials...")
     with torch.no_grad():

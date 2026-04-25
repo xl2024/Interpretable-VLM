@@ -6,26 +6,14 @@ from typing import Dict, List, Any
 
 from src.mech_interp.tracer import _build_object_ids, _resolve_trial_object_index, _resolve_token_object_index
 
-def build_target_rsms(metadata_list: List[List[Dict]], trial_object_ids: List[List[int]]) -> Dict[str, np.ndarray]:
+def build_target_rsms(trials: List[Dict[str, Any]], trial_object_ids: List[List[int]]) -> Dict[str, np.ndarray]:
     """
     Builds 3D Target RSMs of shape [num_objects, num_trials, num_trials]
     strictly following Appendix A.2.3 Equations (2)-(5).
-    e.g. metadata_list = [
-        # Trial t1 (Prompt 1)
-        [
-            {"coord": (112, 112), "color": "red", "shape": "square"},  # Object i=0
-            {"coord": (224, 224), "color": "blue", "shape": "circle"}  # Object i=1
-        ],
-        # Trial t2 (Prompt 2)
-        [
-            {"coord": (112, 112), "color": "green", "shape": "square"}, # Object i=0
-            {"coord": (50, 50), "color": "blue", "shape": "triangle"}   # Object i=1
-        ]
-    ]
     """
-    num_trials = len(metadata_list)
+    num_trials = len(trials)
     # Assumes every trial has the same number of objects 'i' being tracked
-    num_objects = len(metadata_list[0])  # N
+    num_objects = len(trials[0]['trial'])  # N
 
     target_rsms = {
         'pos': np.zeros((num_objects, num_trials, num_trials)),
@@ -34,58 +22,43 @@ def build_target_rsms(metadata_list: List[List[Dict]], trial_object_ids: List[Li
         'feat': np.zeros((num_objects, num_trials, num_trials))
     }
     target_rsms_last_pos = np.zeros((1, num_trials, num_trials))
-    pos_done = np.zeros(num_objects)
-    for t in range(num_trials):
-        obj_indices = trial_object_ids[t]
-        for ind in obj_indices:
-            object_id = _resolve_trial_object_index(obj_indices, ind)
-            if pos_done[object_id] == 0:
-                pos_done[object_id] = 1
-                # --- Equation (2): Position-based RSM for Object ---
-                coords_i = []
-                for mid, trial in enumerate(metadata_list):
-                    for tid in range(len(trial)):
-                        oid = _resolve_trial_object_index(trial_object_ids[mid], tid)
-                        if oid == object_id:
-                            coords_i.append(trial[tid]['coord'])
+    for oi in range(num_objects):
+        coords_i = []
+        for mid, tr in enumerate(trials):
+            coords_i.append(tr['trial'][oi]['coords'])
+        coords_i = np.array(coords_i)
+        distances = pdist(coords_i, metric='euclidean')
+        dist_matrix = squareform(distances)
+        
+        max_dist = np.max(dist_matrix)
+        if max_dist > 0:
+            target_rsms['pos'][oi] = 1.0 - (dist_matrix / max_dist)
+        else:
+            target_rsms['pos'][oi] = np.ones((num_trials, num_trials))
 
-                coords_i = np.array(coords_i)
-                distances = pdist(coords_i, metric='euclidean')
-                dist_matrix = squareform(distances)
-                
-                max_dist = np.max(dist_matrix)
-                if max_dist > 0:
-                    target_rsms['pos'][object_id] = 1.0 - (dist_matrix / max_dist)
-                else:
-                    target_rsms['pos'][object_id] = np.ones((num_trials, num_trials))
+    coords = []
+    for mid, tr in enumerate(trials):
+        coords.append(tr['trial'][-1]['coords'])
 
-            if object_id == num_objects - 1:
-                coords = []
-                for mid, trial in enumerate(metadata_list):
-                    for tid in range(len(trial)):
-                        oid = _resolve_trial_object_index(trial_object_ids[mid], tid)
-                        if oid == object_id:
-                            coords.append(trial[tid]['coord'])
-
-                coords_i = np.array(coords)
-                distances = pdist(coords_i, metric='euclidean')
-                dist_matrix = squareform(distances)
-                
-                max_dist = np.max(dist_matrix)
-                if max_dist > 0:
-                    target_rsms_last_pos[0] = 1.0 - (dist_matrix / max_dist)
-                else:
-                    target_rsms_last_pos[0] = np.ones((num_trials, num_trials))
+    coords_i = np.array(coords)
+    distances = pdist(coords_i, metric='euclidean')
+    dist_matrix = squareform(distances)
+    
+    max_dist = np.max(dist_matrix)
+    if max_dist > 0:
+        target_rsms_last_pos[0] = 1.0 - (dist_matrix / max_dist)
+    else:
+        target_rsms_last_pos[0] = np.ones((num_trials, num_trials))
 
 
-    for pos_id, _ in enumerate(target_rsms['pos']):   # #pos_id == #object_id
+    for pos_id in range(num_objects):
         # --- Equations (3), (4), and (5): Semantic Features for Object i ---
         for t1 in range(num_trials):
             for t2 in range(num_trials):
-                color_match = 1.0 if metadata_list[t1][pos_id]['color'] == metadata_list[t2][pos_id]['color'] else 0.0
+                color_match = 1.0 if trials[t1]['trial'][pos_id]['color'] == trials[t2]['trial'][pos_id]['color'] else 0.0
                 target_rsms['color'][pos_id, t1, t2] = color_match
 
-                shape_match = 1.0 if metadata_list[t1][pos_id]['shape'] == metadata_list[t2][pos_id]['shape'] else 0.0
+                shape_match = 1.0 if trials[t1]['trial'][pos_id]['shape'] == trials[t2]['trial'][pos_id]['shape'] else 0.0
                 target_rsms['shape'][pos_id, t1, t2] = shape_match
 
                 target_rsms['feat'][pos_id, t1, t2] = 0.5 * (color_match + shape_match)
@@ -94,12 +67,10 @@ def build_target_rsms(metadata_list: List[List[Dict]], trial_object_ids: List[Li
     print('target rsms feat: ',target_rsms['feat'].shape)
     print('target rsms pos: ', target_rsms['pos'][0])
     print('target rsms feat: ', target_rsms['feat'][0])
-    print('metadata_list: ', metadata_list)
     return target_rsms, target_rsms_last_pos
 
 def compute_rsa_scores(
-    hidden_states_by_trial: List[Dict[int, Dict[int, torch.Tensor]]], 
-    metadata_list: List[List[Dict]],
+    hidden_states_by_trial: List[Dict[int, Dict[int, torch.Tensor]]],
     trials: List[Dict[str, Any]],
     num_layers: int
 ) -> Dict[str, List[float]]:
@@ -107,12 +78,12 @@ def compute_rsa_scores(
     Executes the 3D RSA protocol from Appendix A.2.
     Correlates object-specific hidden states against the 3D Target RSMs.
     """
-    num_trials = len(metadata_list)
-    num_objects = len(metadata_list[0])
-    trial_object_ids, token_object_ids = _build_object_ids(metadata_list, trials)
+    num_trials = len(trials)
+    num_objects = len(trials[0]['trial'])
+    trial_object_ids, token_object_ids = _build_object_ids(trials)
     
     # 1. Build the 3D Target RSMs
-    target_rsms, target_rsms_last_pos = build_target_rsms(metadata_list, trial_object_ids)
+    target_rsms, target_rsms_last_pos = build_target_rsms(trials, trial_object_ids)
     
     # extract the lower triangle indices (excluding diagonal) to prevent correlation bias
     lower_tri_idx = np.tril_indices(num_trials, k=-1)  # k=0: include the main diagonal
@@ -120,7 +91,7 @@ def compute_rsa_scores(
     # Flatten the target lower triangles across all objects into 1D arrays for Pearson correlation
     target_flats = {}
     target_flats_last = {}
-    for feature in ['feat']:
+    for feature in ['feat', 'pos']:
         obj_flats = []
         obj_flats_last = []
         for i in range(num_objects-1):
@@ -132,14 +103,13 @@ def compute_rsa_scores(
     target_flats_last_pos.append(target_rsms_last_pos[0][lower_tri_idx])
     target_flats_last_pos = np.concatenate(target_flats_last_pos)
         
-    rsa_scores_prompt = {'pos': [], 'color': [], 'shape': [], 'feat': []}
-    rsa_scores_last_token = {'pos': [], 'color': [], 'shape': [], 'feat': []}
+    rsa_scores_prompt = {'pos': [], 'feat': []}
+    rsa_scores_last_token = {'pos': [], 'feat': []}
     print(f"Executing 3D RSA Correlation across {num_trials} trials and {num_objects} objects...")
     
     for layer_idx in range(num_layers):
         # 2. Build the Model RSM for this layer
         model_obj_flats = []
-        model_obj_flats_last_pos = []
         
         for i in range(num_objects):
             # Gather the hidden states for object 'i' across all trials
@@ -160,13 +130,9 @@ def compute_rsa_scores(
             np.fill_diagonal(model_rsm_i, 1.0) # Standardize diagonal
             if i < num_objects - 1:
                 model_obj_flats.append(model_rsm_i[lower_tri_idx])  # model_rsm_i[lower_tri_idx]: a flat 1D array
-            else:
-                model_obj_flats_last_pos.append(model_rsm_i[lower_tri_idx])
 
         # Concatenate the model's lower triangles across all objects
         model_flat = np.concatenate(model_obj_flats)
-        model_flat_last_pos = np.concatenate(model_obj_flats_last_pos)
-        print('model_flat.shape : ', model_flat.shape)
 
         model_obj_flats_last_feat = []
         obj_states = []
@@ -184,7 +150,7 @@ def compute_rsa_scores(
         model_flat_last_feat = np.concatenate(model_obj_flats_last_feat)
         
         # 3. Correlate the Model RSM with the Target RSMs
-        for feature in ['feat']:
+        for feature in ['feat', 'pos']:
             target_flat = target_flats[feature]
             print('target,',feature, '.shape : ', target_flat.shape)
             
@@ -194,7 +160,10 @@ def compute_rsa_scores(
             else:
                 correlation_score, _ = pearsonr(model_flat, target_flat)
                 rsa_scores_prompt[feature].append(correlation_score)
-                
+            
+            if feature == 'pos':
+                continue
+
             target_flat_last_feat = target_flats_last[feature]
             print('target,',feature, '.shape : ', target_flat_last_feat.shape)
             
@@ -206,11 +175,11 @@ def compute_rsa_scores(
                 rsa_scores_last_token[feature].append(correlation_score)
                 
         target_flat_last_pos = target_flats_last_pos
-        if np.std(target_flat_last_pos) == 0 or np.std(model_flat_last_pos) == 0:
+        if np.std(target_flat_last_pos) == 0 or np.std(model_flat_last_feat) == 0:
             rsa_scores_last_token['pos'].append(0.0)
         else:
-            correlation_score, _ = pearsonr(model_flat_last_pos, target_flat_last_pos)
+            correlation_score, _ = pearsonr(model_flat_last_feat, target_flat_last_pos)
             rsa_scores_last_token['pos'].append(correlation_score)
-    rsa_scores_prompt['pos'] = rsa_scores_last_token['pos']
+
     print("3D RSA correlation scoring complete.")
     return rsa_scores_prompt, rsa_scores_last_token

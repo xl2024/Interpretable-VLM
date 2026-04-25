@@ -141,7 +141,7 @@ def main():
     # We generate a permutation matrix of shapes and colors to build the correlation variance.
     trials = []
     
-    colors = ["red", "blue", "green"]
+    colors = ["red", "blue"]
     shapes = ["circle", "square"]
     
     objects = []
@@ -151,50 +151,33 @@ def main():
     print("all objects:", objects)
 
     permutations = []
-    # for i in range(4):
-    #     object1 = objects[i]
-    #     for j in range(4):
-    #         if j not in [i]:
-    #             object2 = objects[j]
-    #             for k in range(4):
-    #                 if k not in [i, j]:
-    #                     object3 = objects[k]
-    #                     for z in range(4):
-    #                         if z not in [i, j, k]:
-    #                             permutations.append([object1, object2, object3, objects[z]])
-    for i in range(6):
+    for i in range(4):
         object1 = objects[i]
-        for j in range(6):
+        for j in range(4):
             if j not in [i]:
                 object2 = objects[j]
-                for k in range(6):
+                for k in range(4):
                     if k not in [i, j]:
                         object3 = objects[k]
-                        for z in range(6):
+                        for z in range(4):
                             if z not in [i, j, k]:
-                                object4 = objects[z]
-                                for m in range(6):
-                                    if m not in [i,j,k,z]:
-                                        object5 = objects[m]
-                                        for n in range(6):
-                                            if n not in [i,j,k,m,z]:
-                                                permutations.append([object1, object2, object3, object4, object5, objects[n]])
+                                permutations.append([object1, object2, object3, objects[z]])
 
     # To save memory in local mode, we will slice the first 10 permutations. 
     # Increase this for a smoother correlation curve.
     for p in permutations:
-        o1, o2, o3, o4, o5, o6 = p
+        o1, o2, o3, o4 = p
 
-        shapes = [o1['shape'], o2['shape'], o3['shape'], o4['shape'], o5['shape'], o6['shape']]
-        colors = [o1['color'], o2['color'], o3['color'], o4['color'], o5['color'], o6['color']]
-        coords = [(0,0), (0,1), (0,2), (1,0), (1,1), (1,2)]
+        shapes = [o1['shape'], o2['shape'], o3['shape'], o4['shape']]
+        colors = [o1['color'], o2['color'], o3['color'], o4['color']]
+        coords = [(0,0), (0,1), (1,0), (1,1)]
 
         obj_indices, text_prompt = get_dynamic_token_indices(
             processor, colors=colors, shapes=shapes, coords=coords
         )
 
         img = generate_custom_image(
-            cols=3, 
+            cols=2, 
             rows=2, 
             shapes=shapes,
             colors=colors,

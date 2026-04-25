@@ -57,37 +57,24 @@ def build_target_rsms(metadata_list: List[List[Dict]], trial_object_ids: List[Li
                     target_rsms['pos'][object_id] = 1.0 - (dist_matrix / max_dist)
                 else:
                     target_rsms['pos'][object_id] = np.ones((num_trials, num_trials))
-    
-    for object_id, _ in enumerate(target_rsms['pos']):
+
+    for pos_id, _ in enumerate(target_rsms['pos']):   # #pos_id == #object_id
         # --- Equations (3), (4), and (5): Semantic Features for Object i ---
         for t1 in range(num_trials):
             for t2 in range(num_trials):
-                oid1, oid2 = None, None
-                obj_indices1 = trial_object_ids[t1]
-                for i in range(len(obj_indices1)):
-                    if _resolve_trial_object_index(obj_indices1, i) == object_id:
-                        oid1 = i
-                        break
-                obj_indices2 = trial_object_ids[t2]
-                for i in range(len(obj_indices2)):
-                    if _resolve_trial_object_index(obj_indices2, i) == object_id:
-                        oid2 = i
-                        break
-                if oid1 and oid2:
-                # Eq (3): Color match
-                    color_match = 1.0 if metadata_list[t1][oid1]['color'] == metadata_list[t2][oid2]['color'] else 0.0
-                    target_rsms['color'][object_id, t1, t2] = color_match
-                    
-                    # Eq (4): Shape match
-                    shape_match = 1.0 if metadata_list[t1][oid1]['shape'] == metadata_list[t2][oid2]['shape'] else 0.0
-                    target_rsms['shape'][object_id, t1, t2] = shape_match
-                    
-                    # Eq (5): Feature average
-                    target_rsms['feat'][object_id, t1, t2] = 0.5 * (color_match + shape_match)
+                color_match = 1.0 if metadata_list[t1][pos_id]['color'] == metadata_list[t2][pos_id]['color'] else 0.0
+                target_rsms['color'][pos_id, t1, t2] = color_match
+
+                shape_match = 1.0 if metadata_list[t1][pos_id]['shape'] == metadata_list[t2][pos_id]['shape'] else 0.0
+                target_rsms['shape'][pos_id, t1, t2] = shape_match
+
+                target_rsms['feat'][pos_id, t1, t2] = 0.5 * (color_match + shape_match)
+
     print('target rsms pos: ',target_rsms['pos'].shape)
     print('target rsms feat: ',target_rsms['feat'].shape)
     print('target rsms pos: ', target_rsms['pos'][0])
     print('target rsms feat: ', target_rsms['feat'][0])
+    print('metadata_list: ', metadata_list)
     return target_rsms
 
 def compute_rsa_scores(
@@ -111,31 +98,35 @@ def compute_rsa_scores(
     
     # Flatten the target lower triangles across all objects into 1D arrays for Pearson correlation
     target_flats = {}
+    target_flats_last = {}
     for feature in ['pos', 'color', 'shape', 'feat']:
         obj_flats = []
-        for i in range(num_objects):
+        obj_flats_last = []
+        for i in range(num_objects-1):
             obj_flats.append(target_rsms[feature][i][lower_tri_idx])
+        obj_flats_last.append(target_rsms[feature][-1][lower_tri_idx])
         target_flats[feature] = np.concatenate(obj_flats)
+        target_flats_last[feature] = np.concatenate(obj_flats_last)
         
-    rsa_scores = {'pos': [], 'color': [], 'shape': [], 'feat': []}
+    rsa_scores_prompt = {'pos': [], 'color': [], 'shape': [], 'feat': []}
+    rsa_scores_last_token = {'pos': [], 'color': [], 'shape': [], 'feat': []}
     print(f"Executing 3D RSA Correlation across {num_trials} trials and {num_objects} objects...")
     
     for layer_idx in range(num_layers):
         # 2. Build the Model RSM for this layer
         model_obj_flats = []
+        model_obj_flats_last_pos = []
         
         for i in range(num_objects):
             # Gather the hidden states for object 'i' across all trials
             obj_states = []
             for t in range(num_trials):
-                obj_indices = trial_object_ids[t]
-                object_id = _resolve_trial_object_index(obj_indices, i)
-
-                # Extract state for object_id at the current layer
-                # Ensure the tensor is squeezed to a 1D vector of shape [hidden_dim]
-                if object_id in hidden_states_by_trial[t][layer_idx]:
-                    state = hidden_states_by_trial[t][layer_idx][object_id].detach().cpu().float().squeeze().numpy()
-                    obj_states.append(state)
+                obj_indices = token_object_ids[t]
+                for j in range(len(obj_indices)):
+                    if i == obj_indices[j]:
+                        state = hidden_states_by_trial[t][layer_idx][j].detach().cpu().float().squeeze().numpy()
+                        obj_states.append(state)
+                        break
                 
             obj_matrix = np.stack(obj_states)
             print('obj_matrix.shape :',obj_matrix.shape)
@@ -143,23 +134,52 @@ def compute_rsa_scores(
             cosine_distances = pdist(obj_matrix, metric='cosine')
             model_rsm_i = 1.0 - squareform(cosine_distances) / 2 # Convert distance to similarity
             np.fill_diagonal(model_rsm_i, 1.0) # Standardize diagonal
-            model_obj_flats.append(model_rsm_i[lower_tri_idx])  # model_rsm_i[lower_tri_idx]: a flat 1D array
-            
+            if i < num_objects - 1:
+                model_obj_flats.append(model_rsm_i[lower_tri_idx])  # model_rsm_i[lower_tri_idx]: a flat 1D array
+            else:
+                model_obj_flats_last_pos.append(model_rsm_i[lower_tri_idx])
+
         # Concatenate the model's lower triangles across all objects
         model_flat = np.concatenate(model_obj_flats)
+        model_flat_last_pos = np.concatenate(model_obj_flats_last_pos)
         print('model_flat.shape : ', model_flat.shape)
+
+        model_obj_flats_last_feat = []
+        obj_states = []
+        for t in range(num_trials):
+            state = hidden_states_by_trial[t][layer_idx][-1].detach().cpu().float().squeeze().numpy()
+            obj_states.append(state)
+            
+        obj_matrix = np.stack(obj_states)
+        print('obj_matrix.shape/last feat :',obj_matrix.shape)
+        
+        cosine_distances = pdist(obj_matrix, metric='cosine')
+        model_rsm_i = 1.0 - squareform(cosine_distances) / 2 # Convert distance to similarity
+        np.fill_diagonal(model_rsm_i, 1.0) # Standardize diagonal
+        model_obj_flats_last_feat.append(model_rsm_i[lower_tri_idx])  # model_rsm_i[lower_tri_idx]: a flat 1D array
+        model_flat_last_feat = np.concatenate(model_obj_flats_last_feat)
         
         # 3. Correlate the Model RSM with the Target RSMs
-        for feature in ['pos', 'color', 'shape', 'feat']:
+        for feature in ['pos', 'feat']:
             target_flat = target_flats[feature]
             print('target,',feature, '.shape : ', target_flat.shape)
             
             # If a matrix has no variance, Pearson correlation is mathematically undefined
             if np.std(target_flat) == 0 or np.std(model_flat) == 0:
-                rsa_scores[feature].append(0.0)
+                rsa_scores_prompt[feature].append(0.0)
             else:
                 correlation_score, _ = pearsonr(model_flat, target_flat)
-                rsa_scores[feature].append(correlation_score)
+                rsa_scores_prompt[feature].append(correlation_score)
+                
+            target_flat_last_feat = target_flats_last[feature]
+            print('target,',feature, '.shape : ', target_flat_last_feat.shape)
+            
+            # If a matrix has no variance, Pearson correlation is mathematically undefined
+            if np.std(target_flat_last_feat) == 0 or np.std(model_flat_last_feat) == 0:
+                rsa_scores_last_token[feature].append(0.0)
+            else:
+                correlation_score, _ = pearsonr(model_flat_last_feat, target_flat_last_feat)
+                rsa_scores_last_token[feature].append(correlation_score)
                 
     print("3D RSA correlation scoring complete.")
-    return rsa_scores
+    return rsa_scores_prompt, rsa_scores_last_token

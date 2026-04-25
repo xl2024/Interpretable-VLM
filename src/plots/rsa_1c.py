@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import yaml
 import itertools
 
-from src.math_core.rsa import compute_rsa_scores
+from src.math_core.rsa import compute_rsa_scores, _build_object_ids, build_target_rsms
 from src.mech_interp.tracer import rsa_tracer
 from src.model.loader import load_vlm
 from src.data.synthetic_generator import generate_custom_image
@@ -50,14 +50,13 @@ def run_rsa_pipeline(
     num_layers: int,
     trials: List[Dict[str, Any]],
     metadata_list: List[List[Dict[str, Any]]],
-    metadata_list_last: List[List[Dict[str, Any]]],
     save_path: str = "outputs/rsa_figure_1c.png"
 ) -> None:
     """
     computes the 3D correlation scores, and generates the paper's line graph.
     """
     # 1. Initialize storage for both token types
-    hidden_states_prompt_by_trial, hidden_states_last_by_trial = rsa_tracer(
+    hidden_states_by_trial = rsa_tracer(
         model,
         config,
         num_layers,
@@ -67,10 +66,7 @@ def run_rsa_pipeline(
 
     # 2. Math Execution
     print("Calculating RSA for Prompt Tokens...")
-    rsa_scores_prompt = compute_rsa_scores(hidden_states_prompt_by_trial, metadata_list, num_layers)
-    
-    print("Calculating RSA for the Last Token...")
-    rsa_scores_last_token = compute_rsa_scores(hidden_states_last_by_trial, metadata_list_last, num_layers)
+    rsa_scores_prompt, rsa_scores_last_token = compute_rsa_scores(hidden_states_by_trial, metadata_list, num_layers)
     
     # 3. Visualization
     plot_rsa_figure_1c(
@@ -84,7 +80,7 @@ def load_config(config_path: str = "configs/local.yaml"):
     with open(config_path, "r") as f:
         return yaml.safe_load(f)
     
-def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[str], coords: List[tuple[int, int]], last_object: Dict[str, str]):
+def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[str], coords: List[tuple[int, int]]):
     """
     Dynamically calculates the exact sequence indices of the target objects
     by measuring token lengths, bypassing sub-word tokenization quirks.
@@ -92,13 +88,14 @@ def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[st
     indices = []
     prefix = f"<image>\nIn this image, there is"
     tokens_prefix = processor.tokenizer.encode(prefix)
-    for i in range(len(coords)):
-        if not (colors[i] == last_object['color'] and shapes[i] == last_object['shape']):
-            prefix = f"{prefix} a {colors[i]} {shapes[i]},"
-            tokens_prefix = processor.tokenizer.encode(prefix)
-            indices.append({'color': colors[i], 'shape': shapes[i], 'index': len(tokens_prefix) - 1})
+    for i in range(len(coords)-1):
+        prefix = f"{prefix} a {colors[i]} {shapes[i]},"
+        tokens_prefix = processor.tokenizer.encode(prefix)
+        indices.append({'color': colors[i], 'shape': shapes[i], 'index': len(tokens_prefix) - 1})
         
-    prefix = f"{prefix} and {last_object['color']}"
+    prefix = f"{prefix} and a {colors[-1]}"
+    tokens_prefix = processor.tokenizer.encode(prefix)
+    indices.append({'color': colors[-1], 'shape': shapes[-1], 'index': len(tokens_prefix) - 1})
 
     return indices, prefix
 
@@ -143,7 +140,6 @@ def main():
     # We generate a permutation matrix of shapes and colors to build the correlation variance.
     trials = []
     metadata_list = []
-    metadata_list_last = []
     
     colors = ["red", "blue"]
     shapes = ["circle", "square"]
@@ -152,7 +148,7 @@ def main():
     for color in colors:
         for shape in shapes:
             objects.append({'color': color, 'shape': shape})
-    last_object = objects[-1]
+
     permutations = []
     for i in range(4):
         object1 = objects[i]
@@ -176,7 +172,7 @@ def main():
         coords = [(0,0), (0,1), (1,0), (1,1)]
 
         obj_indices, text_prompt = get_dynamic_token_indices(
-            processor, colors=colors, shapes=shapes, coords=coords, last_object = last_object
+            processor, colors=colors, shapes=shapes, coords=coords
         )
 
         img = generate_custom_image(
@@ -192,19 +188,18 @@ def main():
         # inputs = {k: v.to('cuda') if hasattr(v, 'to') else v for k, v in inputs.items()}
         
         trial_meta = []
-        trial_meta_last = []
         for i in range(len(coords)):
-            if not (colors[i] == last_object['color'] and shapes[i] == last_object['shape']):
-                trial_meta.append({"coord": coords[i], "color": colors[i], "shape": shapes[i]})
-            else:
-                trial_meta_last.append({"coord": coords[i], "color": colors[i], "shape": shapes[i]})
+            trial_meta.append({"coord": coords[i], "color": colors[i], "shape": shapes[i]})
         metadata_list.append(trial_meta)
-        metadata_list_last.append(trial_meta_last)
         
         trials.append({
             'inputs': inputs,
             'object_token_indices': obj_indices
         })
+
+    print('=============meta_list==================')
+    trial_object_ids, token_object_ids = _build_object_ids(metadata_list)
+    target_rsms = build_target_rsms(metadata_list, trial_object_ids)
 
     # 3. Execute Pipeline
     print(f"\nExecuting 3D RSA across {len(trials)} trials and {num_layers} layers...")
@@ -214,7 +209,6 @@ def main():
         num_layers=num_layers,
         trials=trials,
         metadata_list=metadata_list,
-        metadata_list_last = metadata_list_last,
         save_path="outputs/rsa_figure_1c.png"
     )
 

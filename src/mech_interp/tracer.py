@@ -28,7 +28,7 @@ def _build_object_ids(metadata_list: List[List[Dict[str, Any]]], trials: List[Di
                 key = (trial['object_token_indices'][i]['color'], trial['object_token_indices'][i]['shape'])
                 ids_for_token.append((object_id_by_feature[key], trial['object_token_indices'][i]['index']))
             token_object_ids.append(ids_for_token)
-
+    print('*** object_id_by_feature *** \n', object_id_by_feature)
     return trial_object_ids, token_object_ids
 
 
@@ -154,8 +154,7 @@ def rsa_tracer(
     extracts hidden states via nnsight.
     """
     # 1. Initialize storage for both token types
-    hidden_states_prompt_by_trial = []
-    hidden_states_last_by_trial = []
+    hidden_states_by_trial = []
     trial_object_ids, token_object_ids = _build_object_ids(metadata_list, trials)
     
     print(f"Extracting hidden states across {len(trials)} trials...")
@@ -167,7 +166,6 @@ def rsa_tracer(
             object_ids = trial_object_ids[trial_idx]
             
             prompt_states = {}
-            last_states = {}
             
             with model.trace() as tracer:
                 with tracer.invoke(**inputs):
@@ -179,20 +177,13 @@ def rsa_tracer(
                         hs = layer_module.output[0]
 
                         prompt_states[layer_idx] = {}
-                        last_states[layer_idx] = {}
 
-                        for object_position, object_id in enumerate(object_ids):
-                            # Grab prompt token for this object id
-                            for token_object, obj_index in obj_indices:
-                                if object_id == token_object:
-                                    prompt_states[layer_idx][object_id] = hs[obj_index, :].save()
-
-                            # Grab the last token for this object id
-                            last_states[layer_idx][0] = hs[-1, :].save()
+                        for i in range(len(obj_indices)):
+                            object_id, token_index = obj_indices[i]
+                            prompt_states[layer_idx][i] = hs[token_index, :].save()
                     
             # Append the resolved dictionaries to main lists
-            hidden_states_prompt_by_trial.append(prompt_states)
-            hidden_states_last_by_trial.append(last_states)
+            hidden_states_by_trial.append(prompt_states)
 
             # Force clear the memory before the next trial begins
             gc.collect()
@@ -200,5 +191,5 @@ def rsa_tracer(
                 torch.cuda.empty_cache()
         
     print("Extraction complete!")
-    return hidden_states_prompt_by_trial, hidden_states_last_by_trial
+    return hidden_states_by_trial
     

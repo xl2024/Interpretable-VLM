@@ -187,7 +187,7 @@ def main():
 
         shapes = [o1['shape'], o2['shape'], o3['shape'], o4['shape'], o5['shape'], o6['shape']]
         colors = [o1['color'], o2['color'], o3['color'], o4['color'], o5['color'], o6['color']]
-        coords = [(0,0), (0,1), (0,2) (1,0), (1,1), (1,2)]
+        coords = [(0,0), (0,1), (0,2), (1,0), (1,1), (1,2)]
 
         obj_indices, text_prompt = get_dynamic_token_indices(
             processor, colors=colors, shapes=shapes, coords=coords

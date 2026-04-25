@@ -61,7 +61,8 @@ def build_target_rsms(trials: List[Dict[str, Any]], trial_object_ids: List[List[
                 shape_match = 1.0 if trials[t1]['trial'][pos_id]['shape'] == trials[t2]['trial'][pos_id]['shape'] else 0.0
                 target_rsms['shape'][pos_id, t1, t2] = shape_match
 
-                target_rsms['feat'][pos_id, t1, t2] = 0.5 * (color_match + shape_match)
+                # target_rsms['feat'][pos_id, t1, t2] = 0.5 * (color_match + shape_match)
+                target_rsms['feat'][pos_id, t1, t2] = color_match
 
     print('target rsms pos: ',target_rsms['pos'].shape)
     print('target rsms feat: ',target_rsms['feat'].shape)
@@ -155,7 +156,7 @@ def compute_rsa_scores(
         model_flat_last_feat = np.concatenate(model_obj_flats_last_feat)
         
         # 3. Correlate the Model RSM with the Target RSMs
-        for feature in ['feat']:  # , 'pos'
+        for feature in ['feat', 'pos']:
             target_flat = target_flats[feature]
             print('target,',feature, '.shape : ', target_flat.shape)
             
@@ -188,10 +189,10 @@ def compute_rsa_scores(
 
         target_flats_prompt_pos = target_flats_prompt_pos
         if np.std(target_flats_prompt_pos) == 0 or np.std(model_flat_last_feat) == 0:
-            rsa_scores_prompt['pos'].append(0.0)
+            rsa_scores_prompt['pos'] = [0.0]
         else:
             correlation_score, _ = pearsonr(model_flat_last_feat, target_flats_prompt_pos)
-            rsa_scores_prompt['pos'].append(correlation_score)
+            rsa_scores_prompt['pos'] = [correlation_score]
 
     print("3D RSA correlation scoring complete.")
     return rsa_scores_prompt, rsa_scores_last_token

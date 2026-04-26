@@ -174,7 +174,7 @@ def rsa_tracer(
                         layer_module = _resolve_layer_path(model, layer_path)
                         
                         # The hidden state tensor for this layer
-                        hs = layer_module.output[0]
+                        hs = layer_module.post_attention_layernorm.input[0][0]
 
                         prompt_states[layer_idx] = {}
 

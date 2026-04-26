@@ -38,7 +38,11 @@ def build_target_rsms(trials: List[Dict[str, Any]], trial_object_ids: List[List[
 
     coords = []
     for mid, tr in enumerate(trials):
-        coords.append(tr['trial'][-1]['coords'])
+        # coords.append(tr['trial'][-1]['coords'])
+        for i in range(4):
+            if tr['trial'][i]['color'] == 'red' and tr['trial'][i]['shape'] == 'circle':
+                coords.append(tr['trial'][i]['coords'])
+                break
 
     coords_i = np.array(coords)
     distances = pdist(coords_i, metric='euclidean')

@@ -4,7 +4,7 @@
 # ==============================================================================
 
 pipeline:
-  tier: "local"              # Instructs src/utils/hardware.py to use CPU/4-bit
+  tier: "cloud"              # Instructs src/utils/hardware.py to use CPU/4-bit
   debug_mode: true           # Triggers a forced batch size limit (e.g., 2 images)
 
 model:

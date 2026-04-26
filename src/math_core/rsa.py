@@ -39,12 +39,10 @@ def build_target_rsms(trials: List[Dict[str, Any]], trial_object_ids: List[List[
     coords = []
     for mid, tr in enumerate(trials):
         coords.append(tr['trial'][-1]['coords'])
-    print("================\n", coords[:3])
 
     coords_i = np.array(coords)
     distances = pdist(coords_i, metric='euclidean')
     dist_matrix = squareform(distances)
-    print("================\n", dist_matrix[:3, :3])
     
     max_dist = np.max(dist_matrix)
     if max_dist > 0:
@@ -126,7 +124,6 @@ def compute_rsa_scores(
                         break
                 
             obj_matrix = np.stack(obj_states)
-            print('obj_matrix.shape :',obj_matrix.shape)
             
             cosine_distances = pdist(obj_matrix, metric='cosine')
             model_rsm_i = 1.0 - squareform(cosine_distances) / 2 # Convert distance to similarity
@@ -144,7 +141,6 @@ def compute_rsa_scores(
             obj_states.append(state)
             
         obj_matrix = np.stack(obj_states)
-        print('obj_matrix.shape/last feat :',obj_matrix.shape)
         
         cosine_distances = pdist(obj_matrix, metric='cosine')
         model_rsm_i = 1.0 - squareform(cosine_distances) / 2 # Convert distance to similarity
@@ -155,7 +151,6 @@ def compute_rsa_scores(
         # 3. Correlate the Model RSM with the Target RSMs
         for feature in ['feat']:   # , 'pos'
             target_flat = target_flats[feature]
-            print('target,',feature, '.shape : ', target_flat.shape)
             
             # If a matrix has no variance, Pearson correlation is mathematically undefined
             if np.std(target_flat) == 0 or np.std(model_flat) == 0:
@@ -168,7 +163,6 @@ def compute_rsa_scores(
                 continue
 
             target_flat_last_feat = target_flats_last[feature]
-            print('target,',feature, '.shape : ', target_flat_last_feat.shape)
             
             # If a matrix has no variance, Pearson correlation is mathematically undefined
             if np.std(target_flat_last_feat) == 0 or np.std(model_flat_last_feat) == 0:

@@ -176,11 +176,11 @@ def main():
 
         shapes = [o1['shape'], o2['shape'], o3['shape'], o4['shape']]
         colors = [o1['color'], o2['color'], o3['color'], o4['color']]
-        coords = [(0,0), (0,1), (1,0), (1,1)]
+        coords = [(0,0), (0,2), (2,0), (2,2)]
 
         img = generate_custom_image(
-            cols=2, 
-            rows=2, 
+            cols=3, 
+            rows=3, 
             shapes=shapes,
             colors=colors,
             coords=coords

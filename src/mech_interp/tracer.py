@@ -81,6 +81,49 @@ def _resolve_layer_path(model: LanguageModel, path_string: str):
             
     return current_module
 
+def _resolve_text_model_dims(model: Any) -> Tuple[int, int]:
+    """
+    Resolve (hidden_size, num_attention_heads) across wrapped/unwrapped VLM models.
+    Works when `model.config` is missing/None (common with wrappers).
+    """
+    candidate_configs: List[Any] = []
+
+    # Direct config on the visible object
+    candidate_configs.append(getattr(model, "config", None))
+
+    # Common nnsight/HF wrapper patterns
+    local_model = getattr(model, "local_model", None)
+    if local_model is not None:
+        candidate_configs.append(getattr(local_model, "config", None))
+
+    nested_model = getattr(model, "model", None)
+    if nested_model is not None:
+        candidate_configs.append(getattr(nested_model, "config", None))
+        language_model = getattr(nested_model, "language_model", None)
+        if language_model is not None:
+            candidate_configs.append(getattr(language_model, "config", None))
+
+    # Some multimodal models expose text dims under text_config
+    expanded_configs: List[Any] = []
+    for cfg in candidate_configs:
+        if cfg is None:
+            continue
+        expanded_configs.append(cfg)
+        text_cfg = getattr(cfg, "text_config", None)
+        if text_cfg is not None:
+            expanded_configs.append(text_cfg)
+
+    for cfg in expanded_configs:
+        hidden_size = getattr(cfg, "hidden_size", None)
+        num_heads = getattr(cfg, "num_attention_heads", None)
+        if isinstance(hidden_size, int) and isinstance(num_heads, int) and num_heads > 0:
+            return hidden_size, num_heads
+
+    raise AttributeError(
+        "Could not resolve hidden_size/num_attention_heads from model object. "
+        "Expected fields on config or text_config."
+    )
+
 def extract_hidden_states(
     model: LanguageModel, 
     processor: Any, 
@@ -156,7 +199,11 @@ def rsa_tracer(
     # 1. Initialize storage for both token types
     hidden_states_by_trial = []
     trial_object_ids, token_object_ids = _build_object_ids(trials)
-    
+
+    hidden_size, num_heads = _resolve_text_model_dims(model)
+    head_dim = hidden_size // num_heads
+    print(f'hidden_size: {hidden_size}, num_heads: {num_heads}, head_dim: {head_dim}')
+
     print(f"Extracting hidden states across {len(trials)} trials...")
     with torch.no_grad():
         for trial_idx, trial_data in enumerate(trials):

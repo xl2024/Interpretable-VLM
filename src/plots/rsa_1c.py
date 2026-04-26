@@ -2,7 +2,7 @@ from typing import Dict, List, Any
 import matplotlib.pyplot as plt
 import yaml
 import numpy as np
-import itertools
+from PIL import Image
 
 from src.math_core.rsa import compute_rsa_scores, _build_object_ids, build_target_rsms
 from src.mech_interp.tracer import rsa_tracer
@@ -80,24 +80,30 @@ def load_config(config_path: str = "configs/local.yaml"):
     with open(config_path, "r") as f:
         return yaml.safe_load(f)
     
-def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[str], coords: List[tuple[int, int]]):
+def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[str], coords: List[tuple[int, int]], image: Image.Image):
     """
     Dynamically calculates the exact sequence indices of the target objects
     by measuring token lengths, bypassing sub-word tokenization quirks.
     """
+    def get_token_index(prefix):
+        inputs = processor(text=prefix, images=image, return_tensors="pt")
+        input_ids = inputs["input_ids"][0].tolist()
+        index = len(input_ids)-1
+        decoded = processor.tokenizer.decode([input_ids[index]])
+        print("Token index:", index, decoded)
+        return index
+    
     indices = []
-    prefix = f"<image>\nIn this image, there is"
-    tokens_prefix = processor.tokenizer.encode(prefix)
+    prefix = "<image>\nIn this image, there is"
     shuffle = np.random.permutation(len(coords))
     for i in range(len(coords)-1):
         prefix = f"{prefix} a {colors[shuffle[i]]} {shapes[shuffle[i]]},"
-        tokens_prefix = processor.tokenizer.encode(prefix)
-        indices.append({'coords': coords[shuffle[i]], 'color': colors[shuffle[i]], 'shape': shapes[shuffle[i]], 'index': len(tokens_prefix) - 1})
+        token_index = get_token_index(prefix)
+        indices.append({'coords': coords[shuffle[i]], 'color': colors[shuffle[i]], 'shape': shapes[shuffle[i]], 'index': token_index})
         
     prefix = f"{prefix} and a {colors[shuffle[-1]]}"
-    tokens_prefix = processor.tokenizer.encode(prefix)
-    indices.append({'coords': coords[shuffle[-1]], 'color': colors[shuffle[-1]], 'shape': shapes[shuffle[-1]], 'index': len(tokens_prefix) - 1})
-
+    token_index = get_token_index(prefix)
+    indices.append({'coords': coords[shuffle[-1]], 'color': colors[shuffle[-1]], 'shape': shapes[shuffle[-1]], 'index': token_index})
     return indices, prefix
 
 def get_num_hidden_layers(model: Any) -> int:
@@ -172,10 +178,6 @@ def main():
         colors = [o1['color'], o2['color'], o3['color'], o4['color']]
         coords = [(0,0), (0,1), (1,0), (1,1)]
 
-        obj_indices, text_prompt = get_dynamic_token_indices(
-            processor, colors=colors, shapes=shapes, coords=coords
-        )
-
         img = generate_custom_image(
             cols=2, 
             rows=2, 
@@ -184,6 +186,10 @@ def main():
             coords=coords
         )
         
+        obj_indices, text_prompt = get_dynamic_token_indices(
+            processor, colors=colors, shapes=shapes, coords=coords, image=img
+        )
+
         # Process the inputs into PyTorch tensors
         inputs = processor(text=text_prompt, images=img, return_tensors="pt")
         # inputs = {k: v.to('cuda') if hasattr(v, 'to') else v for k, v in inputs.items()}

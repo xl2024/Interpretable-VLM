@@ -38,15 +38,13 @@ def build_target_rsms(trials: List[Dict[str, Any]], trial_object_ids: List[List[
 
     coords = []
     for mid, tr in enumerate(trials):
-        # coords.append(tr['trial'][-1]['coords'])
-        for i in range(4):
-            if tr['trial'][i]['color'] == 'red' and tr['trial'][i]['shape'] == 'circle':
-                coords.append(tr['trial'][i]['coords'])
-                break
+        coords.append(tr['trial'][-1]['coords'])
+    print("================\n", coords[:3])
 
     coords_i = np.array(coords)
     distances = pdist(coords_i, metric='euclidean')
     dist_matrix = squareform(distances)
+    print("================\n", dist_matrix[:3, :3])
     
     max_dist = np.max(dist_matrix)
     if max_dist > 0:
@@ -67,10 +65,6 @@ def build_target_rsms(trials: List[Dict[str, Any]], trial_object_ids: List[List[
 
                 target_rsms['feat'][pos_id, t1, t2] = 0.5 * (color_match + shape_match)
 
-    print('target rsms pos: ',target_rsms['pos'].shape)
-    print('target rsms feat: ',target_rsms['feat'].shape)
-    print('target rsms pos: ', target_rsms['pos'][0])
-    print('target rsms feat: ', target_rsms['feat'][0])
     return target_rsms, target_rsms_last_pos
 
 def compute_rsa_scores(

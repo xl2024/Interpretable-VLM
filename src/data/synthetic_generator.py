@@ -22,7 +22,7 @@ def generate_custom_image(
     # 2. Calculate dynamic shape size based on the grid
     cell_width = width / cols
     cell_height = height / rows
-    box_size = min(cell_width, cell_height) * 0.4
+    box_size = min(cell_width, cell_height) * 0.6
     half_size = int(box_size / 2)
 
     # 3. Draw each object

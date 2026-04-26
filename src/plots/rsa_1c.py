@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import yaml
 import numpy as np
 from PIL import Image
+import random
 
 from src.math_core.rsa import compute_rsa_scores, _build_object_ids, build_target_rsms
 from src.mech_interp.tracer import rsa_tracer
@@ -176,11 +177,14 @@ def main():
 
         shapes = [o1['shape'], o2['shape'], o3['shape'], o4['shape']]
         colors = [o1['color'], o2['color'], o3['color'], o4['color']]
-        coords = [(0,0), (0,3), (3,0), (3,3)]
+        # coords = [(0,0), (0,2), (2,0), (2,2)]
+        coords = []
+        for i in range(4):
+            coords.append((random.randint(0, 2), random.randint(0, 2)))
 
         img = generate_custom_image(
-            cols=4, 
-            rows=4, 
+            cols=3, 
+            rows=3, 
             shapes=shapes,
             colors=colors,
             coords=coords

@@ -95,7 +95,8 @@ def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[st
     
     indices = []
     prefix = "<image>\nIn this image, there is"
-    shuffle = np.random.permutation(len(coords))
+    # shuffle = np.random.permutation(len(coords))
+    shuffle = np.arange(len(coords))
     for i in range(len(coords)-1):
         prefix = f"{prefix} a {colors[shuffle[i]]} {shapes[shuffle[i]]},"
         token_index = get_token_index(prefix)

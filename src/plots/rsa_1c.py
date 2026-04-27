@@ -96,21 +96,15 @@ def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[st
     indices = []
     prefix = "<image>\nIn this image, there is"
     shuffle = np.random.permutation(len(coords))
-    last_object = {'color': 'red', 'shape': 'circle'}
-    # for i in range(len(coords)-1):
-    for i in range(len(coords)):
-        if colors[shuffle[i]] == last_object['color'] and shapes[shuffle[i]] == last_object['shape']:
-            last_object['coords'] = coords[shuffle[i]]
-            continue
+    # last_object = {'color': 'red', 'shape': 'circle'}
+    for i in range(len(coords)-1):
         prefix = f"{prefix} a {colors[shuffle[i]]} {shapes[shuffle[i]]},"
         token_index = get_token_index(prefix)
         indices.append({'coords': coords[shuffle[i]], 'color': colors[shuffle[i]], 'shape': shapes[shuffle[i]], 'index': token_index})
         
-    # prefix = f"{prefix} and a {colors[shuffle[-1]]}"
-    prefix = f"{prefix} and a {last_object['color']}"
+    prefix = f"{prefix} and a {colors[shuffle[-1]]}"
     token_index = get_token_index(prefix)
-    # indices.append({'coords': coords[shuffle[-1]], 'color': colors[shuffle[-1]], 'shape': shapes[shuffle[-1]], 'index': token_index})
-    indices.append({'coords': last_object['coords'], 'color': last_object['color'], 'shape': last_object['shape'], 'index': token_index})
+    indices.append({'coords': coords[shuffle[-1]], 'color': colors[shuffle[-1]], 'shape': shapes[shuffle[-1]], 'index': token_index})
     return indices, prefix
 
 def get_num_hidden_layers(model: Any) -> int:

@@ -166,8 +166,7 @@ def compute_rsa_scores(
             
             # If a matrix has no variance, Pearson correlation is mathematically undefined
             if np.std(target_flat_last_feat) == 0 or np.std(model_flat_last_feat) == 0:
-                # rsa_scores_last_token[feature].append(0.0)
-                rsa_scores_last_token[feature].append(np.std(model_flat_last_feat))
+                rsa_scores_last_token[feature].append(0.0)
             else:
                 correlation_score, _ = pearsonr(model_flat_last_feat, target_flat_last_feat)
                 rsa_scores_last_token[feature].append(correlation_score)

@@ -154,7 +154,7 @@ def extract_hidden_states(
         return_tensors="pt"   # lists -> PyTorch Tensors
     )  # .to(model.device) # Move raw inputs to the active hardware device
 
-    inputs = {k: v.to('cuda') if hasattr(v, 'to') else v for k, v in inputs.items()}
+    # inputs = {k: v.to('cuda') if hasattr(v, 'to') else v for k, v in inputs.items()}
     
     trace_layers: List[int] = config['mechanistic_interp']['trace_layers']
     layer_template: str = config['model']['layer_path_template']

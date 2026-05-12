@@ -4,7 +4,7 @@ from scipy.spatial.distance import pdist, squareform
 from scipy.stats import pearsonr
 from typing import Dict, List, Any
 
-from src.mech_interp.tracer import _build_object_ids, _resolve_trial_object_index, _resolve_token_object_index
+from src.utils.tools import _build_object_ids, _resolve_trial_object_index, _resolve_token_object_index
 
 def build_target_rsms(trials: List[Dict[str, Any]], trial_object_ids: List[List[int]]) -> Dict[str, np.ndarray]:
     """

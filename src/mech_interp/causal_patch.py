@@ -1,7 +1,7 @@
 import torch
 from nnsight import LanguageModel
 from typing import Dict, Any
-from src.mech_interp.tracer import _resolve_layer_path
+from src.utils.tools import _resolve_layer_path
 
 def calculate_shift_vector(
     source_coord: torch.Tensor, 

@@ -4,7 +4,8 @@ import yaml
 import numpy as np
 from PIL import Image
 
-from src.math_core.rsa import compute_rsa_scores, _build_object_ids, build_target_rsms
+from src.utils.tools import _build_object_ids
+from src.math_core.rsa import compute_rsa_scores, build_target_rsms
 from src.mech_interp.tracer import rsa_tracer
 from src.model.loader import load_vlm
 from src.data.synthetic_generator import generate_custom_image
@@ -157,19 +158,18 @@ def main():
             objects.append({'color': color, 'shape': shape})
     print("all objects:", objects)
 
-    permutations = []
-    for i in range(4):
-        object1 = objects[i]
-        for j in range(4):
-            if j not in [i]:
-                object2 = objects[j]
-                for k in range(4):
-                    if k not in [i, j]:
-                        object3 = objects[k]
-                        for z in range(4):
-                            if z not in [i, j, k]:
-                                permutations.append([object1, object2, object3, objects[z]])
-
+    def get_permutations(objects):
+        if len(objects) == 1:
+            return [objects]
+        per_list = []
+        for i in range(len(objects)):
+            sub_list = objects[0:i] + objects[i+1:]
+            for item in get_permutations(sub_list):
+                item.append(objects[i])
+                per_list.append(item)
+        return per_list
+    
+    permutations = get_permutations(objects)
     # To save memory in local mode, we will slice the first 10 permutations. 
     # Increase this for a smoother correlation curve.
     for p in permutations:

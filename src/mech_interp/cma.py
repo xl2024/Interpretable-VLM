@@ -54,6 +54,7 @@ def cma_headwise(
         gc_collect()
 
     # Calculate Baseline Clean Term: M(c1)[a1*] - M(c1)[a1]
+    print('clean_logits', clean_logits)
     base_a1_logit = clean_logits[0, :, a1_id].mean().item()
     base_a1_star_logit = clean_logits[0, :, a1_star_id].mean().item()
     base_term = base_a1_star_logit - base_a1_logit

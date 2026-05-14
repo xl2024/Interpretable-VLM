@@ -152,8 +152,8 @@ def plot_causal_mediation(
     ax.set_facecolor('black')
     ax.grid(False)
 
-    for l in num_layers:
-        for h in num_heads:
+    for l in range(num_layers):
+        for h in range(num_heads):
             color = (scores_red[l,h], scores_green[l,h], scores_blue[l,h])
             rect = Rectangle((h - 0.5, l - 0.5), 1, 1, 
                              facecolor=color, edgecolor='none')

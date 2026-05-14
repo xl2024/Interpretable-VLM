@@ -45,12 +45,11 @@ def cma_headwise(
         gc_collect()
 
     # 4. Trace Baseline Clean (c1) Execution
-    clean_logits = None
     with torch.no_grad():
         with model.trace() as tracer:
             with tracer.invoke(**inputs_c1):
                 # Safely slice 3D logit tensor preserving batch dim
-                clean_logits = model.lm_head.output[:, token_pos[0]:token_pos[1], :].save().cpu()
+                clean_logits = model.lm_head.output[:, token_pos[0]:token_pos[1], :]
 
     # Calculate Baseline Clean Term: M(c1)[a1*] - M(c1)[a1]
     base_a1_logit = clean_logits[0, :, a1_id].mean().item()

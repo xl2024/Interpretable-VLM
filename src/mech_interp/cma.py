@@ -44,42 +44,12 @@ def cma_headwise(
         
         gc_collect()
 
-    def _log_trace_context(tag: str, exc: Exception | None = None) -> None:
-        print(f"[CMA] {tag} trace failed on device={model.device}")
-        if exc is not None:
-            print(f"[CMA] Exception: {type(exc).__name__}: {exc}")
-        input_shapes = {
-            k: tuple(v.shape)
-            for k, v in inputs_c1.items()
-            if torch.is_tensor(v)
-        }
-        print(f"[CMA] inputs_c1 tensor shapes: {input_shapes}")
-        print(f"[CMA] token_pos={token_pos}, a1_id={a1_id}, a1_star_id={a1_star_id}")
-        if torch.cuda.is_available():
-            try:
-                allocated = torch.cuda.memory_allocated()
-                reserved = torch.cuda.memory_reserved()
-                print(f"[CMA] cuda mem allocated={allocated} reserved={reserved}")
-            except Exception as mem_exc:
-                print(f"[CMA] cuda mem query failed: {mem_exc}")
-
     # 4. Trace Baseline Clean (c1) Execution
-    clean_logits = None
-    try:
-        with torch.no_grad():
-            with model.trace() as tracer:
-                with tracer.invoke(**inputs_c1):
-                    # Safely slice 3D logit tensor preserving batch dim
-                    clean_logits = model.lm_head.output[:, token_pos[0]:token_pos[1], :].save().cpu()
-
-            gc_collect()
-    except Exception as exc:
-        _log_trace_context("baseline clean", exc)
-        raise
-
-    if clean_logits is None:
-        _log_trace_context("baseline clean")
-        return np.full((num_layers, num_heads), np.nan)
+    with torch.no_grad():
+        with model.trace() as tracer:
+            with tracer.invoke(**inputs_c1):
+                # Safely slice 3D logit tensor preserving batch dim
+                clean_logits = model.lm_head.output[:, token_pos[0]:token_pos[1], :]
 
     # Calculate Baseline Clean Term: M(c1)[a1*] - M(c1)[a1]
     base_a1_logit = clean_logits[0, :, a1_id].mean().item()
@@ -93,6 +63,7 @@ def cma_headwise(
     
     for l in range(num_layers):
         for h in range(num_heads):
+            patched_logits = None
             with torch.no_grad():
                 with model.trace() as tracer:
                     with tracer.invoke(**inputs_c1):

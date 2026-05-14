@@ -77,20 +77,20 @@ def run_mediation_analysis(
     input_ids = token_inputs["input_ids"][0].tolist()
     token_pos = (len(input_ids)-1, len(input_ids))
 
-    mediation_scores_2 = cma_headwise(
-        model=model,
-        processor=processor,
-        config=config,
-        num_layers=num_layers,
-        num_heads=num_heads,
-        prompt_c1=prompt,
-        prompt_c2=prompt,
-        image_c1=image_c1,
-        image_c2=image_c2,
-        token_pos=token_pos,
-        a1_id=a1_id,
-        a1_star_id=a1_star_id
-    )
+    # mediation_scores_2 = cma_headwise(
+    #     model=model,
+    #     processor=processor,
+    #     config=config,
+    #     num_layers=num_layers,
+    #     num_heads=num_heads,
+    #     prompt_c1=prompt,
+    #     prompt_c2=prompt,
+    #     image_c1=image_c1,
+    #     image_c2=image_c2,
+    #     token_pos=token_pos,
+    #     a1_id=a1_id,
+    #     a1_star_id=a1_star_id
+    # )
 
     # Feature Retrieval Heads
     print("cma for Feature Retrieval Heads...")
@@ -109,24 +109,24 @@ def run_mediation_analysis(
     a1_star_inputs_2 = processor(text=f"{prompt} green", images=image_c1, return_tensors="pt")
     a1_star_id = a1_star_inputs_2["input_ids"][0].tolist()[-1]
 
-    mediation_scores_3 = cma_headwise(
-        model=model,
-        processor=processor,
-        config=config,
-        num_layers=num_layers,
-        num_heads=num_heads,
-        prompt_c1=prompt,
-        prompt_c2=prompt,
-        image_c1=image_c1,
-        image_c2=image_c2,
-        token_pos=token_pos,
-        a1_id=a1_id,
-        a1_star_id=a1_star_id
-    )
+    # mediation_scores_3 = cma_headwise(
+    #     model=model,
+    #     processor=processor,
+    #     config=config,
+    #     num_layers=num_layers,
+    #     num_heads=num_heads,
+    #     prompt_c1=prompt,
+    #     prompt_c2=prompt,
+    #     image_c1=image_c1,
+    #     image_c2=image_c2,
+    #     token_pos=token_pos,
+    #     a1_id=a1_id,
+    #     a1_star_id=a1_star_id
+    # )
 
     print("cma finished")
 
-    return mediation_scores_1, mediation_scores_2, mediation_scores_3
+    return mediation_scores_1, mediation_scores_1, mediation_scores_1
 
 def plot_causal_mediation(
     mediation_scores: Tuple[List[List[Any]], List[List[Any]], List[List[Any]]],
@@ -135,6 +135,11 @@ def plot_causal_mediation(
     save_path: str = "outputs/cma_figure_1d.png"
 ):
     scores_blue, scores_red, scores_green = mediation_scores
+
+    scores_blue = np.clip(scores_blue, 0, None)
+    scores_red = np.clip(scores_red, 0, None)
+    scores_green = np.clip(scores_green, 0, None)
+
     scores_blue /= scores_blue.max()
     scores_red /= scores_red.max()
     scores_green /= scores_green.max()

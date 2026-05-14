@@ -45,6 +45,7 @@ def cma_headwise(
         gc_collect()
 
     # 4. Trace Baseline Clean (c1) Execution
+    clean_logits = None
     with torch.no_grad():
         with model.trace() as tracer:
             with tracer.invoke(**inputs_c1):
@@ -54,7 +55,6 @@ def cma_headwise(
         gc_collect()
 
     # Calculate Baseline Clean Term: M(c1)[a1*] - M(c1)[a1]
-    print('clean_logits', clean_logits)
     base_a1_logit = clean_logits[0, :, a1_id].mean().item()
     base_a1_star_logit = clean_logits[0, :, a1_star_id].mean().item()
     base_term = base_a1_star_logit - base_a1_logit
@@ -66,6 +66,7 @@ def cma_headwise(
     
     for l in range(num_layers):
         for h in range(num_heads):
+            patched_logits = None
             with torch.no_grad():
                 with model.trace() as tracer:
                     with tracer.invoke(**inputs_c1):

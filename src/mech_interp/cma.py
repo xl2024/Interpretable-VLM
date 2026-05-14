@@ -49,13 +49,10 @@ def cma_headwise(
         with model.trace() as tracer:
             with tracer.invoke(**inputs_c1):
                 # Safely slice 3D logit tensor preserving batch dim
-                clean_logits = model.lm_head.output[:, token_pos[0]:token_pos[1], :].save().cpu()
-                print("Inside Trace:", clean_logits)
-            print("Inside Trace after invoke:", clean_logits)
-        print("Inside Trace before gc:", clean_logits)
+                clean_logits = model.lm_head.output[:, token_pos[0]:token_pos[1], :].save()
+
         gc_collect()
-        print("Inside Trace after gc:", clean_logits)
-    print("Inside Trace after nograd:", clean_logits)
+
     # Calculate Baseline Clean Term: M(c1)[a1*] - M(c1)[a1]
     base_a1_logit = clean_logits[0, :, a1_id].mean().item()
     base_a1_star_logit = clean_logits[0, :, a1_star_id].mean().item()

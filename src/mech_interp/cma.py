@@ -40,7 +40,7 @@ def cma_headwise(
                     layer_module = _resolve_layer_path(model, layer_template.format(l))
                     # Safely intercept full 3D tensor: [batch, seq_len, hidden_dim]
                     attn_out = layer_module.self_attn.o_proj.input[0]
-                    c2_head_cache[l] = einops.rearrange(attn_out, 's (h d) -> s h d', h=num_heads).save().cpu()
+                    c2_head_cache[l] = einops.rearrange(attn_out, 's (h d) -> s h d', h=num_heads).save()
         
         gc_collect()
 
@@ -82,7 +82,7 @@ def cma_headwise(
                         hs_input[:] = einops.rearrange(hs_heads, 's h d -> s (h d)')
                         
                         # Capture patched output logits safely
-                        patched_logits = model.lm_head.output[:, token_pos[0]:token_pos[1], :].save().cpu()
+                        patched_logits = model.lm_head.output[:, token_pos[0]:token_pos[1], :].save()
 
                 gc_collect()
             

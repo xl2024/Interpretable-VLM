@@ -9,7 +9,7 @@ from src.math_core.rsa import compute_rsa_scores, build_target_rsms
 from src.mech_interp.tracer import rsa_tracer
 from src.model.loader import load_vlm
 from src.data.synthetic_generator import generate_custom_image
-from src.utils.tools import predict
+from src.utils.tools import predict, get_num_hidden_layers
 
 def plot_rsa_figure_1c(
     rsa_scores_prompt: Dict[str, List[float]],
@@ -107,32 +107,6 @@ def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[st
     token_index = get_token_index(prefix)
     indices.append({'coords': coords[shuffle[-1]], 'color': colors[shuffle[-1]], 'shape': shapes[shuffle[-1]], 'index': token_index})
     return indices, prefix
-
-def get_num_hidden_layers(model: Any) -> int:
-    """
-    Resolve decoder layer count across wrapped/unwrapped VLM model objects.
-    """
-    # Typical HF multimodal configs (e.g., LlavaForConditionalGeneration)
-    if hasattr(model, "config") and hasattr(model.config, "text_config"):
-        return model.config.text_config.num_hidden_layers
-
-    # Some wrappers expose the nested module path directly
-    if (
-        hasattr(model, "model")
-        and hasattr(model.model, "language_model")
-        and hasattr(model.model.language_model, "layers")
-    ):
-        return len(model.model.language_model.layers)
-
-    # Legacy/alternate wrapper pattern
-    if (
-        hasattr(model, "local_model")
-        and hasattr(model.local_model, "config")
-        and hasattr(model.local_model.config, "text_config")
-    ):
-        return model.local_model.config.text_config.num_hidden_layers
-
-    raise AttributeError("Could not infer number of hidden layers from model object.")
 
 def main():
     print("=== Starting Figure 1c RSA Reproduction ===")

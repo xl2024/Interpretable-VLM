@@ -55,25 +55,3 @@ def slice_spatial_states(
     # Strict PyTorch slicing along the sequence dimension (dim=1)
     spatial_states = hidden_states[start_idx:end_idx, :]
     return spatial_states
-
-def reshape_for_causal_patching(
-    hidden_states: torch.Tensor, 
-    num_heads: int
-) -> torch.Tensor:
-    """
-    Splits the hidden dimension into attention heads for precise causal mediation analysis.
-    
-    Args:
-        hidden_states: Tensor of shape (batch, seq_len, hidden_dim)
-        num_heads: The number of attention heads (e.g., 32 for LLaVA-7B)
-        
-    Returns:
-        Tensor of shape (batch, seq_len, num_heads, head_dim)
-    """
-    # Mechanistic Interpretability often requires patching individual attention heads.
-    # We split the hidden_dim (d) into (num_heads * head_dim)
-    return einops.rearrange(
-        hidden_states, 
-        'b s (h d) -> b s h d', 
-        h=num_heads
-    )

@@ -144,3 +144,29 @@ def _resolve_text_model_dims(model: Any) -> Tuple[int, int]:
         "Could not resolve hidden_size/num_attention_heads from model object. "
         "Expected fields on config or text_config."
     )
+
+def get_num_hidden_layers(model: Any) -> int:
+    """
+    Resolve decoder layer count across wrapped/unwrapped VLM model objects.
+    """
+    # Typical HF multimodal configs (e.g., LlavaForConditionalGeneration)
+    if hasattr(model, "config") and hasattr(model.config, "text_config"):
+        return model.config.text_config.num_hidden_layers
+
+    # Some wrappers expose the nested module path directly
+    if (
+        hasattr(model, "model")
+        and hasattr(model.model, "language_model")
+        and hasattr(model.model.language_model, "layers")
+    ):
+        return len(model.model.language_model.layers)
+
+    # Legacy/alternate wrapper pattern
+    if (
+        hasattr(model, "local_model")
+        and hasattr(model.local_model, "config")
+        and hasattr(model.local_model.config, "text_config")
+    ):
+        return model.local_model.config.text_config.num_hidden_layers
+
+    raise AttributeError("Could not infer number of hidden layers from model object.")

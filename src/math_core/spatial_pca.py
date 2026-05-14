@@ -17,8 +17,6 @@ def compute_spatial_pca(
     Returns:
         Tuple containing:
         - components: The geometric directions of the Spatial IDs, shape (n_components, hidden_dim)
-        - projected_states: The original states mapped into the PCA space, shape (batch, seq_len, n_components)
-        - pca_model: The fitted scikit-learn PCA object for variance analysis.
     """
     print(f"Executing PCA to extract top {n_components} spatial components...")
     

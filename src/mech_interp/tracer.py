@@ -5,6 +5,12 @@ import gc
 
 from src.utils.tools import _resolve_layer_path, _build_object_ids, _resolve_text_model_dims
 
+def gc_collect():
+    # Force clear the memory before the next trial begins
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+
 def extract_hidden_states(
     model: LanguageModel, 
     processor: Any, 
@@ -113,10 +119,7 @@ def rsa_tracer(
             # Append the resolved dictionaries to main lists
             hidden_states_by_trial.append(prompt_states)
 
-            # Force clear the memory before the next trial begins
-            gc.collect()
-            if torch.cuda.is_available():
-                torch.cuda.empty_cache()
+            gc_collect()
         
     print("Extraction complete!")
     return hidden_states_by_trial

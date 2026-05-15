@@ -25,14 +25,12 @@ def collect_hidden_states_for_pca(
     print(f"Collecting real hidden states across {num_samples} forward passes...")
     
     # 6 distinct positions and 6 features to match the paper's 6 legend categories
-    positions = [(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1)]
+    positions = [(0, 0), (0, 1), (1, 0), (1, 1)]
     features = [
         ("red", "circle"),
         ("green", "triangle"),
         ("blue", "square"),
-        ("purple", "star"),
-        ("yellow", "heart"),
-        ("orange", "cross")
+        ("purple", "star")
     ]
 
     layer_19_idx = 19
@@ -50,7 +48,7 @@ def collect_hidden_states_for_pca(
 
         colors, shapes = [], []
         text = "In this image, there is a"
-        t_pos = random.randint(0, 5)
+        t_pos = random.randint(0, 3)
         pos_labels.append(t_pos)
         for j in len(permutations[i]):
             color, shape = features[permutations[i][j]]
@@ -123,8 +121,8 @@ def plot_pca_figure_1b(
     fig, axs = plt.subplots(2, 2, figsize=(8, 7))
     
     # Paper exact color mapping hex codes
-    pos_colors = ['#00FF00', '#00FFFF', '#808000', '#8A2BE2', '#FF0000', '#FF00FF'] # Lime, Cyan, Olive, SlateBlue, Red, Magenta
-    feat_colors = ['#FF0000', '#008000', '#0000FF', '#800080', '#FFD700', '#FFA500'] # Red, Green, Blue, Purple, Gold(better contrast), Orange
+    pos_colors = ['#00FF00', '#00FFFF', '#808000', '#8A2BE2'] # Lime, Cyan, Olive, SlateBlue, Red, Magenta
+    feat_colors = ['#FF0000', '#008000', '#0000FF', '#800080'] # Red, Green, Blue, Purple, Gold(better contrast), Orange
 
     # Map labels to colors arrays
     c_pos = [pos_colors[lbl] for lbl in pos_labels]

@@ -62,7 +62,7 @@ def collect_hidden_states_for_pca(
                 text += f" {color} {shape}, a"
 
         # Generate the specific combination canvas
-        image = generate_custom_image(shapes=shapes, colors=colors, coords=positions)
+        image = generate_custom_image(cols=2, rows=3, shapes=shapes, colors=colors, coords=positions)
         
         messages = [
             {

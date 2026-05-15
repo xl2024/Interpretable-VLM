@@ -20,7 +20,7 @@ def collect_hidden_states_for_pca(
     Runs real forward passes to collect final-token hidden states at Layer 19 and Layer 27.
     Iterates through variations of positions and features to build a dense dataset for PCA.
     """
-    permutations = get_permutations([i for i in range(4)])
+    permutations = get_permutations([i for i in range(6)])
     num_samples = len(permutations)
     print(f"Collecting real hidden states across {num_samples} forward passes...")
     
@@ -150,8 +150,8 @@ def plot_pca_figure_1b(
     fig.text(0.7, 0.92, 'Layer 27', ha='center', fontsize=14)
 
     # Add Row Titles (Coloring logic)
-    fig.text(0.08, 0.7, 'Position', va='center', rotation='vertical', fontsize=14, fontweight='bold')
-    fig.text(0.08, 0.3, 'Features', va='center', rotation='vertical', fontsize=14, fontweight='bold')
+    fig.text(0.08, 0.7, 'Position', va='center', rotation='vertical', fontsize=14)
+    fig.text(0.08, 0.3, 'Features', va='center', rotation='vertical', fontsize=14)
     
     # --- Legends ---
     # Create proxy artists for the legends using invisible (color='w'/'none') lines with colored circular markers

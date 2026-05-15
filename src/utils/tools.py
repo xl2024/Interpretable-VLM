@@ -186,3 +186,26 @@ def get_permutations(objects):
             item.append(objects[i])
             per_list.append(item)
     return per_list
+
+def get_text_prompt(model_id, text, image, processor):   
+    model_id_lower = model_id.lower()
+    if "llava" in model_id_lower:
+        return text
+    elif "qwen" in model_id_lower:
+        messages = [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "image", "image": image},
+                    {"type": "text", "text": text}
+                ]
+            }
+        ]
+
+        # Apply the chat template to generate the correct Qwen text string
+        # This handles all the <|vision_start|> and <|image_pad|> tokens automatically
+        text_prompt = processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        return text_prompt
+    
+    return ""
+        

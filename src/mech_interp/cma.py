@@ -64,6 +64,7 @@ def cma_headwise(
     print(f"Executing intervention sweep across {num_layers} layers and {num_heads} heads per layer...")
     
     for l in range(num_layers):
+        print(f"Processing layer {l+1}/{num_layers}...")
         for h in range(num_heads):
             patched_logits = None
             with torch.no_grad():

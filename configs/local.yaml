@@ -12,7 +12,7 @@ model:
   family: "llava"
   # huggingface_id: "bczhou/tiny-llava-v1-hf"
   # huggingface_id: "llava-hf/llava-1.5-7b-hf"
-  huggingface_id: "Qwen/Qwen2-VL-7B-Instruct"
+  # huggingface_id: "Qwen/Qwen2-VL-7B-Instruct"
   
   # The exact PyTorch module path nnsight uses to attach intervention hooks.
   layer_path_template: "model.language_model.layers[{}]"    # TinyLLaVA uses a LLaMA backbone, Qwen2-VL

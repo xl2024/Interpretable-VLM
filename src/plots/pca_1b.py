@@ -8,8 +8,10 @@ from typing import Dict, Any, Tuple
 
 from src.model.loader import load_vlm
 from src.data.synthetic_generator import generate_custom_image
-from src.utils.tools import _resolve_layer_path, load_config, get_permutations
+from src.utils.tools import _resolve_layer_path, load_config, get_permutations, get_text_prompt
 from src.mech_interp.tracer import gc_collect
+
+model_id = "Qwen/Qwen2-VL-7B-Instruct"
 
 def collect_hidden_states_for_pca(
     model: Any,
@@ -64,19 +66,7 @@ def collect_hidden_states_for_pca(
         # Generate the specific combination canvas
         image = generate_custom_image(cols=2, rows=3, shapes=shapes, colors=colors, coords=positions)
         
-        messages = [
-            {
-                "role": "user",
-                "content": [
-                    {"type": "image", "image": image},
-                    {"type": "text", "text": text}
-                ]
-            }
-        ]
-
-        # Apply the chat template to generate the correct Qwen text string
-        # This handles all the <|vision_start|> and <|image_pad|> tokens automatically
-        text_prompt = processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        text_prompt = get_text_prompt(model_id, text, image, processor)
         
         if i < 10:
             print('text_prompt ', i, text_prompt)
@@ -185,7 +175,7 @@ def main():
     print("=== Figure 1b Reproduction: PCA ===")
     config = load_config()
     
-    model_id = config['model']['huggingface_id']
+    # model_id = "Qwen/Qwen2-VL-7B-Instruct"
     tier = config['pipeline']['tier']
     model, processor = load_vlm(model_id, tier)
 

@@ -11,6 +11,8 @@ from src.plots.rsa_1c import get_num_hidden_layers
 from src.mech_interp.cma import cma_headwise
 
 model_id = "Qwen/Qwen2-VL-7B-Instruct"
+# model_id = "llava-hf/llava-1.5-7b-hf"
+# model_id = "bczhou/tiny-llava-v1-hf"
 
 def run_mediation_analysis(
     model: Any,

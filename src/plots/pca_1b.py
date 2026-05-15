@@ -58,7 +58,7 @@ def collect_hidden_states_for_pca(
                 feat_labels.append(permutations[i][j])
             else:
                 text += f" {color} {shape}, a"
-
+        text = text[:-3] + " and a"
         # Generate the specific combination canvas
         image = generate_custom_image(cols=2, rows=3, shapes=shapes, colors=colors, coords=positions)
         

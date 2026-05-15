@@ -20,7 +20,7 @@ def collect_hidden_states_for_pca(
     Runs real forward passes to collect final-token hidden states at Layer 19 and Layer 27.
     Iterates through variations of positions and features to build a dense dataset for PCA.
     """
-    permutations = get_permutations(np.arange(4))
+    permutations = get_permutations([i for i in range(4)])
     num_samples = len(permutations)
     print(f"Collecting real hidden states across {num_samples} forward passes...")
     

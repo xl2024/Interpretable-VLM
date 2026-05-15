@@ -5,11 +5,13 @@ import gc
 import yaml
 
 def predict(
+    model_id: str,
     model: LanguageModel, 
     processor: Any,
     image: Any, 
     text_prompt: str
 ) -> str:
+    text_prompt = get_text_prompt(model_id, text_prompt, image, processor)
     inputs = processor(text=text_prompt, images=image, return_tensors="pt").to(model.device)
     with torch.no_grad():
         with model.generate(max_new_tokens=2, pad_token_id=processor.tokenizer.eos_token_id) as tracer:

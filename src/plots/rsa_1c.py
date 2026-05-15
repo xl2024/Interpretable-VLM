@@ -158,7 +158,7 @@ def main():
             'trial': obj_indices
         })
 
-        print(f"Prediction({len(trials)}): {predict(model, processor, img, text_prompt).strip()} (target: {obj_indices[-1]['shape']})")
+        print(f"Prediction({len(trials)}): {predict(model_id, model, processor, img, text_prompt).strip()} (target: {obj_indices[-1]['shape']})")
 
     # 3. Execute Pipeline
     print(f"\nExecuting 3D RSA across {len(trials)} trials and {num_layers} layers...")

@@ -5,16 +5,18 @@
 
 pipeline:
   tier: "local"              # Instructs src/utils/hardware.py to use CPU/4-bit
+  # tier: "cloud"
   debug_mode: true           # Triggers a forced batch size limit (e.g., 2 images)
 
 model:
   family: "llava"
   # huggingface_id: "bczhou/tiny-llava-v1-hf"
-  huggingface_id: "llava-hf/llava-1.5-7b-hf"
+  # huggingface_id: "llava-hf/llava-1.5-7b-hf"
+  huggingface_id: "Qwen/Qwen2-VL-7B-Instruct"
   
   # The exact PyTorch module path nnsight uses to attach intervention hooks.
-  # TinyLLaVA uses a LLaMA backbone, so the hidden states live here:
-  layer_path_template: "model.language_model.layers[{}]"
+  # layer_path_template: "model.language_model.layers[{}]"    # TinyLLaVA uses a LLaMA backbone
+  layer_path_template: "model.layers[{}]"                   # Qwen2-VL
   
   # The tokenization anchor. The AutoProcessor replaces this exact string 
   # with the 256/576 vision projection tokens. We will use this to find the 

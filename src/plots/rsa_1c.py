@@ -1,15 +1,13 @@
 from typing import Dict, List, Any
 import matplotlib.pyplot as plt
-import yaml
 import numpy as np
 from PIL import Image
 
-from src.utils.tools import _build_object_ids
-from src.math_core.rsa import compute_rsa_scores, build_target_rsms
+from src.math_core.rsa import compute_rsa_scores
 from src.mech_interp.tracer import rsa_tracer
 from src.model.loader import load_vlm
 from src.data.synthetic_generator import generate_custom_image
-from src.utils.tools import predict, get_num_hidden_layers
+from src.utils.tools import predict, get_num_hidden_layers, load_config, get_permutations
 
 def plot_rsa_figure_1c(
     rsa_scores_prompt: Dict[str, List[float]],
@@ -75,11 +73,6 @@ def run_rsa_pipeline(
         rsa_scores_last_token=rsa_scores_last_token,
         save_path=save_path
     )
-
-
-def load_config(config_path: str = "configs/local.yaml"):
-    with open(config_path, "r") as f:
-        return yaml.safe_load(f)
     
 def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[str], coords: List[tuple[int, int]], image: Image.Image):
     """
@@ -131,17 +124,6 @@ def main():
         for shape in shapes:
             objects.append({'color': color, 'shape': shape})
     print("all objects:", objects)
-
-    def get_permutations(objects):
-        if len(objects) == 1:
-            return [objects]
-        per_list = []
-        for i in range(len(objects)):
-            sub_list = objects[0:i] + objects[i+1:]
-            for item in get_permutations(sub_list):
-                item.append(objects[i])
-                per_list.append(item)
-        return per_list
     
     permutations = get_permutations(objects)
     # To save memory in local mode, we will slice the first 10 permutations. 

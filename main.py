@@ -11,10 +11,7 @@ from src.mech_interp.tracer import extract_hidden_states
 from src.utils.einops_utils import get_vision_sequence_indices, slice_spatial_states
 from src.math_core.spatial_pca import compute_spatial_pca
 from src.mech_interp.causal_patch import calculate_shift_vector, run_causal_swap
-
-def load_config(config_path: str = "configs/local.yaml"):
-    with open(config_path, "r") as f:
-        return yaml.safe_load(f)
+from src.utils.tools import load_config
 
 def main():
     print("=== Starting Mechanistic Interpretability Pipeline ===")

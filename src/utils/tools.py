@@ -2,6 +2,7 @@ import torch
 from nnsight import LanguageModel
 from typing import Dict, Any, List, Tuple
 import gc
+import yaml
 
 def predict(
     model: LanguageModel, 
@@ -170,3 +171,18 @@ def get_num_hidden_layers(model: Any) -> int:
         return model.local_model.config.text_config.num_hidden_layers
 
     raise AttributeError("Could not infer number of hidden layers from model object.")
+
+def load_config(config_path: str = "configs/local.yaml"):
+    with open(config_path, "r") as f:
+        return yaml.safe_load(f)
+
+def get_permutations(objects):
+    if len(objects) == 1:
+        return [objects]
+    per_list = []
+    for i in range(len(objects)):
+        sub_list = objects[0:i] + objects[i+1:]
+        for item in get_permutations(sub_list):
+            item.append(objects[i])
+            per_list.append(item)
+    return per_list

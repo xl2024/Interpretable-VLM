@@ -1,5 +1,3 @@
-import torch
-import einops
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
@@ -8,8 +6,8 @@ from typing import Dict, List, Tuple, Any
 # Internal project imports
 from src.model.loader import load_vlm
 from src.data.synthetic_generator import generate_custom_image
-from src.utils.tools import _resolve_layer_path, _resolve_text_model_dims
-from src.plots.rsa_1c import load_config, get_num_hidden_layers
+from src.utils.tools import load_config, _resolve_text_model_dims
+from src.plots.rsa_1c import get_num_hidden_layers
 from src.mech_interp.cma import cma_headwise
 
 def run_mediation_analysis(

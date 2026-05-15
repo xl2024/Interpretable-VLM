@@ -50,7 +50,7 @@ def collect_hidden_states_for_pca(
         text = "In this image, there is a"
         t_pos = random.randint(0, 3)
         pos_labels.append(t_pos)
-        for j in len(permutations[i]):
+        for j in range(len(permutations[i])):
             color, shape = features[permutations[i][j]]
             colors.append(color)
             shapes.append(shape)

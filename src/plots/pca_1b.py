@@ -89,8 +89,8 @@ def collect_hidden_states_for_pca(
                     l27_module = _resolve_layer_path(model, layer_template.format(layer_27_idx))
                     
                     # Intercept the full output tuple, grab hidden states [0], and slice the last token [:, -1, :]
-                    hs_19 = l19_module.output[0][:, -1, :].save()
-                    hs_27 = l27_module.output[0][:, -1, :].save()
+                    hs_19 = l19_module.output[0][:, -1, :].save().cpu()
+                    hs_27 = l27_module.output[0][:, -1, :].save().cpu()
             gc_collect()
 
         states_19.append(hs_19[0].numpy())

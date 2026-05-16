@@ -30,7 +30,9 @@ def run_mediation_analysis(
     # ID Retrieval Heads
     print("cma for ID Retrieval Heads...")
 
-    prompt = "<image>\nIn this image there is a blue circle and a"
+    prompt = "In this image there is a blue circle and a"
+    text_prompt_c1 = get_text_prompt(model_id, prompt, image_c1, processor)
+    text_prompt_c2 = get_text_prompt(model_id, prompt, image_c2, processor)
 
     image_c1 = generate_custom_image(
         shapes=["circle", "square"],
@@ -43,18 +45,22 @@ def run_mediation_analysis(
         coords=[(0,1), (0,0)]
     )
 
+    token_inputs = processor(text=text_prompt_c1, images=image_c1, return_tensors="pt")
+    input_ids = token_inputs["input_ids"][0].tolist()
+    for index, token_id in enumerate(input_ids):
+        token_str = processor.tokenizer.decode(token_id).strip().lower()
+        if 'blue' in token_str:
+            token_pos_1 = index
+        elif 'circle' in token_str:
+            token_pos_2 = index
+            break
+    token_pos = (token_pos_1, token_pos_2+1)
 
-    token_inputs_1 = processor(text=get_text_prompt(model_id, "<image>\nIn this image there is a blue", image_c1, processor), images=image_c1, return_tensors="pt")
-    token_inputs_2 = processor(text=get_text_prompt(model_id, "<image>\nIn this image there is a blue circle", image_c1, processor), images=image_c1, return_tensors="pt")
-    input_ids_1 = token_inputs_1["input_ids"][0].tolist()
-    input_ids_2 = token_inputs_2["input_ids"][0].tolist()
-    token_pos = (len(input_ids_1) - 1, len(input_ids_2))
+    a1_tokens = processor.tokenizer.encode(" red", add_special_tokens=False)
+    a1_star_tokens = processor.tokenizer.encode(" blue", add_special_tokens=False)
+    a1_id = a1_tokens[-1]
+    a1_star_id = a1_star_tokens[-1]
 
-    a1_inputs_1 = processor(text=get_text_prompt(model_id, f"{prompt} red", image_c1, processor), images=image_c1, return_tensors="pt")
-    a1_star_inputs_2 = processor(text=get_text_prompt(model_id, f"{prompt} blue", image_c1, processor), images=image_c1, return_tensors="pt")
-    a1_id = a1_inputs_1["input_ids"][0].tolist()[-1]
-    a1_star_id = a1_star_inputs_2["input_ids"][0].tolist()[-1]
-    
     print(f"Target Token ID (a1): {a1_id} -> '{processor.tokenizer.decode([a1_id])}'")
     print(f"Contrast Token ID (a1*): {a1_star_id} -> '{processor.tokenizer.decode([a1_star_id])}'")
 
@@ -64,8 +70,8 @@ def run_mediation_analysis(
         config=config,
         num_layers=num_layers,
         num_heads=num_heads,
-        prompt_c1=prompt,
-        prompt_c2=prompt,
+        prompt_c1=text_prompt_c1,
+        prompt_c2=text_prompt_c2,
         image_c1=image_c1,
         image_c2=image_c2,
         token_pos=token_pos,
@@ -75,7 +81,7 @@ def run_mediation_analysis(
 
     # ID Selection Heads
     print("cma for ID Selection Heads...")
-    token_inputs = processor(text=get_text_prompt(model_id, prompt, image_c1, processor), images=image_c1, return_tensors="pt")
+    token_inputs = processor(text=text_prompt_c1, images=image_c1, return_tensors="pt")
     input_ids = token_inputs["input_ids"][0].tolist()
     token_pos = (len(input_ids)-1, len(input_ids))
 
@@ -85,8 +91,8 @@ def run_mediation_analysis(
         config=config,
         num_layers=num_layers,
         num_heads=num_heads,
-        prompt_c1=prompt,
-        prompt_c2=prompt,
+        prompt_c1=text_prompt_c1,
+        prompt_c2=text_prompt_c2,
         image_c1=image_c1,
         image_c2=image_c2,
         token_pos=token_pos,
@@ -108,8 +114,8 @@ def run_mediation_analysis(
         coords=[(0,0), (0,1)]
     )
 
-    a1_star_inputs_2 = processor(text=get_text_prompt(model_id, f"{prompt} green", image_c1, processor), images=image_c1, return_tensors="pt")
-    a1_star_id = a1_star_inputs_2["input_ids"][0].tolist()[-1]
+    a1_star_tokens = processor.tokenizer.encode(" green", add_special_tokens=False)
+    a1_star_id = a1_star_tokens[-1]
 
     mediation_scores_3 = cma_headwise(
         model=model,
@@ -117,8 +123,8 @@ def run_mediation_analysis(
         config=config,
         num_layers=num_layers,
         num_heads=num_heads,
-        prompt_c1=prompt,
-        prompt_c2=prompt,
+        prompt_c1=text_prompt_c1,
+        prompt_c2=text_prompt_c2,
         image_c1=image_c1,
         image_c2=image_c2,
         token_pos=token_pos,

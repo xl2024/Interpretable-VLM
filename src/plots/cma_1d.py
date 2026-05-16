@@ -6,7 +6,7 @@ from typing import Dict, List, Tuple, Any
 # Internal project imports
 from src.model.loader import load_vlm
 from src.data.synthetic_generator import generate_custom_image
-from src.utils.tools import load_config, _resolve_text_model_dims, get_text_prompt
+from src.utils.tools import load_config, _resolve_text_model_dims, get_text_prompt, predict
 from src.plots.rsa_1c import get_num_hidden_layers
 from src.mech_interp.cma import cma_headwise
 
@@ -31,8 +31,6 @@ def run_mediation_analysis(
     print("cma for ID Retrieval Heads...")
 
     prompt = "In this image there is a blue circle and a"
-    text_prompt_c1 = get_text_prompt(model_id, prompt, image_c1, processor)
-    text_prompt_c2 = get_text_prompt(model_id, prompt, image_c2, processor)
 
     image_c1 = generate_custom_image(
         shapes=["circle", "square"],
@@ -44,6 +42,12 @@ def run_mediation_analysis(
         colors=["blue", "red"],
         coords=[(0,1), (0,0)]
     )
+
+    text_prompt_c1 = get_text_prompt(model_id, prompt, image_c1, processor)
+    text_prompt_c2 = get_text_prompt(model_id, prompt, image_c2, processor)
+
+    print(f"Prediction: {predict(model, processor, image_c1, text_prompt_c1).strip()} (target: red)")
+    print(f"Prediction: {predict(model, processor, image_c2, text_prompt_c2).strip()} (target: red)")
 
     token_inputs = processor(text=text_prompt_c1, images=image_c1, return_tensors="pt")
     input_ids = token_inputs["input_ids"][0].tolist()
@@ -113,6 +117,10 @@ def run_mediation_analysis(
         colors=["blue", "green"],
         coords=[(0,0), (0,1)]
     )
+
+    text_prompt_c2 = get_text_prompt(model_id, prompt, image_c2, processor)
+    
+    print(f"Prediction: {predict(model, processor, image_c2, text_prompt_c2).strip()} (target: green)")
 
     a1_star_tokens = processor.tokenizer.encode(" green", add_special_tokens=False)
     a1_star_id = a1_star_tokens[-1]

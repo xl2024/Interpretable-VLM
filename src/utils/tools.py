@@ -190,6 +190,8 @@ def get_permutations(objects):
 def get_text_prompt(model_id, text, image, processor):   
     model_id_lower = model_id.lower()
     if "llava" in model_id_lower:
+        # [Note: use formatted prompts cannot improve the RSA figures for LLaVa models, 
+        # and sometimes the prediction just repeats the prompt from beginning instead of giving the expected features directly.]
         # system_prompt = "Complete the sentence describing the scene.\n"
         # user_prompt = "USER: <image>\n"
         # assistant_trigger = " ASSISTANT:"

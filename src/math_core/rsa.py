@@ -80,7 +80,6 @@ def compute_rsa_scores(
     
     # 1. Build the 3D Target RSMs
     target_rsms, target_rsms_last_pos = build_target_rsms(trials, trial_object_ids)
-    target_rsms_prompt_pos = [target_rsms['pos'][:-1,:,:].mean(axis=0)]
     
     # extract the lower triangle indices (excluding diagonal) to prevent correlation bias
     lower_tri_idx = np.tril_indices(num_trials, k=-1)  # k=0: include the main diagonal
@@ -100,9 +99,6 @@ def compute_rsa_scores(
     target_flats_last_pos = []
     target_flats_last_pos.append(target_rsms_last_pos[0][lower_tri_idx])
     target_flats_last_pos = np.concatenate(target_flats_last_pos)
-    
-    target_flats_prompt_pos = [target_rsms_prompt_pos[0][lower_tri_idx]]
-    target_flats_prompt_pos = np.concatenate(target_flats_prompt_pos)
         
     rsa_scores_prompt = {'pos': [], 'feat': []}
     rsa_scores_last_token = {'pos': [], 'feat': []}
@@ -112,29 +108,21 @@ def compute_rsa_scores(
         # 2. Build the Model RSM for this layer
         model_obj_flats = []
         
-        for i in range(num_objects):
+        for i in range(num_objects-1):
             # Gather the hidden states for object 'i' across all trials
             obj_states = []
             for t in range(num_trials):
-                obj_indices = token_object_ids[t]
-                for j in range(len(obj_indices)):
-                    if i == obj_indices[j][0]:
-                        state = hidden_states_by_trial[t][layer_idx][j].detach().cpu().float().squeeze().numpy()
-                        obj_states.append(state)
-                        break
-                
+                state = hidden_states_by_trial[t][layer_idx][i].detach().cpu().float().squeeze().numpy()
+                obj_states.append(state)
+
             obj_matrix = np.stack(obj_states)
-            
             cosine_distances = pdist(obj_matrix, metric='cosine')
             model_rsm_i = 1.0 - squareform(cosine_distances) / 2 # Convert distance to similarity
             np.fill_diagonal(model_rsm_i, 1.0) # Standardize diagonal
-            if i < num_objects - 1:
-                model_obj_flats.append(model_rsm_i[lower_tri_idx])  # model_rsm_i[lower_tri_idx]: a flat 1D array
+            model_obj_flats.append(model_rsm_i[lower_tri_idx])  # model_rsm_i[lower_tri_idx]: a flat 1D array
 
         # Concatenate the model's lower triangles across all objects
         model_flat = np.concatenate(model_obj_flats)
-        print("targetflatshape", target_flats['pos'].shape)
-        print("modelflatshape:", model_flat.shape)
 
         model_obj_flats_last_feat = []
         obj_states = []

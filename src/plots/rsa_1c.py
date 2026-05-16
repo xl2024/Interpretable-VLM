@@ -97,10 +97,10 @@ def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[st
 
     indices = []
     obj_idx = 0
-    for token_index, token_id in enumerate(input_ids):
-        token_str = processor.tokenizer.decode([token_id]).strip().lower()
-        print(token_index, token_id, colors[shuffle[obj_idx]], token_str)
-        if ',' in token_str and colors[shuffle[obj_idx]] in token_str:
+    for token_index in range(1, len(input_ids)):
+        token_ids = input_ids[token_index-1:token_index+1]
+        token_str = processor.tokenizer.decode(token_ids).strip().lower()
+        if ',' in token_str and shapes[shuffle[obj_idx]] in token_str:
             indices.append({'coords': coords[shuffle[obj_idx]], 'color': colors[shuffle[obj_idx]], 'shape': shapes[shuffle[obj_idx]], 'index': token_index})
             obj_idx += 1
             print("Token index:", token_index, token_str)

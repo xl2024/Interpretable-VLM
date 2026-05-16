@@ -46,8 +46,8 @@ def run_mediation_analysis(
     text_prompt_c1 = get_text_prompt(model_id, prompt, image_c1, processor)
     text_prompt_c2 = get_text_prompt(model_id, prompt, image_c2, processor)
 
-    print(f"Prediction: {predict(model, processor, image_c1, text_prompt_c1).strip()} (target: red)")
-    print(f"Prediction: {predict(model, processor, image_c2, text_prompt_c2).strip()} (target: red)")
+    print(f"Prediction: {predict(model, processor, image_c1, text_prompt_c1)} (target: red)")
+    print(f"Prediction: {predict(model, processor, image_c2, text_prompt_c2)} (target: red)")
 
     token_inputs = processor(text=text_prompt_c1, images=image_c1, return_tensors="pt")
     input_ids = token_inputs["input_ids"][0].tolist()
@@ -120,7 +120,7 @@ def run_mediation_analysis(
 
     text_prompt_c2 = get_text_prompt(model_id, prompt, image_c2, processor)
     
-    print(f"Prediction: {predict(model, processor, image_c2, text_prompt_c2).strip()} (target: green)")
+    print(f"Prediction: {predict(model, processor, image_c2, text_prompt_c2)} (target: green)")
 
     a1_star_tokens = processor.tokenizer.encode(" green", add_special_tokens=False)
     a1_star_id = a1_star_tokens[-1]

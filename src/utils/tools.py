@@ -209,7 +209,7 @@ def get_text_prompt(model_id, text, image, processor):
         # Apply the chat template to generate the correct Qwen text string
         # This handles all the <|vision_start|> and <|image_pad|> tokens automatically
         text_prompt = processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-        return text
+        return text_prompt
     
     return ""
         

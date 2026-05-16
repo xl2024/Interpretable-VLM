@@ -189,29 +189,29 @@ def get_permutations(objects):
 
 def get_text_prompt(model_id, text, image, processor):   
     model_id_lower = model_id.lower()
-    if "llava" in model_id_lower:
-        if image is not None:
-            return "<image>\n" + text
-        return text
-    elif "qwen" in model_id_lower:
-        messages = [
-            {
-                "role": "system",
-                "content": "Complete the sentence describing the scene."
-            },
-            {
-                "role": "user",
-                "content": [
-                    {"type": "image", "image": image},
-                    {"type": "text", "text": text}
-                ]
-            }
-        ]
+    # if "llava" in model_id_lower:
+    #     if image is not None:
+    #         return "<image>\n" + text
+    #     return text
+    # elif "qwen" in model_id_lower:
+    messages = [
+        {
+            "role": "system",
+            "content": "Complete the sentence describing the scene."
+        },
+        {
+            "role": "user",
+            "content": [
+                {"type": "image", "image": image},
+                {"type": "text", "text": text}
+            ]
+        }
+    ]
 
-        # Apply the chat template to generate the correct Qwen text string
-        # This handles all the <|vision_start|> and <|image_pad|> tokens automatically
-        text_prompt = processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-        return text_prompt
+    # Apply the chat template to generate the correct Qwen text string
+    # This handles all the <|vision_start|> and <|image_pad|> tokens automatically
+    text_prompt = processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+    return text_prompt
     
-    return ""
+    # return ""
         

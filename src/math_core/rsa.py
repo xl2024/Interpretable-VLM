@@ -77,8 +77,6 @@ def compute_rsa_scores(
     num_trials = len(trials)
     num_objects = len(trials[0]['trial'])
     trial_object_ids, token_object_ids = _build_object_ids(trials)
-    print("trial_object_ids", trial_object_ids)
-    print("token_object_ids", token_object_ids)
     
     # 1. Build the 3D Target RSMs
     target_rsms, target_rsms_last_pos = build_target_rsms(trials, trial_object_ids)

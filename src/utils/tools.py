@@ -190,10 +190,9 @@ def get_permutations(objects):
 def get_text_prompt(model_id, text, image, processor):   
     model_id_lower = model_id.lower()
     if "llava" in model_id_lower:
-        system_prompt = "Complete the sentence describing the scene.\n"
         user_prompt = "USER: <image>\nComplete the sentence describing the scene. "
         assistant_trigger = " ASSISTANT:"
-        llava_prompt = system_prompt + user_prompt + text + assistant_trigger
+        llava_prompt = user_prompt + text + assistant_trigger
         return llava_prompt
     elif "qwen" in model_id_lower:
         messages = [

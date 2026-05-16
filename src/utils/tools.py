@@ -198,6 +198,10 @@ def get_text_prompt(model_id, text, image, processor):
     elif "qwen" in model_id_lower:
         messages = [
             {
+                "role": "system",
+                "content": "Complete the sentence describing the scene."
+            },
+            {
                 "role": "user",
                 "content": [
                     {"type": "image", "image": image},

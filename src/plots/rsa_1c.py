@@ -84,27 +84,28 @@ def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[st
     Dynamically calculates the exact sequence indices of the target objects
     by measuring token lengths, bypassing sub-word tokenization quirks.
     """
-    def get_token_index(prefix):
-        inputs = processor(text=get_text_prompt(model_id, prefix, image, processor), images=image, return_tensors="pt")
-        input_ids = inputs["input_ids"][0].tolist()
-        index = len(input_ids)-1
-        decoded = processor.tokenizer.decode([input_ids[index]])
-        print("Token index:", index, decoded)
-        return index
-    
-    indices = []
     prefix = "In this image, there is"
     shuffle = np.random.permutation(len(coords))
     # last_object = {'color': 'red', 'shape': 'circle'}
     for i in range(len(coords)-1):
         prefix = f"{prefix} a {colors[shuffle[i]]} {shapes[shuffle[i]]},"
-        token_index = get_token_index(prefix)
-        indices.append({'coords': coords[shuffle[i]], 'color': colors[shuffle[i]], 'shape': shapes[shuffle[i]], 'index': token_index})
-        
     prefix = f"{prefix} and a {colors[shuffle[-1]]}"
-    token_index = get_token_index(prefix)
-    indices.append({'coords': coords[shuffle[-1]], 'color': colors[shuffle[-1]], 'shape': shapes[shuffle[-1]], 'index': token_index})
-    return indices, prefix
+
+    text_prompt = get_text_prompt(model_id, prefix, image, processor)
+    inputs = processor(text=text_prompt, images=image, return_tensors="pt")
+    input_ids = inputs["input_ids"][0].tolist()
+
+    indices = []
+    obj_idx = 0
+    for token_index, token_id in enumerate(input_ids):
+        token_str = processor.tokenizer.decode([token_id]).strip().lower()
+        if ',' in token_str:
+            indices.append({'coords': coords[shuffle[obj_idx]], 'color': colors[shuffle[obj_idx]], 'shape': shapes[shuffle[obj_idx]], 'index': token_index})
+            obj_idx += 1
+            print("Token index:", token_index, token_str)
+
+    indices.append({'coords': coords[shuffle[-1]], 'color': colors[shuffle[-1]], 'shape': shapes[shuffle[-1]], 'index': len(input_ids)-1})
+    return indices, text_prompt
 
 def main():
     print("=== Starting Figure 1c RSA Reproduction ===")

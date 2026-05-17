@@ -11,8 +11,6 @@ def predict(
     text_prompt: str
 ) -> str:
     inputs = processor(text=text_prompt, images=image, return_tensors="pt").to(model.device)
-    # for key in ['image_sizes', 'batch_num_images']:
-    #     inputs.pop(key, None)
     with torch.no_grad():
         with model.generate(max_new_tokens=2, pad_token_id=processor.tokenizer.eos_token_id) as tracer:
             with tracer.invoke(**inputs):
@@ -209,6 +207,7 @@ def get_text_prompt(model_id, text, image, processor):
         # Apply the chat template to generate the correct Qwen text string
         # This handles all the <|vision_start|> and <|image_pad|> tokens automatically
         text_prompt = processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        print("text_prompt:", text_prompt)
         return text_prompt
     
     elif "llava" in model_id_lower:

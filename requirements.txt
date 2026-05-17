@@ -6,6 +6,7 @@ torch>=2.2.0
 torchvision>=0.17.0
 einops==0.7.0
 bitsandbytes>=0.43.0
+flash-attn>=2.5.0
 
 # Hugging Face Stack
 transformers>=4.57.0

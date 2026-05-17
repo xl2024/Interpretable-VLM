@@ -193,7 +193,9 @@ def get_text_prompt(model_id, text, image, processor):
         messages = [
             {
                 "role": "system",
-                "content": "Complete the sentence describing the scene."
+                "content": [
+                    "Complete the sentence describing the scene."
+                ]
             },
             {
                 "role": "user",

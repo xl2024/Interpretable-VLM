@@ -160,7 +160,8 @@ def main():
         # Process the inputs into PyTorch tensors
         inputs = processor(text=text_prompt, images=img, return_tensors="pt")
         # inputs = {k: v.to('cuda') if hasattr(v, 'to') else v for k, v in inputs.items()}
-        
+        # for key in ['image_sizes', 'batch_num_images']:
+        #     inputs.pop(key, None)
         trials.append({
             'inputs': inputs,
             'trial': obj_indices

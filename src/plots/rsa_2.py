@@ -76,27 +76,25 @@ def run_rsa_pipeline(
         save_path=save_path
     )
     
-def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[str], abs_coords: List[tuple[int, int]], rel_coords: List[tuple[int, int]], image: Image.Image):
+def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[str], abs_coords: List[tuple[int, int]], rel_coords: List[tuple[int, int]], image: Image.Image, last_pos: int):
     """
     Dynamically calculates the exact sequence indices of the target objects
     by measuring token lengths, bypassing sub-word tokenization quirks.
     """
     prefix = "In this image, there is"
-    # shuffle = np.random.permutation(len(abs_coords))
-    shuffle = np.arange(4)
-    # last_object = {'color': 'red', 'shape': 'circle'}
     for i in range(len(abs_coords)-1):
-        prefix = f"{prefix} a {colors[shuffle[i]]} {shapes[shuffle[i]]},"
-    prefix = f"{prefix} and a {colors[shuffle[-1]]}"
+        if i != last_pos:
+            prefix = f"{prefix} a {colors[i]} {shapes[i]},"
+    prefix = f"{prefix} and a {colors[last_pos]}"
 
     text_prompt = get_text_prompt(model_id, prefix, image, processor)
     inputs = processor(text=text_prompt, images=image, return_tensors="pt")
     input_ids = inputs["input_ids"][0].tolist()
 
-    indices = {'abs_coords': abs_coords[shuffle[-1]], 
-            'rel_coords': rel_coords[shuffle[-1]],
-            'color': colors[shuffle[-1]],
-            'shape': shapes[shuffle[-1]], 
+    indices = {'abs_coords': abs_coords[last_pos], 
+            'rel_coords': rel_coords[last_pos],
+            'color': colors[last_pos],
+            'shape': shapes[last_pos], 
             'index': len(input_ids)-1}
     return indices, text_prompt
 
@@ -143,18 +141,19 @@ def main():
             # save_path=f'outputs/rsa_figure_2{img_num[p]}.png'
         )
         
-        obj_indices, text_prompt = get_dynamic_token_indices(
-            processor, colors=p['colors'], shapes=p['shapes'], abs_coords=p['abs_coords'], rel_coords=p['rel_coords'], image=img
-        )
+        for last_pos in range(4):
+            obj_indices, text_prompt = get_dynamic_token_indices(
+                processor, colors=p['colors'], shapes=p['shapes'], abs_coords=p['abs_coords'], rel_coords=p['rel_coords'], image=img, last_pos=last_pos
+            )
 
-        # Process the inputs into PyTorch tensors
-        inputs = processor(text=text_prompt, images=img, return_tensors="pt")
-        # inputs = {k: v.to('cuda') if hasattr(v, 'to') else v for k, v in inputs.items()}
-        
-        trials.append({
-            'inputs': inputs,
-            'trial': obj_indices
-        })
+            # Process the inputs into PyTorch tensors
+            inputs = processor(text=text_prompt, images=img, return_tensors="pt")
+            # inputs = {k: v.to('cuda') if hasattr(v, 'to') else v for k, v in inputs.items()}
+            
+            trials.append({
+                'inputs': inputs,
+                'trial': obj_indices
+            })
 
         # print(f"Prediction({len(trials)}): {predict(model, processor, img, text_prompt).strip()} (target: {obj_indices['shape']})")
 

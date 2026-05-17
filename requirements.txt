@@ -15,6 +15,7 @@ tokenizers>=0.15.0
 qwen-vl-utils>=0.0.8
 sentencepiece>=0.2.0
 protobuf>=4.25.0
+jinja2>=3.1.0
 
 # Interpretability & Interventions
 nnsight>=0.5.0

@@ -58,12 +58,12 @@ def load_vlm(model_id: str, tier: str):
     # nnsight's LanguageModel class inherits the underlying HF architecture
     # but builds the computation graph required for spatial causal swaps.
     print(f"Loading and tracing model weights with {hw_config['dtype']}...")
-    if "qwen2.5" in model_id_lower:
+    if "onevision" in model_id_lower:
+        hf_model = LlavaOnevisionForConditionalGeneration.from_pretrained(model_id, **load_kwargs)
+    elif "qwen2.5" in model_id_lower:
         hf_model = Qwen2_5_VLForConditionalGeneration.from_pretrained(model_id, **load_kwargs)
     elif "qwen" in model_id_lower:
         hf_model = Qwen2VLForConditionalGeneration.from_pretrained(model_id, **load_kwargs)
-    elif "onevision" in model_id_lower:
-        hf_model = LlavaOnevisionForConditionalGeneration.from_pretrained(model_id, **load_kwargs)
     elif "llava" in model_id_lower:
         hf_model = AutoModelForImageTextToText.from_pretrained(model_id, **load_kwargs)
 

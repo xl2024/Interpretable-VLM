@@ -11,8 +11,8 @@ def predict(
     text_prompt: str
 ) -> str:
     inputs = processor(text=text_prompt, images=image, return_tensors="pt").to(model.device)
-    for key in ['image_sizes', 'batch_num_images']:
-        inputs.pop(key, None)
+    # for key in ['image_sizes', 'batch_num_images']:
+    #     inputs.pop(key, None)
     with torch.no_grad():
         with model.generate(max_new_tokens=2, pad_token_id=processor.tokenizer.eos_token_id) as tracer:
             with tracer.invoke(**inputs):

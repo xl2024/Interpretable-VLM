@@ -1,5 +1,5 @@
 import torch
-from transformers import AutoProcessor, AutoModelForImageTextToText, Qwen2VLForConditionalGeneration
+from transformers import AutoProcessor, AutoModelForImageTextToText, Qwen2VLForConditionalGeneration, Qwen2_5_VLForConditionalGeneration
 from nnsight import LanguageModel
 from src.utils.hardware import get_hardware_config
 
@@ -58,7 +58,9 @@ def load_vlm(model_id: str, tier: str):
     # nnsight's LanguageModel class inherits the underlying HF architecture
     # but builds the computation graph required for spatial causal swaps.
     print(f"Loading and tracing model weights with {hw_config['dtype']}...")
-    if "qwen" in model_id_lower:
+    if "qwen2.5" in model_id_lower:
+        hf_model = Qwen2_5_VLForConditionalGeneration.from_pretrained(model_id, **load_kwargs)
+    elif "qwen" in model_id_lower:
         hf_model = Qwen2VLForConditionalGeneration.from_pretrained(model_id, **load_kwargs)
     elif "llava" in model_id_lower:
         hf_model = AutoModelForImageTextToText.from_pretrained(model_id, **load_kwargs)

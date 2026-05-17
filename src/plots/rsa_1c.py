@@ -10,7 +10,10 @@ from src.data.synthetic_generator import generate_custom_image
 from src.utils.tools import predict, get_num_hidden_layers, load_config, get_permutations, get_text_prompt
 
 
-model_id = "Qwen/Qwen2-VL-7B-Instruct"
+# model_id = "Qwen/Qwen2-VL-7B-Instruct"
+model_id = "Qwen/Qwen2.5-VL-3B-Instruct"
+# model_id = "Qwen/Qwen2.5-VL-7B-Instruct"
+# model_id = "Qwen/Qwen2.5-VL-32B-Instruct"
 # model_id = "llava-hf/llava-1.5-7b-hf"
 # model_id = "bczhou/tiny-llava-v1-hf"
 

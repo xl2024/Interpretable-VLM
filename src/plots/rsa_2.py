@@ -82,7 +82,8 @@ def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[st
     by measuring token lengths, bypassing sub-word tokenization quirks.
     """
     prefix = "In this image, there is"
-    shuffle = np.random.permutation(len(abs_coords))
+    # shuffle = np.random.permutation(len(abs_coords))
+    shuffle = np.arange(4)
     # last_object = {'color': 'red', 'shape': 'circle'}
     for i in range(len(abs_coords)-1):
         prefix = f"{prefix} a {colors[shuffle[i]]} {shapes[shuffle[i]]},"

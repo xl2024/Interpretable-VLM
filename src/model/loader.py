@@ -44,12 +44,12 @@ def load_vlm(model_id: str, tier: str):
         trust_remote_code=True
     )
 
-    if "qwen" in model_id_lower and hw_config["dtype"] == torch.bfloat16:
-        print("Applying Qwen-specific Flash Attention 2 optimizations...")
-        try:
-            load_kwargs["attn_implementation"] = "flash_attention_2"
-        except Exception:
-            pass # Fallback to standard attention if not installed
+    # if "qwen" in model_id_lower and hw_config["dtype"] == torch.bfloat16:
+    #     print("Applying Qwen-specific Flash Attention 2 optimizations...")
+    #     try:
+    #         load_kwargs["attn_implementation"] = "flash_attention_2"
+    #     except Exception:
+    #         pass # Fallback to standard attention if not installed
 
     if "llava" in model_id_lower:
         processor.patch_size = 14

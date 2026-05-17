@@ -15,6 +15,7 @@ model_id = "Qwen/Qwen2.5-VL-3B-Instruct"
 # model_id = "Qwen/Qwen2.5-VL-7B-Instruct"
 # model_id = "Qwen/Qwen2.5-VL-32B-Instruct"
 # model_id = "llava-hf/llava-1.5-7b-hf"
+# model_id = "llava-hf/llava-1.5-13b-hf"
 # model_id = "bczhou/tiny-llava-v1-hf"
 
 def run_mediation_analysis(
@@ -151,7 +152,7 @@ def plot_causal_mediation(
     mediation_scores: Tuple[List[List[Any]], List[List[Any]], List[List[Any]]],
     num_layers: int,
     num_heads: int,
-    save_path: str = "outputs/cma_figure_1d.png"
+    save_path: str
 ):
     scores_blue, scores_red, scores_green = mediation_scores
 

@@ -95,7 +95,7 @@ def plot_pca_figure_1b(
     states_27: np.ndarray, 
     pos_labels: np.ndarray, 
     feat_labels: np.ndarray, 
-    save_path: str = "outputs/pca_figure_1b.png"
+    save_path: str
 ):
     """
     Computes PCA on the extracted hidden states and maps them onto the 

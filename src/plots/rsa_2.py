@@ -3,46 +3,39 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 
-from src.math_core.rsa import compute_rsa_scores
-from src.mech_interp.tracer import rsa_tracer
+from src.math_core.rsa import compute_rsa_scores_2
+from src.mech_interp.tracer import rsa_tracer_2
 from src.model.loader import load_vlm
 from src.data.synthetic_generator import generate_custom_image
-from src.utils.tools import predict, get_num_hidden_layers, load_config, get_permutations, get_text_prompt
+from src.utils.tools import predict, get_num_hidden_layers, load_config, get_text_prompt, get_permutations
 
 
+model_id = "bczhou/tiny-llava-v1-hf"
 # model_id = "Qwen/Qwen2-VL-7B-Instruct"
-# model_id = "Qwen/Qwen2.5-VL-3B-Instruct"
-# model_id = "Qwen/Qwen2.5-VL-7B-Instruct"
-# model_id = "Qwen/Qwen2.5-VL-32B-Instruct"
-# model_id = "llava-hf/llava-1.5-7b-hf"
-# model_id = "llava-hf/llava-1.5-13b-hf"
-# model_id = "bczhou/tiny-llava-v1-hf"
-model_id = "llava-hf/llava-onevision-qwen2-7b-ov-hf"
 
-def plot_rsa_figure_1c(
+def plot_rsa_figure(
     rsa_scores_prompt: Dict[str, List[float]],
-    rsa_scores_last_token: Dict[str, List[float]],
     save_path: str
 ):
     """
-    Reproduces RSA figure 1c
+    Reproduces RSA figure 2
     """
     print("Generating RSA graph...")
     
     # Set up the figure with similar proportions to the paper
     fig, ax = plt.subplots(figsize=(6, 4))
     
-    num_layers = len(rsa_scores_prompt['pos'])
+    num_layers = len(rsa_scores_prompt['abs_pos'])
     layers = list(range(num_layers))
     
     # Plot the three lines
-    ax.plot(layers, rsa_scores_prompt['pos'], label='Position (Prompt Tokens)', color='blue')
-    ax.plot(layers, rsa_scores_last_token['pos'], label='Position (Last Token)', color='red')
-    ax.plot(layers, rsa_scores_last_token['feat'], label='Feature (Last Token)', color='green')
+    ax.plot(layers, rsa_scores_prompt['feat'], label='Feature', color='blue')
+    ax.plot(layers, rsa_scores_prompt['abs_pos'], label='Absolute Position', color='red')
+    ax.plot(layers, rsa_scores_prompt['rel_pos'], label='Relative Position', color='green')
     
     # Style the axes
     ax.set_xlabel('Layer', fontsize=12)
-    ax.set_ylabel(r'Correlation ($r$)', fontsize=12) 
+    ax.set_ylabel(r'RSA Correlation (Pearson r)', fontsize=12) 
     
     # Add legend without the bounding box
     ax.legend(frameon=False, loc='upper left', fontsize=11)
@@ -66,7 +59,7 @@ def run_rsa_pipeline(
     computes the 3D correlation scores, and generates the paper's line graph.
     """
     # 1. Initialize storage for both token types
-    hidden_states_by_trial = rsa_tracer(
+    hidden_states_by_trial = rsa_tracer_2(
         model,
         config,
         num_layers,
@@ -75,24 +68,23 @@ def run_rsa_pipeline(
 
     # 2. Math Execution
     print("Calculating RSA for Prompt Tokens...")
-    rsa_scores_prompt, rsa_scores_last_token = compute_rsa_scores(hidden_states_by_trial, trials, num_layers)
+    rsa_scores_prompt = compute_rsa_scores_2(hidden_states_by_trial, trials, num_layers)
     
     # 3. Visualization
-    plot_rsa_figure_1c(
+    plot_rsa_figure(
         rsa_scores_prompt=rsa_scores_prompt,
-        rsa_scores_last_token=rsa_scores_last_token,
         save_path=save_path
     )
     
-def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[str], coords: List[tuple[int, int]], image: Image.Image):
+def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[str], abs_coords: List[tuple[int, int]], rel_coords: List[tuple[int, int]], image: Image.Image):
     """
     Dynamically calculates the exact sequence indices of the target objects
     by measuring token lengths, bypassing sub-word tokenization quirks.
     """
     prefix = "In this image, there is"
-    shuffle = np.random.permutation(len(coords))
+    shuffle = np.random.permutation(len(abs_coords))
     # last_object = {'color': 'red', 'shape': 'circle'}
-    for i in range(len(coords)-1):
+    for i in range(len(abs_coords)-1):
         prefix = f"{prefix} a {colors[shuffle[i]]} {shapes[shuffle[i]]},"
     prefix = f"{prefix} and a {colors[shuffle[-1]]}"
 
@@ -100,21 +92,15 @@ def get_dynamic_token_indices(processor: Any, colors: List[str], shapes: List[st
     inputs = processor(text=text_prompt, images=image, return_tensors="pt")
     input_ids = inputs["input_ids"][0].tolist()
 
-    indices = []
-    obj_idx = 0
-    for token_index in range(1, len(input_ids)):
-        token_ids = input_ids[token_index-1:token_index+1]
-        token_str = processor.tokenizer.decode(token_ids).strip().lower()
-        if ',' in token_str and shapes[shuffle[obj_idx]] in token_str:
-            indices.append({'coords': coords[shuffle[obj_idx]], 'color': colors[shuffle[obj_idx]], 'shape': shapes[shuffle[obj_idx]], 'index': token_index})
-            obj_idx += 1
-            print("Token index:", token_index, token_str)
-
-    indices.append({'coords': coords[shuffle[-1]], 'color': colors[shuffle[-1]], 'shape': shapes[shuffle[-1]], 'index': len(input_ids)-1})
+    indices = {'abs_coords': abs_coords[shuffle[-1]], 
+            'rel_coords': rel_coords[shuffle[-1]],
+            'color': colors[shuffle[-1]],
+            'shape': shapes[shuffle[-1]], 
+            'index': len(input_ids)-1}
     return indices, text_prompt
 
 def main():
-    print("=== Starting Figure 1c RSA Reproduction ===")
+    print("=== Starting Figure 2 RSA Reproduction ===")
     config = load_config()
 
     # 1. Load Model and Processor
@@ -127,34 +113,37 @@ def main():
     # We generate a permutation matrix of shapes and colors to build the correlation variance.
     trials = []
     
-    colors = ["red", "blue"]
-    shapes = ["circle", "square"]
-    
-    objects = []
-    for color in colors:
-        for shape in shapes:
-            objects.append({'color': color, 'shape': shape})
-    print("all objects:", objects)
-    
-    permutations = get_permutations(objects)
-    
+    colors = ["red", "green", "purple", "blue"]
+    shapes = ["circle", "square", "heart", "triangle"]
+    abs_coords = [[(0, 0), (0, 1), (1, 0), (1, 1)],
+                  [(0, 1), (1, 2), (1, 1), (0, 2)],
+                  [(2, 0), (1, 1), (2, 1), (1, 0)],
+                  [(1, 1), (1, 2), (2, 2), (2, 1)]]
+    rel_coords = [[(0, 0), (0, 1), (1, 0), (1, 1)],
+                  [(0, 0), (1, 1), (1, 0), (0, 1)],
+                  [(1, 0), (0, 1), (1, 1), (0, 0)],
+                  [(0, 0), (0, 1), (1, 1), (1, 0)]]
+    # img_num = ['a', 'b', 'c', 'd']
+    permutations = get_permutations([i for i in range(4)])
+    all_permutations = []
     for p in permutations:
-        o1, o2, o3, o4 = p
-
-        shapes = [o1['shape'], o2['shape'], o3['shape'], o4['shape']]
-        colors = [o1['color'], o2['color'], o3['color'], o4['color']]
-        coords = [(0,0), (0,1), (1,0), (1,1)]
-
+        for i in range(4):
+            _colors = [colors[j] for j in p]
+            _shapes = [shapes[j] for j in p]
+            all_permutations.append({'colors': _colors, 'shapes': _shapes, 'abs_coords': abs_coords[i], 'rel_coords': rel_coords[i]})
+    
+    for p in all_permutations:
         img = generate_custom_image(
-            cols=2, 
-            rows=2, 
+            cols=3, 
+            rows=3, 
             shapes=shapes,
             colors=colors,
-            coords=coords
+            coords=p['abs_coords'],
+            # save_path=f'outputs/rsa_figure_2{img_num[p]}.png'
         )
         
         obj_indices, text_prompt = get_dynamic_token_indices(
-            processor, colors=colors, shapes=shapes, coords=coords, image=img
+            processor, colors=p['colors'], shapes=p['shapes'], abs_coords=p['abs_coords'], rel_coords=p['rel_coords'], image=img
         )
 
         # Process the inputs into PyTorch tensors
@@ -166,7 +155,7 @@ def main():
             'trial': obj_indices
         })
 
-        print(f"Prediction({len(trials)}): {predict(model, processor, img, text_prompt).strip()} (target: {obj_indices[-1]['shape']})")
+        # print(f"Prediction({len(trials)}): {predict(model, processor, img, text_prompt).strip()} (target: {obj_indices['shape']})")
 
     # 3. Execute Pipeline
     print(f"\nExecuting 3D RSA across {len(trials)} trials and {num_layers} layers...")
@@ -175,7 +164,7 @@ def main():
         config=config,
         num_layers=num_layers,
         trials=trials,
-        save_path="outputs/rsa_figure_1c.png"
+        save_path="outputs/rsa_figure_2e.png"
     )
 
 if __name__ == "__main__":

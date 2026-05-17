@@ -170,3 +170,102 @@ def compute_rsa_scores(
 
     print("3D RSA correlation scoring complete.")
     return rsa_scores_prompt, rsa_scores_last_token
+
+
+def build_target_rsms_2(trials: List[Dict[str, Any]]) -> Dict[str, np.ndarray]:
+    """
+    Builds 3D Target RSMs of shape [num_objects, num_trials, num_trials]
+    strictly following Appendix A.2.3 Equations (2)-(5).
+    """
+    num_trials = len(trials)
+    target_rsms = {
+        'feat': np.zeros((num_trials, num_trials)),
+        'abs_pos': np.zeros((num_trials, num_trials)),
+        'rel_pos': np.zeros((num_trials, num_trials)),
+    }
+
+    abs_coords = []
+    for mid, tr in enumerate(trials):
+        abs_coords.append(tr['trial']['abs_coords'])
+
+    abs_coords_i = np.array(abs_coords)
+    abs_distances = pdist(abs_coords_i, metric='euclidean')
+    abs_dist_matrix = squareform(abs_distances)
+    
+    abs_max_dist = np.max(abs_dist_matrix)
+    if abs_max_dist > 0:
+        target_rsms['abs_pos'] = 1.0 - (abs_dist_matrix / abs_max_dist)
+    else:
+        target_rsms['abs_pos'] = np.ones((num_trials, num_trials))
+
+    rel_coords = []
+    for mid, tr in enumerate(trials):
+        rel_coords.append(tr['trial']['rel_coords'])
+    rel_coords_i = np.array(rel_coords)
+    rel_distances = pdist(rel_coords_i, metric='euclidean')
+    rel_dist_matrix = squareform(rel_distances)
+    rel_max_dist = np.max(rel_dist_matrix)
+    if rel_max_dist > 0:
+        target_rsms['rel_pos'] = 1.0 - (rel_dist_matrix / rel_max_dist)
+    else:
+        target_rsms['rel_pos'] = np.ones((num_trials, num_trials))
+
+    # --- Equations (3), (4), and (5): Semantic Features for Object i ---
+    for t1 in range(num_trials):
+        for t2 in range(num_trials):
+            color_match = 1.0 if trials[t1]['trial']['color'] == trials[t2]['trial']['color'] else 0.0
+            shape_match = 1.0 if trials[t1]['trial']['shape'] == trials[t2]['trial']['shape'] else 0.0
+            target_rsms['feat'][t1, t2] = 0.5 * (color_match + shape_match)
+
+    return target_rsms
+
+def compute_rsa_scores_2(
+    hidden_states_by_trial: List[Dict[int, Dict[int, torch.Tensor]]],
+    trials: List[Dict[str, Any]],
+    num_layers: int
+) -> Dict[str, List[float]]:
+    """
+    Executes the 3D RSA protocol from Appendix A.2.
+    Correlates object-specific hidden states against the 3D Target RSMs.
+    """
+    num_trials = len(trials)
+
+    target_rsms = build_target_rsms_2(trials)
+    
+    # extract the lower triangle indices (excluding diagonal) to prevent correlation bias
+    lower_tri_idx = np.tril_indices(num_trials, k=-1)  # k=0: include the main diagonal
+    
+    # Flatten the target lower triangles across all objects into 1D arrays for Pearson correlation
+    target_flats = {}
+    for feature in ['feat', 'abs_pos', 'rel_pos']:
+        target_flats[feature] = target_rsms[feature][lower_tri_idx]
+        
+    rsa_scores_prompt = {'abs_pos': [], 'rel_pos': [], 'feat': []}
+    print(f"Executing 3D RSA Correlation across {num_trials} trials...")
+    
+    for layer_idx in range(num_layers):
+        # 2. Build the Model RSM for this layer        
+        obj_states = []
+        for t in range(num_trials):
+            state = hidden_states_by_trial[t][layer_idx].detach().cpu().float().squeeze().numpy()
+            obj_states.append(state)
+            
+        obj_matrix = np.stack(obj_states)
+        cosine_distances = pdist(obj_matrix, metric='cosine')
+        model_rsm_i = 1.0 - squareform(cosine_distances) / 2 # Convert distance to similarity
+        np.fill_diagonal(model_rsm_i, 1.0) # Standardize diagonal
+        model_flat = model_rsm_i[lower_tri_idx]  # model_rsm_i[lower_tri_idx]: a flat 1D array
+        
+        # 3. Correlate the Model RSM with the Target RSMs
+        for feature in ['feat', 'abs_pos', 'rel_pos']:
+            target_flat = target_flats[feature]
+            
+            # If a matrix has no variance, Pearson correlation is mathematically undefined
+            if np.std(target_flat) == 0 or np.std(model_flat) == 0:
+                rsa_scores_prompt[feature].append(0.0)
+            else:
+                correlation_score, _ = pearsonr(model_flat, target_flat)
+                rsa_scores_prompt[feature].append(correlation_score)
+            
+    print("3D RSA correlation scoring complete.")
+    return rsa_scores_prompt

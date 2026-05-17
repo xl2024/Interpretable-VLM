@@ -60,8 +60,8 @@ def run_mediation_analysis(
             break
     token_pos = (token_pos_1, token_pos_2+1)
 
-    a1_tokens = processor.tokenizer.encode("red", add_special_tokens=False)
-    a1_star_tokens = processor.tokenizer.encode("blue", add_special_tokens=False)
+    a1_tokens = processor.tokenizer.encode(" red", add_special_tokens=False)
+    a1_star_tokens = processor.tokenizer.encode(" blue", add_special_tokens=False)
     a1_id = a1_tokens[-1]
     a1_star_id = a1_star_tokens[-1]
 
@@ -122,7 +122,7 @@ def run_mediation_analysis(
     
     print(f"Prediction: {predict(model, processor, image_c2, text_prompt_c2)} (target: green)")
 
-    a1_star_tokens = processor.tokenizer.encode("green", add_special_tokens=False)
+    a1_star_tokens = processor.tokenizer.encode(" green", add_special_tokens=False)
     a1_star_id = a1_star_tokens[-1]
 
     mediation_scores_3 = cma_headwise(

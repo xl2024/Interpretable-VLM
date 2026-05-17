@@ -1,5 +1,5 @@
 import torch
-from transformers import AutoProcessor, AutoModelForImageTextToText, Qwen2VLForConditionalGeneration, Qwen2_5_VLForConditionalGeneration
+from transformers import AutoProcessor, AutoModelForImageTextToText, Qwen2VLForConditionalGeneration, Qwen2_5_VLForConditionalGeneration, LlavaOnevisionForConditionalGeneration
 from nnsight import LanguageModel
 from src.utils.hardware import get_hardware_config
 
@@ -62,6 +62,8 @@ def load_vlm(model_id: str, tier: str):
         hf_model = Qwen2_5_VLForConditionalGeneration.from_pretrained(model_id, **load_kwargs)
     elif "qwen" in model_id_lower:
         hf_model = Qwen2VLForConditionalGeneration.from_pretrained(model_id, **load_kwargs)
+    elif "onevision" in model_id_lower:
+        hf_model = LlavaOnevisionForConditionalGeneration.from_pretrained(model_id, **load_kwargs)
     elif "llava" in model_id_lower:
         hf_model = AutoModelForImageTextToText.from_pretrained(model_id, **load_kwargs)
 

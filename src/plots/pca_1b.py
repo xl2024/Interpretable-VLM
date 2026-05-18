@@ -81,12 +81,16 @@ def collect_hidden_states_for_pca(
                     # Resolve modules for extraction
                     l19_module = _resolve_layer_path(model, layer_template.format(layer_19_idx))
                     l27_module = _resolve_layer_path(model, layer_template.format(layer_27_idx))
-                    print("shapes in tracer",l19_module.output.shape)
-                    # Intercept the full output tuple, grab hidden states [0], and slice the last token [:, -1, :]
-                    hs_19 = l19_module.output[0][:, -1, :].save()
-                    hs_27 = l27_module.output[0][:, -1, :].save()
+                    
+                    # Intercept the full output tuple, grab hidden states [0], and slice the last token [-1, :]
+                    hs_19 = l19_module.output[0][-1, :].save()
+                    hs_27 = l27_module.output[0][-1, :].save()
+                    print("hs_19 shape:", hs_19.shape)
             gc_collect()
-
+        print("hs_19.cpu() shape: ", hs_19.cpu().shape)
+        print("hs_19.cpu()[0] shape: ", hs_19.cpu()[0].shape)
+        print("hs_19.cpu()[0].to(torch.float32) shape: ", hs_19.cpu()[0].to(torch.float32).shape)
+        print("hs_19.cpu()[0].to(torch.float32).numpy() shape: ", hs_19.cpu()[0].to(torch.float32).numpy().shape)
         states_19.append(hs_19.cpu()[0].to(torch.float32).numpy())
         states_27.append(hs_27.cpu()[0].to(torch.float32).numpy())
         print("shapes: ",hs_19.cpu()[0].to(torch.float32).numpy(), hs_27.cpu()[0].to(torch.float32).numpy())

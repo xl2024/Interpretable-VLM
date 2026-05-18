@@ -10,7 +10,6 @@ from src.mech_interp.tracer import gc_collect
 def cma_headwise(
     model: Any,
     processor: Any,
-    config: Dict[str, Any],
     num_layers: int,
     num_heads: int,
     prompt_c1: str,
@@ -97,3 +96,71 @@ def cma_headwise(
             mediation_scores[l, h] = s
 
     return mediation_scores
+
+def cma_head_patching(
+    model: Any,
+    processor: Any,
+    num_layers: int,
+    num_heads: int,
+    prompt_c1: str,
+    prompt_c2: str,
+    image_c1: Any,
+    image_c2: Any,
+    top_k_heads: List[Tuple[int, int]]
+) -> str:
+    """
+    Executes Causal Mediation Analysis (Activation Patching) across top k ID selection heads.
+    """
+    # 1. Resolve architecture dimensions dynamically
+    layer_template = get_layer_path_template(model)
+    
+    inputs_c1 = processor(text=prompt_c1, images=image_c1, return_tensors="pt").to(model.device)
+    inputs_c2 = processor(text=prompt_c2, images=image_c2, return_tensors="pt").to(model.device)
+
+    # 3. Cache c2 Counterfactual States
+    c2_head_cache = {}
+    with torch.no_grad():
+        with model.trace() as tracer:
+            with tracer.invoke(**inputs_c2):
+                for l, h in top_k_heads:
+                    layer_module = _resolve_layer_path(model, layer_template.format(l))
+                    # Safely intercept full 3D tensor: [batch, seq_len, hidden_dim]
+                    attn_out = layer_module.self_attn.o_proj.input[0]
+                    hs_heads = einops.rearrange(attn_out, 's (h d) -> s h d', h=num_heads)
+                    c2_head_cache[l,h] = hs_heads[-1, h, :].save()
+        
+        gc_collect()
+
+    with torch.no_grad():
+        with model.generate(max_new_tokens=2, pad_token_id=processor.tokenizer.eos_token_id) as tracer:
+            with tracer.invoke(**inputs_c1):
+                for l, h in top_k_heads:
+                    target_layer = _resolve_layer_path(model, layer_template.format(l))
+                    
+                    # Intercept input to o_proj
+                    hs_input = target_layer.self_attn.o_proj.input[0]
+                    hs_heads = einops.rearrange(hs_input, 's (h d) -> s h d', h=num_heads)
+                    
+                    # True CMA Patch: Inject cached c2 head state into c1 stream
+                    hs_heads[-1, h, :] = c2_head_cache[l,h].to(model.device)
+                    
+                    # Repack dimensions safely
+                    hs_input[:] = einops.rearrange(hs_heads, 's h d -> s (h d)')
+        
+                patched_output = tracer.output.save()
+
+        gc_collect()
+
+    predicted_text = processor.decode(patched_output[0], skip_special_tokens=True)
+    predicted_word = predicted_text[len(prompt_c1):]
+    print(f"The patched model said (text): {predicted_text} length {len(predicted_text)}")
+    print(f"The patched model said (word): {predicted_word} length {len(predicted_word)}")
+
+
+    input_length = inputs_c1["input_ids"].shape[1]
+    new_tokens = patched_output[0][input_length:]
+
+    predicted_word_2 = processor.tokenizer.decode(new_tokens, skip_special_tokens=True)
+    print(f"predicted_word_2: {predicted_word_2} length {len(predicted_word_2)}")
+
+    return predicted_word

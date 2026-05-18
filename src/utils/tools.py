@@ -4,6 +4,9 @@ from typing import Dict, Any, List, Tuple
 import gc
 import yaml
 
+from src.mech_interp.tracer import gc_collect
+
+
 def predict(
     model: LanguageModel, 
     processor: Any,
@@ -16,9 +19,7 @@ def predict(
             with tracer.invoke(**inputs):
                 output = tracer.result.save()
         
-        gc.collect()
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
+        gc_collect()
         
     generated_text = processor.decode(output[0], skip_special_tokens=True)
     # print(f"Model predicted: '{generated_text.strip()}'")

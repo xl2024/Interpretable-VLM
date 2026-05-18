@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 from typing import Dict, List, Tuple, Any
 
-# Internal project imports
 from src.model.loader import load_vlm
 from src.data.synthetic_generator import generate_custom_image
 from src.utils.tools import load_config, _resolve_text_model_dims, get_text_prompt, predict
@@ -26,7 +25,6 @@ model_id = "Qwen/Qwen2-VL-7B-Instruct"                      # Figure 1d
 def run_mediation_analysis(
     model: Any,
     processor: Any,
-    config: Dict[str, Any],
     num_layers: int,
     num_heads: int
 ) -> Tuple[List[List[Any]], List[List[Any]], List[List[Any]]]:
@@ -80,7 +78,6 @@ def run_mediation_analysis(
     mediation_scores_1 = cma_headwise(
         model=model,
         processor=processor,
-        config=config,
         num_layers=num_layers,
         num_heads=num_heads,
         prompt_c1=text_prompt_c1,
@@ -101,7 +98,6 @@ def run_mediation_analysis(
     mediation_scores_2 = cma_headwise(
         model=model,
         processor=processor,
-        config=config,
         num_layers=num_layers,
         num_heads=num_heads,
         prompt_c1=text_prompt_c1,
@@ -137,7 +133,6 @@ def run_mediation_analysis(
     mediation_scores_3 = cma_headwise(
         model=model,
         processor=processor,
-        config=config,
         num_layers=num_layers,
         num_heads=num_heads,
         prompt_c1=text_prompt_c1,
@@ -216,7 +211,6 @@ def main():
     mediation_scores = run_mediation_analysis(
         model=model,
         processor=processor,
-        config=config,
         num_layers=num_layers,
         num_heads= num_heads
     )

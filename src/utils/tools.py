@@ -197,9 +197,6 @@ def get_permutations(objects):
     return per_list
 
 def get_model_id(model) -> str:
-    raise AttributeError(_get_model_id(model))
-
-def _get_model_id(model) -> str:
     return model.repo_id
 
 def get_text_prompt(model, text, image, processor):   

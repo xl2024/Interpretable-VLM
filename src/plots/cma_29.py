@@ -109,13 +109,13 @@ def main():
         shapes=["circle", "square", "heart", "triangle"],
         colors=["pink", "orange", "purple", "blue"],
         coords=[(0,0), (0,1), (1,0), (1,1)],
-        save_path='data/figure_29/1.png'
+        save_path='dataset/figure_29/1.png'
     )
     image_c2 = generate_custom_image(
         shapes=["circle", "triangle", "heart", "square"],
         colors=["pink", "blue", "purple", "orange"],
         coords=[(0,1), (0,2), (1,1), (1,2)],
-        save_path='data/figure_29/2.png'
+        save_path='dataset/figure_29/2.png'
     )
 
     prompt_1 = "In this image there is a pink circle, a orange square, a purple heart and a"

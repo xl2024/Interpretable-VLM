@@ -89,7 +89,7 @@ def collect_hidden_states_for_pca(
 
         states_19.append(hs_19.cpu()[0].to(torch.float32).numpy())
         states_27.append(hs_27.cpu()[0].to(torch.float32).numpy())
-
+    print("shapes: ",states_19.shape, states_27.shape)
     return np.array(states_19), np.array(states_27), np.array(pos_labels), np.array(feat_labels)
 
 def plot_pca_figure_1b(

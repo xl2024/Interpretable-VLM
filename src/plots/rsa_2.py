@@ -125,7 +125,8 @@ def main():
                   [(1, 0), (0, 1), (1, 1), (0, 0)],
                   [(0, 0), (0, 1), (1, 1), (1, 0)]]
     # img_num = ['a', 'b', 'c', 'd']
-    permutations = get_permutations([i for i in range(4)])
+    # permutations = get_permutations([i for i in range(4)])
+    permutations = [[i for i in range(4)]]
     all_permutations = []
     for p in permutations:
         for i in range(4):

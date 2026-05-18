@@ -203,53 +203,7 @@ def get_model_id(model) -> str:
     raise AttributeError("Unknown Model ID")
 
 def _get_model_id(model) -> str:
-    """
-    Safely extracts the original Hugging Face model ID 
-    or local path from a loaded model object.
-    """
-    if hasattr(model, "config") and hasattr(model.config, "_name_or_path"):
-        if isinstance(model.config._name_or_path, str) and model.config._name_or_path.strip():
-            return model.config._name_or_path
-
-    if hasattr(model, "config") and hasattr(model.config, "text_config"):
-        if hasattr(model.config.text_config, "_name_or_path"):
-            if isinstance(model.config.text_config._name_or_path, str) and model.config.text_config._name_or_path.strip():
-                return model.config.text_config._name_or_path
-
-    if hasattr(model, "text_model") and hasattr(model.text_model, "config"):
-        cfg = model.text_model.config
-        if hasattr(cfg, "_name_or_path"):
-            if isinstance(cfg._name_or_path, str) and cfg._name_or_path.strip():
-                return cfg._name_or_path
-
-    if (
-        hasattr(model, "model")
-        and hasattr(model.model, "text_model")
-        and hasattr(model.model.text_model, "config")
-        and hasattr(model.model.text_model.config, "_name_or_path")
-    ):
-        if isinstance(model.model.text_model.config._name_or_path, str) and model.model.text_model.config._name_or_path.strip():
-            return model.model.text_model.config._name_or_path
-
-    if (
-        hasattr(model, "model")
-        and hasattr(model.model, "language_model")
-        and hasattr(model.model.language_model, "config")
-        and hasattr(model.model.language_model.config, "_name_or_path")
-    ):
-        if isinstance(model.model.language_model.config._name_or_path, str) and model.model.language_model.config._name_or_path.strip():
-            return model.model.language_model.config._name_or_path
-
-    if hasattr(model, "local_model") and hasattr(model.local_model, "config"):
-        cfg = model.local_model.config
-        if hasattr(cfg, "_name_or_path"):
-            if isinstance(cfg._name_or_path, str) and cfg._name_or_path.strip():
-                return cfg._name_or_path
-        if hasattr(cfg, "text_config") and hasattr(cfg.text_config, "_name_or_path"):
-            if isinstance(cfg.text_config._name_or_path, str) and cfg.text_config._name_or_path.strip():
-                return cfg.text_config._name_or_path
-
-    raise AttributeError("Unknown Model ID")
+    raise model.repo_id
 
 def get_text_prompt(model, text, image, processor):   
     model_id_lower = get_model_id(model).lower()

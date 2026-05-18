@@ -18,8 +18,8 @@ from src.mech_interp.cma import cma_headwise
 # model_id = "llava-hf/llava-1.5-13b-hf"                      # Figure 24
 # model_id = "bczhou/tiny-llava-v1-hf"
 # model_id = "llava-hf/llava-onevision-qwen2-7b-ov-hf"        # Figure 25
-model_id = "HuggingFaceM4/idefics2-8b-chatty"
-# model_id = "HuggingFaceM4/idefics2-8b"
+# model_id = "HuggingFaceM4/idefics2-8b-chatty"
+model_id = "HuggingFaceM4/idefics2-8b"
 
 def run_mediation_analysis(
     model: Any,

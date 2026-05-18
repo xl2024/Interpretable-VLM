@@ -118,17 +118,21 @@ def cma_head_patching(
     inputs_c2 = processor(text=prompt_c2, images=image_c2, return_tensors="pt").to(model.device)
 
     # 3. Cache c2 Counterfactual States
+    heads_by_layer = {}
+    for l, h in top_k_heads:
+        heads_by_layer.setdefault(l, []).append(h)
     c2_head_cache = {}
     with torch.no_grad():
         with model.trace() as tracer:
             with tracer.invoke(**inputs_c2):
-                for l, h in top_k_heads:
+                for l, heads_in_this_layer in heads_by_layer.items():
                     layer_module = _resolve_layer_path(model, layer_template.format(l))
                     # Safely intercept full 3D tensor: [batch, seq_len, hidden_dim]
                     attn_out = layer_module.self_attn.o_proj.input[0]
                     hs_heads = einops.rearrange(attn_out, 's (h d) -> s h d', h=num_heads)
-                    c2_head_cache[l,h] = hs_heads[-1, h, :].save()
-        
+                    for h in heads_in_this_layer:
+                        c2_head_cache[l,h] = hs_heads[-1, h, :].save()
+
         gc_collect()
 
     with torch.no_grad():

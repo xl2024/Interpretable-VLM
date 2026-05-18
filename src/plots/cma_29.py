@@ -91,7 +91,7 @@ def get_top_k_heads(mediation_scores: np.ndarray, k: int) -> List[Tuple[int, int
     # 2. Convert flat 1D indices back into 2D (layer, head) coordinates
     layers, heads = np.unravel_index(top_k_flat_indices, mediation_scores.shape)
     
-    print(f"Found top {k}/{len(layers)*len(heads)} heads.")
+    print(f"Found top {k}/{mediation_scores.size} heads.")
 
     return list(zip(layers, heads))
 

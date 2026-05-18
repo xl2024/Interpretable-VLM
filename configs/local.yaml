@@ -16,7 +16,7 @@ model:
   
   # The exact PyTorch module path nnsight uses to attach intervention hooks.
   # layer_path_template: "model.language_model.layers[{}]"    # TinyLLaVA uses a LLaMA backbone, Qwen2-VL
-  layer_path_template: "model.text_model.layers[{}]"    # IDEFICS2
+  # layer_path_template: "model.text_model.layers[{}]"    # IDEFICS2
   
   # The tokenization anchor. The AutoProcessor replaces this exact string 
   # with the 256/576 vision projection tokens. We will use this to find the 

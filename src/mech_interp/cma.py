@@ -4,7 +4,7 @@ import numpy as np
 from typing import Dict, List, Tuple, Any
 
 # Internal project imports
-from src.utils.tools import _resolve_layer_path
+from src.utils.tools import _resolve_layer_path, get_layer_path_template
 from src.mech_interp.tracer import gc_collect
 
 def cma_headwise(
@@ -26,7 +26,7 @@ def cma_headwise(
     Patches activations from a modified context (c2) into the clean context (c1) following Eq. (1).
     """
     # 1. Resolve architecture dimensions dynamically
-    layer_template = config['model']['layer_path_template']
+    layer_template = get_layer_path_template(model)
     
     inputs_c1 = processor(text=prompt_c1, images=image_c1, return_tensors="pt").to(model.device)
     inputs_c2 = processor(text=prompt_c2, images=image_c2, return_tensors="pt").to(model.device)

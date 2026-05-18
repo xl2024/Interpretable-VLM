@@ -50,8 +50,8 @@ def run_mediation_analysis(
         coords=[(0,1), (0,0)]
     )
 
-    text_prompt_c1 = get_text_prompt(model_id, prompt, image_c1, processor)
-    text_prompt_c2 = get_text_prompt(model_id, prompt, image_c2, processor)
+    text_prompt_c1 = get_text_prompt(model, prompt, image_c1, processor)
+    text_prompt_c2 = get_text_prompt(model, prompt, image_c2, processor)
 
     print(f"Prediction: {predict(model, processor, image_c1, text_prompt_c1)} (target: red)")
     print(f"Prediction: {predict(model, processor, image_c2, text_prompt_c2)} (target: red)")
@@ -125,7 +125,7 @@ def run_mediation_analysis(
         coords=[(0,0), (0,1)]
     )
 
-    text_prompt_c2 = get_text_prompt(model_id, prompt, image_c2, processor)
+    text_prompt_c2 = get_text_prompt(model, prompt, image_c2, processor)
     
     print(f"Prediction: {predict(model, processor, image_c2, text_prompt_c2)} (target: green)")
 

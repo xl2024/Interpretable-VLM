@@ -196,8 +196,22 @@ def get_permutations(objects):
             per_list.append(item)
     return per_list
 
-def get_text_prompt(model_id, text, image, processor):   
-    model_id_lower = model_id.lower()
+def get_model_id(model) -> str:
+    """
+    Safely extracts the original Hugging Face model ID 
+    or local path from a loaded model object.
+    """
+    if hasattr(model, "config") and hasattr(model.config, "_name_or_path"):
+        return model.config._name_or_path
+        
+    if hasattr(model, "config") and hasattr(model.config, "text_config"):
+        if hasattr(model.config.text_config, "_name_or_path"):
+            return model.config.text_config._name_or_path
+
+    raise AttributeError("Unknown Model ID")
+
+def get_text_prompt(model, text, image, processor):   
+    model_id_lower = get_model_id(model).lower()
     if "qwen" in model_id_lower or "onevision" in model_id_lower or "idefics" in model_id_lower:
         messages = [
             {
@@ -232,3 +246,9 @@ def get_text_prompt(model_id, text, image, processor):
     
     return ""
         
+def get_layer_path_template(model):
+    model_id_lower = get_model_id(model).lower()
+    if "idefics" in model_id_lower:
+        return "model.text_model.layers[{}]"
+    else:
+        return "model.language_model.layers[{}]"

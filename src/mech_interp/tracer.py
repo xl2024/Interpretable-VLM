@@ -3,7 +3,7 @@ from nnsight import LanguageModel
 from typing import Dict, Any, List, Tuple
 import gc
 
-from src.utils.tools import _resolve_layer_path, _build_object_ids, _resolve_text_model_dims
+from src.utils.tools import _resolve_layer_path, _build_object_ids, _resolve_text_model_dims, get_layer_path_template
 
 def gc_collect():
     # Force clear the memory before the next trial begins
@@ -44,7 +44,7 @@ def extract_hidden_states(
     # inputs = {k: v.to('cuda') if hasattr(v, 'to') else v for k, v in inputs.items()}
     
     trace_layers: List[int] = config['mechanistic_interp']['trace_layers']
-    layer_template: str = config['model']['layer_path_template']
+    layer_template: str = get_layer_path_template(model)
     
     extracted_states = {}
     
@@ -104,7 +104,7 @@ def rsa_tracer(
             with model.trace() as tracer:
                 with tracer.invoke(**inputs):
                     for layer_idx in range(num_layers):
-                        layer_path = config['model']['layer_path_template'].format(layer_idx)
+                        layer_path = get_layer_path_template(model).format(layer_idx)
                         layer_module = _resolve_layer_path(model, layer_path)
                         
                         # The hidden state tensor for this layer
@@ -147,7 +147,7 @@ def rsa_tracer_2(
             with model.trace() as tracer:
                 with tracer.invoke(**inputs):
                     for layer_idx in range(num_layers):
-                        layer_path = config['model']['layer_path_template'].format(layer_idx)
+                        layer_path = get_layer_path_template(model).format(layer_idx)
                         layer_module = _resolve_layer_path(model, layer_path)
                         
                         # The hidden state tensor for this layer

@@ -8,7 +8,7 @@ from typing import Dict, Any, Tuple
 
 from src.model.loader import load_vlm
 from src.data.synthetic_generator import generate_custom_image
-from src.utils.tools import _resolve_layer_path, load_config, get_permutations, get_text_prompt
+from src.utils.tools import _resolve_layer_path, load_config, get_permutations, get_text_prompt, get_layer_path_template
 from src.mech_interp.tracer import gc_collect
 
 model_id = "Qwen/Qwen2-VL-7B-Instruct"
@@ -41,7 +41,7 @@ def collect_hidden_states_for_pca(
 
     layer_19_idx = 19
     layer_27_idx = 27
-    layer_template = config['model']['layer_path_template']
+    layer_template = get_layer_path_template(model)
 
     states_19 = []
     states_27 = []
@@ -68,7 +68,7 @@ def collect_hidden_states_for_pca(
         # Generate the specific combination canvas
         image = generate_custom_image(cols=3, rows=3, shapes=shapes, colors=colors, coords=positions)
         
-        text_prompt = get_text_prompt(model_id, text, image, processor)
+        text_prompt = get_text_prompt(model, text, image, processor)
         
         if i < 10:
             print('text_prompt ', i, text_prompt)

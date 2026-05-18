@@ -10,14 +10,14 @@ from src.utils.tools import load_config, _resolve_text_model_dims, get_text_prom
 from src.plots.rsa_1c import get_num_hidden_layers
 from src.mech_interp.cma import cma_headwise
 
-model_id = "Qwen/Qwen2-VL-7B-Instruct"
-# model_id = "Qwen/Qwen2.5-VL-3B-Instruct"
-# model_id = "Qwen/Qwen2.5-VL-7B-Instruct"
-# model_id = "Qwen/Qwen2.5-VL-32B-Instruct"
-# model_id = "llava-hf/llava-1.5-7b-hf"
-# model_id = "llava-hf/llava-1.5-13b-hf"
+model_id = "Qwen/Qwen2-VL-7B-Instruct"                      # Figure 1d
+# model_id = "Qwen/Qwen2.5-VL-3B-Instruct"                    # Figure 20
+# model_id = "Qwen/Qwen2.5-VL-7B-Instruct"                    # Figure 21
+# model_id = "Qwen/Qwen2.5-VL-32B-Instruct"                   # Figure 22
+# model_id = "llava-hf/llava-1.5-7b-hf"                       # Figure 23
+# model_id = "llava-hf/llava-1.5-13b-hf"                      # Figure 24
 # model_id = "bczhou/tiny-llava-v1-hf"
-# model_id = "llava-hf/llava-onevision-qwen2-7b-ov-hf"
+# model_id = "llava-hf/llava-onevision-qwen2-7b-ov-hf"        # Figure 25
 
 def run_mediation_analysis(
     model: Any,

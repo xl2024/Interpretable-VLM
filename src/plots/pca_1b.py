@@ -85,15 +85,10 @@ def collect_hidden_states_for_pca(
                     # Intercept the full output tuple, grab hidden states [0], and slice the last token [-1, :]
                     hs_19 = l19_module.output[0][-1, :].save()
                     hs_27 = l27_module.output[0][-1, :].save()
-                    print("hs_19 shape:", hs_19.shape)
             gc_collect()
-        print("hs_19.cpu() shape: ", hs_19.cpu().shape)
-        print("hs_19.cpu()[0] shape: ", hs_19.cpu()[0].shape)
-        print("hs_19.cpu()[0].to(torch.float32) shape: ", hs_19.cpu()[0].to(torch.float32).shape)
-        print("hs_19.cpu()[0].to(torch.float32).numpy() shape: ", hs_19.cpu()[0].to(torch.float32).numpy().shape)
-        states_19.append(hs_19.cpu()[0].to(torch.float32).numpy())
-        states_27.append(hs_27.cpu()[0].to(torch.float32).numpy())
-        print("shapes: ",hs_19.cpu()[0].to(torch.float32).numpy(), hs_27.cpu()[0].to(torch.float32).numpy())
+            
+        states_19.append(hs_19.cpu().numpy())
+        states_27.append(hs_27.cpu().numpy())
     return np.array(states_19), np.array(states_27), np.array(pos_labels), np.array(feat_labels)
 
 def plot_pca_figure_1b(

@@ -196,8 +196,10 @@ def get_permutations(objects):
             per_list.append(item)
     return per_list
 
-# ...existing code...
 def get_model_id(model) -> str:
+    raise AttributeError(_get_model_id(model))
+
+def _get_model_id(model) -> str:
     """
     Safely extracts the original Hugging Face model ID 
     or local path from a loaded model object.

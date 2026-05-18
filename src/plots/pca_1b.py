@@ -87,8 +87,8 @@ def collect_hidden_states_for_pca(
                     hs_27 = l27_module.output[0][-1, :].save()
             gc_collect()
             
-        states_19.append(hs_19.cpu().numpy())
-        states_27.append(hs_27.cpu().numpy())
+        states_19.append(hs_19.cpu().to(torch.float32).numpy())
+        states_27.append(hs_27.cpu().to(torch.float32).numpy())
     return np.array(states_19), np.array(states_27), np.array(pos_labels), np.array(feat_labels)
 
 def plot_pca_figure_1b(

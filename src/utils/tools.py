@@ -196,6 +196,7 @@ def get_permutations(objects):
             per_list.append(item)
     return per_list
 
+# ...existing code...
 def get_model_id(model) -> str:
     """
     Safely extracts the original Hugging Face model ID 
@@ -203,10 +204,38 @@ def get_model_id(model) -> str:
     """
     if hasattr(model, "config") and hasattr(model.config, "_name_or_path"):
         return model.config._name_or_path
-        
+
     if hasattr(model, "config") and hasattr(model.config, "text_config"):
         if hasattr(model.config.text_config, "_name_or_path"):
             return model.config.text_config._name_or_path
+
+    if hasattr(model, "text_model") and hasattr(model.text_model, "config"):
+        cfg = model.text_model.config
+        if hasattr(cfg, "_name_or_path"):
+            return cfg._name_or_path
+
+    if (
+        hasattr(model, "model")
+        and hasattr(model.model, "text_model")
+        and hasattr(model.model.text_model, "config")
+        and hasattr(model.model.text_model.config, "_name_or_path")
+    ):
+        return model.model.text_model.config._name_or_path
+
+    if (
+        hasattr(model, "model")
+        and hasattr(model.model, "language_model")
+        and hasattr(model.model.language_model, "config")
+        and hasattr(model.model.language_model.config, "_name_or_path")
+    ):
+        return model.model.language_model.config._name_or_path
+
+    if hasattr(model, "local_model") and hasattr(model.local_model, "config"):
+        cfg = model.local_model.config
+        if hasattr(cfg, "_name_or_path"):
+            return cfg._name_or_path
+        if hasattr(cfg, "text_config") and hasattr(cfg.text_config, "_name_or_path"):
+            return cfg.text_config._name_or_path
 
     raise AttributeError("Unknown Model ID")
 

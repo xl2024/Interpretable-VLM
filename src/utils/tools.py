@@ -203,7 +203,7 @@ def get_model_id(model) -> str:
     raise AttributeError("Unknown Model ID")
 
 def _get_model_id(model) -> str:
-    raise model.repo_id
+    return model.repo_id
 
 def get_text_prompt(model, text, image, processor):   
     model_id_lower = get_model_id(model).lower()

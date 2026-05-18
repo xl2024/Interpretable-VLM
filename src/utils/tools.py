@@ -197,10 +197,7 @@ def get_permutations(objects):
     return per_list
 
 def get_model_id(model) -> str:
-    model_id = _get_model_id(model)
-    if isinstance(model_id, str) and model_id.strip():
-        return model_id
-    raise AttributeError("Unknown Model ID")
+    raise AttributeError(_get_model_id(model))
 
 def _get_model_id(model) -> str:
     return model.repo_id

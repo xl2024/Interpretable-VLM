@@ -197,7 +197,7 @@ def get_permutations(objects):
     return per_list
 
 def get_model_id(model) -> str:
-    raise AttributeError(_get_model_id(model))
+    raise AttributeError(f"model_id: {_get_model_id(model)}")
 
 def _get_model_id(model) -> str:
     """

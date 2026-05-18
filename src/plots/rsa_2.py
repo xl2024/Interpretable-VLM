@@ -18,6 +18,8 @@ model_id = "Qwen/Qwen2-VL-7B-Instruct"
 # model_id = "llava-hf/llava-1.5-13b-hf"
 # model_id = "bczhou/tiny-llava-v1-hf"
 # model_id = "llava-hf/llava-onevision-qwen2-7b-ov-hf"        # Figure 18
+# model_id = "HuggingFaceM4/idefics2-8b-chatty"
+# model_id = "HuggingFaceM4/idefics2-8b"
 
 def plot_rsa_figure(
     rsa_scores_prompt: Dict[str, List[float]],

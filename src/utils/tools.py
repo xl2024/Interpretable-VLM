@@ -189,7 +189,7 @@ def get_permutations(objects):
 
 def get_text_prompt(model_id, text, image, processor):   
     model_id_lower = model_id.lower()
-    if "qwen" in model_id_lower or "onevision" in model_id_lower:
+    if "qwen" in model_id_lower or "onevision" in model_id_lower or "idefics" in model_id_lower:
         messages = [
             {
                 "role": "system",

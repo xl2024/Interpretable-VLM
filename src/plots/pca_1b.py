@@ -27,7 +27,7 @@ def collect_hidden_states_for_pca(
     print(f"Collecting real hidden states across {num_samples} forward passes...")
     
     # 6 distinct positions and 6 features to match the paper's 6 legend categories
-    positions = [(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1)]
+    positions = [(0, 0), (0, 2), (1, 0), (1, 2), (2, 0), (2, 2)]
     features = [
         ("red", "circle"),
         ("green", "triangle"),
@@ -64,7 +64,7 @@ def collect_hidden_states_for_pca(
                 text += f" {color} {shape}, a"
         text = text[:-3] + " and a"
         # Generate the specific combination canvas
-        image = generate_custom_image(cols=2, rows=3, shapes=shapes, colors=colors, coords=positions)
+        image = generate_custom_image(cols=3, rows=3, shapes=shapes, colors=colors, coords=positions)
         
         text_prompt = get_text_prompt(model_id, text, image, processor)
         

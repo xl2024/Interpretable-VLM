@@ -1,5 +1,5 @@
 import torch
-from transformers import AutoProcessor, AutoModelForImageTextToText, Qwen2VLForConditionalGeneration, Qwen2_5_VLForConditionalGeneration, LlavaOnevisionForConditionalGeneration
+from transformers import AutoProcessor, AutoModelForImageTextToText, Qwen2VLForConditionalGeneration, Qwen2_5_VLForConditionalGeneration, LlavaOnevisionForConditionalGeneration, Idefics2ForConditionalGeneration
 from nnsight import LanguageModel
 from src.utils.hardware import get_hardware_config
 
@@ -60,6 +60,8 @@ def load_vlm(model_id: str, tier: str):
     print(f"Loading and tracing model weights with {hw_config['dtype']}...")
     if "onevision" in model_id_lower:
         hf_model = LlavaOnevisionForConditionalGeneration.from_pretrained(model_id, **load_kwargs)
+    elif "idefics" in model_id_lower:
+        hf_model = Idefics2ForConditionalGeneration.from_pretrained(model_id, **load_kwargs)
     elif "qwen2.5" in model_id_lower:
         hf_model = Qwen2_5_VLForConditionalGeneration.from_pretrained(model_id, **load_kwargs)
     elif "qwen" in model_id_lower:

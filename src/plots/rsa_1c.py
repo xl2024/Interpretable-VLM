@@ -9,8 +9,9 @@ from src.model.loader import load_vlm
 from src.data.synthetic_generator import generate_custom_image
 from src.utils.tools import predict, get_num_hidden_layers, load_config, get_permutations, get_text_prompt
 
+# Reproduces Figure 1c and 14-19
 
-# model_id = "Qwen/Qwen2-VL-7B-Instruct"                      # Figure 1c
+model_id = "Qwen/Qwen2-VL-7B-Instruct"                      # Figure 1c
 # model_id = "Qwen/Qwen2.5-VL-3B-Instruct"                    # Figure 14
 # model_id = "Qwen/Qwen2.5-VL-7B-Instruct"                    # Figure 15
 # model_id = "Qwen/Qwen2.5-VL-32B-Instruct"                   # Figure 16
@@ -19,7 +20,7 @@ from src.utils.tools import predict, get_num_hidden_layers, load_config, get_per
 # model_id = "bczhou/tiny-llava-v1-hf"
 # model_id = "llava-hf/llava-onevision-qwen2-7b-ov-hf"        # Figure 18
 # model_id = "HuggingFaceM4/idefics2-8b-chatty"
-model_id = "HuggingFaceM4/idefics2-8b"
+# model_id = "HuggingFaceM4/idefics2-8b"                      # Figure 19
 
 def plot_rsa_figure_1c(
     rsa_scores_prompt: Dict[str, List[float]],

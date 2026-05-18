@@ -1,15 +1,9 @@
 import torch
 from nnsight import LanguageModel
 from typing import Dict, Any, List, Tuple
-import gc
 
-from src.utils.tools import _resolve_layer_path, _build_object_ids, _resolve_text_model_dims, get_layer_path_template
+from src.utils.tools import _resolve_layer_path, _build_object_ids, _resolve_text_model_dims, get_layer_path_template, gc_collect
 
-def gc_collect():
-    # Force clear the memory before the next trial begins
-    gc.collect()
-    if torch.cuda.is_available():
-        torch.cuda.empty_cache()
 
 def extract_hidden_states(
     model: LanguageModel, 

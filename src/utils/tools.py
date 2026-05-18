@@ -4,8 +4,12 @@ from typing import Dict, Any, List, Tuple
 import gc
 import yaml
 
-from src.mech_interp.tracer import gc_collect
 
+def gc_collect():
+    # Force clear the memory before the next trial begins
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
 
 def predict(
     model: LanguageModel, 

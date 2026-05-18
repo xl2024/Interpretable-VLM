@@ -70,6 +70,8 @@ def cma_headwise(
                 with model.trace() as tracer:
                     with tracer.invoke(**inputs_c1):
                         target_layer = _resolve_layer_path(model, layer_template.format(l))
+                        print('cma head patching: ', model, layer_template)
+                        print('cma head patching (layer_module): ', layer_module)
                         
                         # Intercept input to o_proj
                         hs_input = target_layer.self_attn.o_proj.input[0]
@@ -127,6 +129,8 @@ def cma_head_patching(
             with tracer.invoke(**inputs_c2):
                 for l, heads_in_this_layer in heads_by_layer.items():
                     layer_module = _resolve_layer_path(model, layer_template.format(l))
+                    print('cma head patching: ', model, layer_template)
+                    print('cma head patching (layer_module): ', layer_module)
                     # Safely intercept full 3D tensor: [batch, seq_len, hidden_dim]
                     attn_out = layer_module.self_attn.o_proj.input[0]
                     hs_heads = einops.rearrange(attn_out, 's (h d) -> s h d', h=num_heads)

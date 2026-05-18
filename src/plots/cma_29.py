@@ -98,8 +98,8 @@ def get_top_k_heads(mediation_scores: np.ndarray, k: int) -> List[Tuple[int, int
 def main():
     print("=== Execution Suite: Live Mechanistic Head Interventions ===")
     model_id = "Qwen/Qwen2-VL-7B-Instruct"
+    # model_id = "Qwen/Qwen2.5-VL-3B-Instruct"
     config = load_config()
-    # model_id = "bczhou/tiny-llava-v1-hf"
     tier = config['pipeline']['tier']
     model, processor = load_vlm(model_id, tier)    
     num_layers = get_num_hidden_layers(model)

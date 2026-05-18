@@ -142,7 +142,7 @@ def main():
         )
         
         for last_pos in range(4):
-            if p['rel_coords'][last_pos] != (1,1):
+            if p['abs_coords'][last_pos] != (1,1) and p['rel_coords'][last_pos] != (1,1):
                 continue
             obj_indices, text_prompt = get_dynamic_token_indices(
                 processor, colors=p['colors'], shapes=p['shapes'], abs_coords=p['abs_coords'], rel_coords=p['rel_coords'], image=img, last_pos=last_pos

@@ -243,23 +243,6 @@ def get_text_prompt(model, text, image, processor):
 def get_layer_path_template(model):
     model_id_lower = get_model_id(model).lower()
     if "idefics" in model_id_lower:
-        # IDEFICS/IDEFICS2 often wraps layers under text_model.model.layers
-        if (
-            hasattr(model, "model")
-            and hasattr(model.model, "text_model")
-            and hasattr(model.model.text_model, "model")
-            and hasattr(model.model.text_model.model, "layers")
-        ):
-            return "model.text_model.model.layers[{}]"
         return "model.text_model.layers[{}]"
-
-    # Default path for most VLMs, with a fallback for nested language_model.model.layers
-    if (
-        hasattr(model, "model")
-        and hasattr(model.model, "language_model")
-        and hasattr(model.model.language_model, "model")
-        and hasattr(model.model.language_model.model, "layers")
-    ):
-        return "model.language_model.model.layers[{}]"
-
-    return "model.language_model.layers[{}]"
+    else:
+        return "model.language_model.layers[{}]"

@@ -150,6 +150,9 @@ def get_num_hidden_layers(model: Any) -> int:
     """
     Resolve decoder layer count across wrapped/unwrapped VLM model objects.
     """
+    if hasattr(model, "config") and hasattr(model.config, "num_hidden_layers"):
+        return model.config.num_hidden_layers
+    
     # Typical HF multimodal configs (e.g., LlavaForConditionalGeneration)
     if hasattr(model, "config") and hasattr(model.config, "text_config"):
         return model.config.text_config.num_hidden_layers

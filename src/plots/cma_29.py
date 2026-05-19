@@ -72,20 +72,22 @@ def main():
         colors=["pink", "blue"]
     )
     # top_k = int(0.1*num_layers*num_heads)
-    top_k = 50
-    top_k_heads = get_top_k_heads(mediation_scores, top_k)
+    for k in range(500):
+        top_k_heads = get_top_k_heads(mediation_scores, top_k=k)
 
-    predicted_word = cma_head_patching(
-        model=model,
-        processor=processor,
-        num_layers=num_layers,
-        num_heads=num_heads,
-        prompt_c1=text_prompt_c2,
-        prompt_c2=text_prompt_c1,
-        image_c1=image_c2,
-        image_c2=image_c1,
-        top_k_heads=top_k_heads
-    )
+        predicted_word = cma_head_patching(
+            model=model,
+            processor=processor,
+            num_layers=num_layers,
+            num_heads=num_heads,
+            prompt_c1=text_prompt_c2,
+            prompt_c2=text_prompt_c1,
+            image_c1=image_c2,
+            image_c2=image_c1,
+            top_k_heads=top_k_heads
+        )
+
+        print(f"k={k}: The model predicted: '{predicted_word}'")
 
 if __name__ == "__main__":
     main()

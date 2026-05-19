@@ -457,7 +457,7 @@ def cma_head_patching(
     # 3. Decode that ID straight back into an English word
     predicted_word = processor.tokenizer.decode([predicted_token_id])
 
-    print(f"The model predicted: '{predicted_word}'")
+    # print(f"The model predicted: '{predicted_word}'")
 
     # with torch.no_grad():
     #     with model.generate(max_new_tokens=2, pad_token_id=processor.tokenizer.eos_token_id) as tracer:

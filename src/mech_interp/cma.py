@@ -43,14 +43,14 @@ def run_cma_for_ID_selection(
 
     image_c1 = generate_custom_image(
         cols=num_cols,
-        rows=1,
+        rows=num_rows,
         shapes=shapes,
         colors=colors,
         coords=coords_c1
     )
     image_c2 = generate_custom_image(
         cols=num_cols,
-        rows=num_rows,
+        rows=1,
         shapes=shapes,
         colors=colors,
         coords=coords_c2

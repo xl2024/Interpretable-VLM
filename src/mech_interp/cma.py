@@ -440,7 +440,7 @@ def cma_head_patching(
                         c2_state = c2_head_cache[l, h].to(model.device)
                         c1_state = hs_heads[-1, h, :]
                         concept_vector = c2_state - c1_state
-                        hs_heads[-1, h, :] = c1_state + (5.0 * concept_vector)
+                        hs_heads[-1, h, :] = c1_state + (3.0 * concept_vector)
 
                     # Repack dimensions safely
                     hs_input[:] = einops.rearrange(hs_heads, 's h d -> s (h d)')

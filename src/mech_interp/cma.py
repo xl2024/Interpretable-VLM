@@ -41,10 +41,6 @@ def run_cma_for_ID_selection(
             coords_c2.append((i,j))
     coords_c2[-2:] = coords_c2[-1:-3:-1]
 
-    print("prompt: ",prompt)
-    print("coords_c1: ",coords_c1)
-    print("coords_c2: ",coords_c2)
-
     image_c1 = generate_custom_image(
         cols=num_cols,
         rows=num_rows,
@@ -278,7 +274,7 @@ def cma_head_patching(
                         c2_state = c2_head_cache[l, h].to(model.device)
                         c1_state = hs_heads[-1, h, :]
                         concept_vector = c2_state - c1_state
-                        hs_heads[-1, h, :] = c1_state + (3.0 * concept_vector)
+                        hs_heads[-1, h, :] = c1_state + (5.0 * concept_vector)
 
                     # Repack dimensions safely
                     hs_input[:] = einops.rearrange(hs_heads, 's h d -> s (h d)')

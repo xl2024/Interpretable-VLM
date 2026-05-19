@@ -40,11 +40,10 @@ def run_cma_for_ID_selection(
             coords_c1.append((i,j))
             coords_c2.append((i,j))
     coords_c2[-2:] = coords_c2[-1:-3:-1]
-    coords_c2 = coords_c2[-1:-3:-1]
 
     image_c1 = generate_custom_image(
         cols=num_cols,
-        rows=num_rows,
+        rows=1,
         shapes=shapes,
         colors=colors,
         coords=coords_c1

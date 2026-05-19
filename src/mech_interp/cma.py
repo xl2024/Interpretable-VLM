@@ -140,21 +140,22 @@ def cma_head_patching(
     with torch.no_grad():
         with model.trace() as tracer:
             with tracer.invoke(**inputs_c1):
-                for l, h in sorted(top_k_heads):
+                for l, heads_in_this_layer in sorted(heads_by_layer.items()):
                     target_layer = _resolve_layer_path(model, layer_template.format(l))
                     
                     # Intercept input to o_proj
                     hs_input = target_layer.self_attn.o_proj.input[0]
                     hs_heads = einops.rearrange(hs_input, 's (h d) -> s h d', h=num_heads)
                     
-                    # True CMA Patch: Inject cached c2 head state into c1 stream
-                    hs_heads[-1, h, :] = c2_head_cache[l,h].to(model.device)
+                    for h in sorted(heads_in_this_layer):
+                        # True CMA Patch: Inject cached c2 head state into c1 stream
+                        hs_heads[-1, h, :] = c2_head_cache[l,h].to(model.device)
                     
                     # Repack dimensions safely
                     hs_input[:] = einops.rearrange(hs_heads, 's h d -> s (h d)')
 
-                    # Capture patched output logits safely
-                    patched_logits = model.lm_head.output[:, -1, :].save()
+                # Capture patched output logits safely
+                patched_logits = model.lm_head.output[:, -1, :].save()
 
         gc_collect()
 

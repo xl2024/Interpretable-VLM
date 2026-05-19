@@ -18,7 +18,8 @@ def cma_headwise(
     image_c2: Any,
     token_pos: Tuple[int, int],
     a1_id: int,
-    a1_star_id: int
+    a1_star_id: int,
+    _mediation_scores: List[List[Any]] = None
 ) -> List[List[Any]]:
     """
     Executes Causal Mediation Analysis (Activation Patching) across all attention heads.
@@ -59,7 +60,10 @@ def cma_headwise(
     print(f"Baseline Clean Term: {base_term:.4f}")
 
     # 5. Activation Patching Intervention Loop (c2 -> c1)
-    mediation_scores = np.zeros((num_layers, num_heads))
+    if _mediation_scores is None:
+        mediation_scores = np.zeros((num_layers, num_heads))
+    else:
+        mediation_scores = _mediation_scores
     print(f"Executing intervention sweep across {num_layers} layers and {num_heads} heads per layer...")
     
     for l in range(num_layers):
@@ -93,7 +97,7 @@ def cma_headwise(
             
             # Equation (1): s = Patched Term - Baseline Term
             s = patched_term - base_term
-            mediation_scores[l, h] = s
+            mediation_scores[l, h] += s
 
     return mediation_scores
 

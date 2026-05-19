@@ -14,12 +14,40 @@ from src.mech_interp.cma import cma_headwise, cma_head_patching
 absolute_score = 0
 relative_score = 0
 
+def scores_for_ID_selection(
+    model: Any,
+    processor: Any,
+    num_layers: int,
+    num_heads: int,
+    runs: int
+) -> List[List[Any]]:
+    shapeset = ["circle", "square", "triangle", "cross", "star", "heart"]
+    colorset = ['red', 'blue', 'green', 'yellow', 'purple']
+    mediation_scores_2 = np.zeros((num_layers, num_heads))
+    for i in range(runs):
+        shapes = np.random.choice(shapeset, size=2, replace=False)
+        colors = np.random.choice(colorset, size=2, replace=False)
+        print(f"scores_for_ID_selection runs {i+1}/{runs}")
+        mediation_scores_2 = run_mediation_analysis_for_ID_selection(
+                                model=model,
+                                processor=processor,
+                                num_layers=num_layers,
+                                num_heads=num_heads,
+                                shapes=shapes,
+                                colors=colors,
+                                _mediation_scores = mediation_scores_2
+                            )
+        
+    return mediation_scores_2
 
 def run_mediation_analysis_for_ID_selection(
     model: Any,
     processor: Any,
     num_layers: int,
-    num_heads: int
+    num_heads: int,
+    shapes: List[str],
+    colors: List[str],
+    _mediation_scores: List[List[Any]]
 ) -> List[List[Any]]:
     """
     Executes Causal Mediation Analysis (Activation Patching) across all attention heads.
@@ -30,27 +58,27 @@ def run_mediation_analysis_for_ID_selection(
     # ID Retrieval Heads
     print("cma for ID Retrieval Heads...(skipped for head patching)")
 
-    prompt = "In this image there is a blue circle and a"
+    prompt = f"In this image there is a {colors[0]} {shapes[0]} and a"
 
     image_c1 = generate_custom_image(
-        shapes=["circle", "square"],
-        colors=["blue", "red"],
+        shapes=shapes,
+        colors=colors,
         coords=[(0,0), (0,1)]
     )
     image_c2 = generate_custom_image(
-        shapes=["circle", "square"],
-        colors=["blue", "red"],
+        shapes=shapes,
+        colors=colors,
         coords=[(0,1), (0,0)]
     )
 
     text_prompt_c1 = get_text_prompt(model, prompt, image_c1, processor)
     text_prompt_c2 = get_text_prompt(model, prompt, image_c2, processor)
 
-    print(f"Prediction: {predict(model, processor, image_c1, text_prompt_c1)} (target: red)")
-    print(f"Prediction: {predict(model, processor, image_c2, text_prompt_c2)} (target: red)")
+    print(f"Prediction: {predict(model, processor, image_c1, text_prompt_c1)} (target: {colors[1]})")
+    print(f"Prediction: {predict(model, processor, image_c2, text_prompt_c2)} (target: {colors[1]})")
 
-    a1_tokens = processor.tokenizer.encode("red", add_special_tokens=False)
-    a1_star_tokens = processor.tokenizer.encode("blue", add_special_tokens=False)
+    a1_tokens = processor.tokenizer.encode(colors[1], add_special_tokens=False)
+    a1_star_tokens = processor.tokenizer.encode(colors[0], add_special_tokens=False)
     a1_id = a1_tokens[-1]
     a1_star_id = a1_star_tokens[-1]
 
@@ -74,7 +102,8 @@ def run_mediation_analysis_for_ID_selection(
         image_c2=image_c2,
         token_pos=token_pos,
         a1_id=a1_id,
-        a1_star_id=a1_star_id
+        a1_star_id=a1_star_id,
+        _mediation_scores=_mediation_scores
     )
 
     print("cma finished")
@@ -130,11 +159,12 @@ def main():
     text_prompt_c1 = get_text_prompt(model, prompt_1, image_c1, processor)
     text_prompt_c2 = get_text_prompt(model, prompt_2, image_c2, processor)
 
-    mediation_scores = run_mediation_analysis_for_ID_selection(
+    mediation_scores = scores_for_ID_selection(
         model=model,
         processor=processor,
         num_layers=num_layers,
-        num_heads= num_heads
+        num_heads= num_heads,
+        runs=10
     )
     top_k = int(0.1*num_layers*num_heads)
     top_k_heads = get_top_k_heads(mediation_scores, top_k)

@@ -65,11 +65,15 @@ def run_mediation_analysis_for_ID_selection(
     colors = ["pink", "orange", "purple", "blue"]
 
     image_c1 = generate_custom_image(
+        cols=2,
+        rows=2,
         shapes=shapes,
         colors=colors,
         coords=[(0,0), (0,1), (1,0), (1,1)]
     )
     image_c2 = generate_custom_image(
+        cols=2,
+        rows=2,
         shapes=shapes,
         colors=colors,
         coords=[(0,0), (0,1), (1,1), (1,0)]

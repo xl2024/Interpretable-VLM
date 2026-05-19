@@ -135,8 +135,10 @@ def cma_head_patching(
 
         gc_collect()
 
+    
+    patched_logits = None
     with torch.no_grad():
-        with model.generate(max_new_tokens=2, pad_token_id=processor.tokenizer.eos_token_id) as tracer:
+        with model.trace() as tracer:
             with tracer.invoke(**inputs_c1):
                 for l, h in sorted(top_k_heads):
                     target_layer = _resolve_layer_path(model, layer_template.format(l))
@@ -150,17 +152,49 @@ def cma_head_patching(
                     
                     # Repack dimensions safely
                     hs_input[:] = einops.rearrange(hs_heads, 's h d -> s (h d)')
-        
-                patched_output = tracer.result.save()
+
+                    # Capture patched output logits safely
+                    patched_logits = model.lm_head.output[:, -1, :].save()
 
         gc_collect()
 
-    predicted_text = processor.decode(patched_output[0], skip_special_tokens=True)
-    print(f"The patched model said: {predicted_text}")
+    # 1. Grab the raw logits for the final token
+    final_logits = patched_logits.value[0, -1, :]
 
-    input_length = inputs_c1["input_ids"].shape[1]
-    new_tokens = patched_output[0][input_length:]
-    predicted_word = processor.tokenizer.decode(new_tokens, skip_special_tokens=True)
-    print(f"predicted_word: {predicted_word}")
+    # 2. Instantly find the index (Token ID) of the highest number
+    predicted_token_id = final_logits.argmax(dim=-1).item()
+
+    # 3. Decode that ID straight back into an English word
+    predicted_word = processor.tokenizer.decode([predicted_token_id])
+
+    print(f"The model predicted: '{predicted_word}'")
+
+    # with torch.no_grad():
+    #     with model.generate(max_new_tokens=2, pad_token_id=processor.tokenizer.eos_token_id) as tracer:
+    #         with tracer.invoke(**inputs_c1):
+    #             for l, h in sorted(top_k_heads):
+    #                 target_layer = _resolve_layer_path(model, layer_template.format(l))
+                    
+    #                 # Intercept input to o_proj
+    #                 hs_input = target_layer.self_attn.o_proj.input[0]
+    #                 hs_heads = einops.rearrange(hs_input, 's (h d) -> s h d', h=num_heads)
+                    
+    #                 # True CMA Patch: Inject cached c2 head state into c1 stream
+    #                 hs_heads[-1, h, :] = c2_head_cache[l,h].to(model.device)
+                    
+    #                 # Repack dimensions safely
+    #                 hs_input[:] = einops.rearrange(hs_heads, 's h d -> s (h d)')
+        
+    #             patched_output = tracer.result.save()
+
+    #     gc_collect()
+
+    # predicted_text = processor.decode(patched_output[0], skip_special_tokens=True)
+    # print(f"The patched model said: {predicted_text}")
+
+    # input_length = inputs_c1["input_ids"].shape[1]
+    # new_tokens = patched_output[0][input_length:]
+    # predicted_word = processor.tokenizer.decode(new_tokens, skip_special_tokens=True)
+    # print(f"predicted_word: {predicted_word}")
 
     return predicted_word

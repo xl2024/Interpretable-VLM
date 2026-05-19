@@ -40,6 +40,7 @@ def run_cma_for_ID_selection(
             coords_c1.append((i,j))
             coords_c2.append((i,j))
     coords_c2[-2:] = coords_c2[-1:-3:-1]
+    coords_c2 = coords_c2[-1:-3:-1]
 
     image_c1 = generate_custom_image(
         cols=num_cols,
@@ -154,6 +155,7 @@ def cma_headwise(
         mediation_scores = _mediation_scores
     print(f"Executing intervention sweep across {num_layers} layers and {num_heads} heads per layer...")
     
+    print(f"skipping the first {int(num_layers/2)} layers for speeding up...")
     for l in range(num_layers):
         if l < num_layers/2:
             continue

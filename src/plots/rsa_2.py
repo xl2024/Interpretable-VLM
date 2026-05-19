@@ -11,10 +11,10 @@ from src.utils.tools import predict, get_num_hidden_layers, load_config, get_tex
 
 # Reproduces Figure 2 and 26-28
 
-model_id = "Qwen/Qwen2-VL-7B-Instruct"                      # Figure 2 and 27a
+# model_id = "Qwen/Qwen2-VL-7B-Instruct"                      # Figure 2 and 27a
 # model_id = "Qwen/Qwen2.5-VL-3B-Instruct"                    # Figure 26a
 # model_id = "Qwen/Qwen2.5-VL-7B-Instruct"                    # Figure 26b
-# model_id = "Qwen/Qwen2.5-VL-32B-Instruct"                   # Figure 26c
+model_id = "Qwen/Qwen2.5-VL-32B-Instruct"                   # Figure 26c
 # model_id = "llava-hf/llava-1.5-7b-hf"                       # Figure 27b
 # model_id = "llava-hf/llava-1.5-13b-hf"                      # Figure 27c
 # model_id = "bczhou/tiny-llava-v1-hf"

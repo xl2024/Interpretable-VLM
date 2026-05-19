@@ -72,7 +72,7 @@ def main():
         colors=["pink", "blue"]
     )
     # top_k = int(0.1*num_layers*num_heads)
-    for k in range(500):
+    for k in range(300):
         top_k_heads = get_top_k_heads(mediation_scores, top_k=k)
 
         predicted_word = cma_head_patching(

@@ -62,7 +62,7 @@ def run_mediation_analysis_for_ID_selection(
 
     shapes = ["circle", "square", "heart", "triangle"]
     colors = ["pink", "orange", "purple", "blue"]
-    
+
     # prompt = f"In this image there is a {colors[0]} {shapes[0]} and a"
     num_objs = len(shapes)
     prompt = "In this image there is a"
@@ -77,7 +77,7 @@ def run_mediation_analysis_for_ID_selection(
         for j in range(2):
             coords_c1.append((i,j))
             coords_c2.append((i,j))
-    coords_c2 = coords_c2[-1:-3:-1]
+    coords_c2[-2:] = coords_c2[-1:-3:-1]
     print("coords_c1: ", coords_c1)
     print("coords_c2: ", coords_c2)
 

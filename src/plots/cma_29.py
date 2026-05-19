@@ -6,134 +6,13 @@ from src.model.loader import load_vlm
 from src.data.synthetic_generator import generate_custom_image
 from src.utils.tools import load_config, _resolve_text_model_dims, get_text_prompt, predict
 from src.plots.rsa_1c import get_num_hidden_layers
-from src.mech_interp.cma import cma_headwise, cma_head_patching
+from src.mech_interp.cma import cma_head_patching, run_mediation_analysis_for_ID_selection
 
 
 
 
 absolute_score = 0
 relative_score = 0
-
-def scores_for_ID_selection(
-    model: Any,
-    processor: Any,
-    num_layers: int,
-    num_heads: int,
-    runs: int
-) -> List[List[Any]]:
-    shapeset = ["circle", "square", "triangle", "cross", "star", "heart"]
-    colorset = ['red', 'blue', 'green', 'yellow', 'purple']
-    mediation_scores_2 = np.zeros((num_layers, num_heads))
-    for i in range(runs):
-        if i > 0: continue
-        shapes = np.random.choice(shapeset, size=2, replace=False)
-        colors = np.random.choice(colorset, size=2, replace=False)
-        print(f"scores_for_ID_selection runs {i+1}/{runs}")
-        mediation_scores_2 = run_mediation_analysis_for_ID_selection(
-                                model=model,
-                                processor=processor,
-                                num_layers=num_layers,
-                                num_heads=num_heads,
-                                shapes=shapes,
-                                colors=colors,
-                                _mediation_scores = mediation_scores_2
-                            )
-        
-    return mediation_scores_2
-
-def run_mediation_analysis_for_ID_selection(
-    model: Any,
-    processor: Any,
-    num_layers: int,
-    num_heads: int,
-    shapes: List[str],
-    colors: List[str],
-    _mediation_scores: List[List[Any]] = None
-) -> List[List[Any]]:
-    """
-    Executes Causal Mediation Analysis (Activation Patching) across all attention heads.
-    Patches activations from a modified context (c2) into the clean context (c1) following Eq. (1).
-    """
-    print("Preparing Causal Mediation Analysis...")
-
-    # ID Retrieval Heads
-    print("cma for ID Retrieval Heads...(skipped for head patching)")
-
-
-    shapes = ["circle", "square", "heart", "triangle"]
-    colors = ["pink", "orange", "purple", "blue"]
-
-    # prompt = f"In this image there is a {colors[0]} {shapes[0]} and a"
-    num_objs = len(shapes)
-    prompt = "In this image there is a"
-    for i in range(num_objs-1):
-        prompt += f" {colors[i]} {shapes[i]}, a"
-    prompt = prompt[:-3] + " and a"
-    print("prompt in id sel:", prompt)
-    num_cols, num_rows = 2, int((num_objs+1)/2)
-    coords_c1 = []
-    coords_c2 = []
-    for i in range(num_rows):
-        for j in range(2):
-            coords_c1.append((i,j))
-            coords_c2.append((i,j))
-    coords_c2[-2:] = coords_c2[-1:-3:-1]
-    print("coords_c1: ", coords_c1)
-    print("coords_c2: ", coords_c2)
-
-    image_c1 = generate_custom_image(
-        cols=num_cols,
-        rows=num_rows,
-        shapes=shapes,
-        colors=colors,
-        coords=coords_c1
-    )
-    image_c2 = generate_custom_image(
-        cols=num_cols,
-        rows=num_rows,
-        shapes=shapes,
-        colors=colors,
-        coords=coords_c2
-    )
-
-    text_prompt_c1 = get_text_prompt(model, prompt, image_c1, processor)
-    text_prompt_c2 = get_text_prompt(model, prompt, image_c2, processor)
-
-    print(f"Prediction: {predict(model, processor, image_c1, text_prompt_c1)} (target: {colors[-1]})")
-    print(f"Prediction: {predict(model, processor, image_c2, text_prompt_c2)} (target: {colors[-1]})")
-
-    a1_tokens = processor.tokenizer.encode(colors[-1], add_special_tokens=False)
-    a1_star_tokens = processor.tokenizer.encode(colors[-2], add_special_tokens=False)
-    a1_id = a1_tokens[-1]
-    a1_star_id = a1_star_tokens[-1]
-
-    print(f"Target Token ID (a1): {a1_id} -> '{processor.tokenizer.decode([a1_id])}'")
-    print(f"Contrast Token ID (a1*): {a1_star_id} -> '{processor.tokenizer.decode([a1_star_id])}'")
-
-    # ID Selection Heads
-    print("cma for ID Selection Heads...")
-    token_inputs = processor(text=text_prompt_c1, images=image_c1, return_tensors="pt")
-    input_ids = token_inputs["input_ids"][0].tolist()
-    token_pos = (len(input_ids)-1, len(input_ids))
-
-    mediation_scores_2 = cma_headwise(
-        model=model,
-        processor=processor,
-        num_layers=num_layers,
-        num_heads=num_heads,
-        prompt_c1=text_prompt_c1,
-        prompt_c2=text_prompt_c2,
-        image_c1=image_c1,
-        image_c2=image_c2,
-        token_pos=token_pos,
-        a1_id=a1_id,
-        a1_star_id=a1_star_id,
-        _mediation_scores=_mediation_scores
-    )
-
-    print("cma finished")
-
-    return mediation_scores_2
 
 def get_top_k_heads(mediation_scores: np.ndarray, k: int) -> List[Tuple[int, int]]:
     """
@@ -184,12 +63,13 @@ def main():
     text_prompt_c1 = get_text_prompt(model, prompt_1, image_c1, processor)
     text_prompt_c2 = get_text_prompt(model, prompt_2, image_c2, processor)
 
-    mediation_scores = scores_for_ID_selection(
+    mediation_scores = run_mediation_analysis_for_ID_selection(
         model=model,
         processor=processor,
         num_layers=num_layers,
         num_heads= num_heads,
-        runs=10
+        shapes = ["circle", "square", "heart", "triangle"],
+        colors = ["pink", "orange", "purple", "blue"]
     )
     top_k = int(0.1*num_layers*num_heads)
     top_k_heads = get_top_k_heads(mediation_scores, top_k)

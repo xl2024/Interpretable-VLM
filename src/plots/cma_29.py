@@ -90,7 +90,9 @@ def get_top_k_heads(mediation_scores: np.ndarray, k: int) -> List[Tuple[int, int
     
     # 2. Convert flat 1D indices back into 2D (layer, head) coordinates
     layers, heads = np.unravel_index(top_k_flat_indices, mediation_scores.shape)
-    
+    layers = layers.tolist()    # np.int64 -> int
+    heads = heads.tolist()
+
     print(f"Found top {k}/{mediation_scores.size} heads.")
 
     return list(zip(layers, heads))
@@ -132,7 +134,6 @@ def main():
     )
     top_k = int(0.1*num_layers*num_heads)
     top_k_heads = get_top_k_heads(mediation_scores, top_k)
-    print("top k heads:",num_layers, num_heads, top_k_heads)
 
     predicted_word = cma_head_patching(
         model=model,

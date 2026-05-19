@@ -25,6 +25,7 @@ def scores_for_ID_selection(
     colorset = ['red', 'blue', 'green', 'yellow', 'purple']
     mediation_scores_2 = np.zeros((num_layers, num_heads))
     for i in range(runs):
+        if i > 0: continue
         shapes = np.random.choice(shapeset, size=2, replace=False)
         colors = np.random.choice(colorset, size=2, replace=False)
         print(f"scores_for_ID_selection runs {i+1}/{runs}")
@@ -58,27 +59,30 @@ def run_mediation_analysis_for_ID_selection(
     # ID Retrieval Heads
     print("cma for ID Retrieval Heads...(skipped for head patching)")
 
-    prompt = f"In this image there is a {colors[0]} {shapes[0]} and a"
+    # prompt = f"In this image there is a {colors[0]} {shapes[0]} and a"
+    prompt = "In this image there is a pink circle, a orange square, a purple heart and a"
+    shapes = ["circle", "square", "heart", "triangle"]
+    colors = ["pink", "orange", "purple", "blue"]
 
     image_c1 = generate_custom_image(
         shapes=shapes,
         colors=colors,
-        coords=[(0,0), (0,1)]
+        coords=[(0,0), (0,1), (1,0), (1,1)]
     )
     image_c2 = generate_custom_image(
         shapes=shapes,
         colors=colors,
-        coords=[(0,1), (0,0)]
+        coords=[(0,0), (0,1), (1,1), (1,0)]
     )
 
     text_prompt_c1 = get_text_prompt(model, prompt, image_c1, processor)
     text_prompt_c2 = get_text_prompt(model, prompt, image_c2, processor)
 
-    print(f"Prediction: {predict(model, processor, image_c1, text_prompt_c1)} (target: {colors[1]})")
-    print(f"Prediction: {predict(model, processor, image_c2, text_prompt_c2)} (target: {colors[1]})")
+    print(f"Prediction: {predict(model, processor, image_c1, text_prompt_c1)} (target: {colors[-1]})")
+    print(f"Prediction: {predict(model, processor, image_c2, text_prompt_c2)} (target: {colors[-1]})")
 
-    a1_tokens = processor.tokenizer.encode(colors[1], add_special_tokens=False)
-    a1_star_tokens = processor.tokenizer.encode(colors[0], add_special_tokens=False)
+    a1_tokens = processor.tokenizer.encode(colors[-1], add_special_tokens=False)
+    a1_star_tokens = processor.tokenizer.encode(colors[-2], add_special_tokens=False)
     a1_id = a1_tokens[-1]
     a1_star_id = a1_star_tokens[-1]
 

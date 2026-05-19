@@ -71,8 +71,9 @@ def main():
         shapes=["circle", "triangle"],
         colors=["pink", "blue"]
     )
+    # [Note: alpha=3, k=0 -> 'purple', k=1,...,21 -> 'orange', k>=22 -> 'blue']
     # top_k = int(0.1*num_layers*num_heads)
-    for k in range(300):
+    for k in range(50):
         top_k_heads = get_top_k_heads(mediation_scores, k)
 
         predicted_word = cma_head_patching(

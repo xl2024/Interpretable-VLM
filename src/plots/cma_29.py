@@ -48,7 +48,7 @@ def run_mediation_analysis_for_ID_selection(
     num_heads: int,
     shapes: List[str],
     colors: List[str],
-    _mediation_scores: List[List[Any]]
+    _mediation_scores: List[List[Any]] = None
 ) -> List[List[Any]]:
     """
     Executes Causal Mediation Analysis (Activation Patching) across all attention heads.
@@ -60,23 +60,39 @@ def run_mediation_analysis_for_ID_selection(
     print("cma for ID Retrieval Heads...(skipped for head patching)")
 
     # prompt = f"In this image there is a {colors[0]} {shapes[0]} and a"
-    prompt = "In this image there is a pink circle, a orange square, a purple heart and a"
+    num_objs = len(shapes)
+    prompt = "In this image there is a"
+    for i in range(num_objs-1):
+        prompt += f" {colors[i]} {shapes[i]}, a"
+    prompt = prompt[:-3] + " and a"
+    print("prompt in id sel:", prompt)
+    num_cols, num_rows = 2, int((num_objs+1)/2)
+    coords_c1 = []
+    coords_c2 = []
+    for i in range(num_rows):
+        for j in range(2):
+            coords_c1.append((i,j))
+            coords_c2.append((i,j))
+    coords_c2 = coords_c2[-1:-3:-1]
+    print("coords_c1: ", coords_c1)
+    print("coords_c2: ", coords_c2)
+
     shapes = ["circle", "square", "heart", "triangle"]
     colors = ["pink", "orange", "purple", "blue"]
 
     image_c1 = generate_custom_image(
-        cols=2,
-        rows=2,
+        cols=num_cols,
+        rows=num_rows,
         shapes=shapes,
         colors=colors,
-        coords=[(0,0), (0,1), (1,0), (1,1)]
+        coords=coords_c1
     )
     image_c2 = generate_custom_image(
-        cols=2,
-        rows=2,
+        cols=num_cols,
+        rows=num_rows,
         shapes=shapes,
         colors=colors,
-        coords=[(0,0), (0,1), (1,1), (1,0)]
+        coords=coords_c2
     )
 
     text_prompt_c1 = get_text_prompt(model, prompt, image_c1, processor)

@@ -32,7 +32,8 @@ def run_mediation_analysis(
     Executes Causal Mediation Analysis (Activation Patching) across all attention heads.
     Patches activations from a modified context (c2) into the clean context (c1) following Eq. (1).
     """
-    filename = f"src/data/cma/{get_model_id(model)}.npz"
+    model_name = get_model_id(model).replace('/', '_')
+    filename = f"src/data/cma/{model_name}.npz"
     file_path = Path(filename)
     if file_path.exists():
         print(f"Found {filename}! Loading cma scores...")

@@ -41,6 +41,10 @@ def run_cma_for_ID_selection(
             coords_c2.append((i,j))
     coords_c2[-2:] = coords_c2[-1:-3:-1]
 
+    print("prompt: ",prompt)
+    print("coords_c1: ",coords_c1)
+    print("coords_c2: ",coords_c2)
+
     image_c1 = generate_custom_image(
         cols=num_cols,
         rows=num_rows,
@@ -155,6 +159,9 @@ def cma_headwise(
     print(f"Executing intervention sweep across {num_layers} layers and {num_heads} heads per layer...")
     
     for l in range(num_layers):
+        if l < num_layers/2:
+            continue
+
         print(f"Processing layer {l+1}/{num_layers}...")
         for h in range(num_heads):
             patched_logits = None
@@ -198,13 +205,12 @@ def multi_runs_for_ID_selection(
 ) -> List[List[Any]]:
     shapeset = ["circle", "square", "triangle", "cross", "star", "heart"]
     colorset = ['red', 'blue', 'green', 'yellow', 'purple']
-    mediation_scores_2 = np.zeros((num_layers, num_heads))
+    mediation_scores_2 = None
     for i in range(runs):
-        if i > 0: continue
         shapes = np.random.choice(shapeset, size=2, replace=False)
         colors = np.random.choice(colorset, size=2, replace=False)
         print(f"scores_for_ID_selection runs {i+1}/{runs}")
-        mediation_scores_2 = run_mediation_analysis_for_ID_selection(
+        mediation_scores_2 = run_cma_for_ID_selection(
                                 model=model,
                                 processor=processor,
                                 num_layers=num_layers,

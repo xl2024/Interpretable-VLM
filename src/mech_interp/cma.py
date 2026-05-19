@@ -149,8 +149,12 @@ def cma_head_patching(
                     
                     for h in sorted(heads_in_this_layer):
                         # True CMA Patch: Inject cached c2 head state into c1 stream
-                        hs_heads[-1, h, :] = c2_head_cache[l,h].to(model.device)
-                    
+                        # hs_heads[-1, h, :] = c2_head_cache[l, h].to(model.device)
+                        c2_state = c2_head_cache[l, h].to(model.device)
+                        c1_state = hs_heads[-1, h, :]
+                        concept_vector = c2_state - c1_state
+                        hs_heads[-1, h, :] = c1_state + (2.0 * concept_vector)
+
                     # Repack dimensions safely
                     hs_input[:] = einops.rearrange(hs_heads, 's h d -> s (h d)')
 

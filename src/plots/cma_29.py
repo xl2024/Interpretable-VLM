@@ -136,8 +136,11 @@ def main():
         num_layers=num_layers,
         num_heads= num_heads
     )
-    top_k = int(0.4*num_layers*num_heads)
+    top_k = int(0.1*num_layers*num_heads)
     top_k_heads = get_top_k_heads(mediation_scores, top_k)
+
+    top_scores_list = [mediation_scores[l, h] for l, h in top_k_heads]
+    print("top_scores_list:", top_scores_list)
 
     predicted_word = cma_head_patching(
         model=model,

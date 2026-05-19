@@ -8,7 +8,7 @@ from src.utils.tools import _resolve_layer_path, get_layer_path_template, get_te
 from src.mech_interp.tracer import gc_collect
 from src.data.synthetic_generator import generate_custom_image
 
-def run_mediation_analysis_for_ID_selection(
+def run_cma_for_ID_selection(
     model: Any,
     processor: Any,
     num_layers: int,

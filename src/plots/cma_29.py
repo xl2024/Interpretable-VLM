@@ -108,12 +108,16 @@ def main():
     _, num_heads = _resolve_text_model_dims(model)
     
     image_c1 = generate_custom_image(
+        cols=3,
+        rows=3,
         shapes=["circle", "square", "heart", "triangle"],
         colors=["pink", "orange", "purple", "blue"],
         coords=[(0,0), (0,1), (1,0), (1,1)],
         save_path='dataset/figure_29/1.png'
     )
     image_c2 = generate_custom_image(
+        cols=3,
+        rows=3,
         shapes=["circle", "triangle", "heart", "square"],
         colors=["pink", "blue", "purple", "orange"],
         coords=[(0,1), (0,2), (1,1), (1,2)],

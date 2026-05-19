@@ -156,15 +156,11 @@ def cma_head_patching(
         gc_collect()
 
     predicted_text = processor.decode(patched_output[0], skip_special_tokens=True)
-    predicted_word = predicted_text[len(prompt_c1):]
-    print(f"The patched model said (text): {predicted_text} length {len(predicted_text)}")
-    print(f"The patched model said (word): {predicted_word} length {len(predicted_word)}")
-
+    print(f"The patched model said: {predicted_text}")
 
     input_length = inputs_c1["input_ids"].shape[1]
     new_tokens = patched_output[0][input_length:]
-
-    predicted_word_2 = processor.tokenizer.decode(new_tokens, skip_special_tokens=True)
-    print(f"predicted_word_2: {predicted_word_2} length {len(predicted_word_2)}")
+    predicted_word = processor.tokenizer.decode(new_tokens, skip_special_tokens=True)
+    print(f"predicted_word: {predicted_word}")
 
     return predicted_word

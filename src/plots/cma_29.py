@@ -59,6 +59,10 @@ def run_mediation_analysis_for_ID_selection(
     # ID Retrieval Heads
     print("cma for ID Retrieval Heads...(skipped for head patching)")
 
+
+    shapes = ["circle", "square", "heart", "triangle"]
+    colors = ["pink", "orange", "purple", "blue"]
+    
     # prompt = f"In this image there is a {colors[0]} {shapes[0]} and a"
     num_objs = len(shapes)
     prompt = "In this image there is a"
@@ -76,9 +80,6 @@ def run_mediation_analysis_for_ID_selection(
     coords_c2 = coords_c2[-1:-3:-1]
     print("coords_c1: ", coords_c1)
     print("coords_c2: ", coords_c2)
-
-    shapes = ["circle", "square", "heart", "triangle"]
-    colors = ["pink", "orange", "purple", "blue"]
 
     image_c1 = generate_custom_image(
         cols=num_cols,

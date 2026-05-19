@@ -68,8 +68,8 @@ def main():
         processor=processor,
         num_layers=num_layers,
         num_heads= num_heads,
-        shapes=["circle", "square", "heart", "triangle"],
-        colors=["pink", "orange", "purple", "blue"]
+        shapes=["circle", "triangle"],
+        colors=["pink", "blue"]
     )
     top_k = int(0.1*num_layers*num_heads)
     top_k_heads = get_top_k_heads(mediation_scores, top_k)

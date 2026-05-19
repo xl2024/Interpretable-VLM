@@ -70,8 +70,8 @@ def cma_headwise(
     
     print(f"skipping the first {int(num_layers/2)} layers for speeding up...")
     for l in range(num_layers):
-        if l < num_layers*0.8:
-            continue
+        # if l < num_layers*0.8:
+        #     continue
 
         print(f"Processing layer {l+1}/{num_layers}...")
         for h in range(num_heads):

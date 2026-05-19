@@ -11,10 +11,10 @@ from src.mech_interp.cma import run_cma_for_ID_retrieval, run_cma_for_ID_selecti
 
 # Reproduces Figure 1d and 20-25
 
-model_id = "Qwen/Qwen2-VL-7B-Instruct"                      # Figure 1d
+# model_id = "Qwen/Qwen2-VL-7B-Instruct"                      # Figure 1d
 # model_id = "Qwen/Qwen2.5-VL-3B-Instruct"                    # Figure 20
 # model_id = "Qwen/Qwen2.5-VL-7B-Instruct"                    # Figure 21
-# model_id = "Qwen/Qwen2.5-VL-32B-Instruct"                   # Figure 22
+model_id = "Qwen/Qwen2.5-VL-32B-Instruct"                   # Figure 22
 # model_id = "llava-hf/llava-1.5-7b-hf"                       # Figure 23
 # model_id = "llava-hf/llava-1.5-13b-hf"                      # Figure 24
 # model_id = "bczhou/tiny-llava-v1-hf"

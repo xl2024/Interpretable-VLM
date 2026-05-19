@@ -161,7 +161,7 @@ def cma_head_patching(
 
     print("patched_logits.shape:", patched_logits.shape)
     # 1. Grab the raw logits for the final token
-    final_logits = patched_logits[0, -1, :]
+    final_logits = patched_logits[0, :]
     print("final_logits.shape:", final_logits.shape)
 
     # 2. Instantly find the index (Token ID) of the highest number

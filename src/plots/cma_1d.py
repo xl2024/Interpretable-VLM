@@ -2,9 +2,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 from typing import Dict, List, Tuple, Any
+from pathlib import Path
 
 from src.model.loader import load_vlm
-from src.utils.tools import load_config, _resolve_text_model_dims
+from src.utils.tools import load_config, _resolve_text_model_dims, get_model_id
 from src.plots.rsa_1c import get_num_hidden_layers
 from src.mech_interp.cma import run_cma_for_ID_retrieval, run_cma_for_ID_selection, run_cma_for_feature_retrieval
 
@@ -31,19 +32,35 @@ def run_mediation_analysis(
     Executes Causal Mediation Analysis (Activation Patching) across all attention heads.
     Patches activations from a modified context (c2) into the clean context (c1) following Eq. (1).
     """
-    print("Preparing Causal Mediation Analysis...")
+    filename = f"src/data/cma/{get_model_id(model)}.npz"
+    file_path = Path(filename)
+    if file_path.exists():
+        print(f"Found {filename}! Loading cma scores...")
+        loaded_data = np.load(filename)
+        mediation_scores_1 = loaded_data['mediation_scores_1']
+        mediation_scores_2 = loaded_data['mediation_scores_2']
+        mediation_scores_3 = loaded_data['mediation_scores_3']
+    else:
+        print("Preparing Causal Mediation Analysis...")
 
-    shapes = ["circle", "square"]
-    colors = ["blue", "red"]
+        shapes = ["circle", "square"]
+        colors = ["blue", "red"]
 
-    mediation_scores_1 = run_cma_for_ID_retrieval(model, processor, num_layers, num_heads, shapes, colors)
-                            
-    mediation_scores_2 = run_cma_for_ID_selection(model, processor, num_layers, num_heads, shapes, colors)
+        mediation_scores_1 = run_cma_for_ID_retrieval(model, processor, num_layers, num_heads, shapes, colors)
+                                
+        mediation_scores_2 = run_cma_for_ID_selection(model, processor, num_layers, num_heads, shapes, colors)
 
-    new_color = "green"
-    mediation_scores_3 = run_cma_for_feature_retrieval(model, processor, num_layers, num_heads, shapes, colors, new_color)
+        new_color = "green"
+        mediation_scores_3 = run_cma_for_feature_retrieval(model, processor, num_layers, num_heads, shapes, colors, new_color)
 
-    print("cma finished")
+        print("cma finished")
+    
+        np.savez(filename, 
+                 mediation_scores_1=mediation_scores_1, 
+                 mediation_scores_2=mediation_scores_2,
+                 mediation_scores_3=mediation_scores_3
+                 )
+        print(f"cma scores saved in {filename} successfully.")
 
     return mediation_scores_1, mediation_scores_2, mediation_scores_3
 

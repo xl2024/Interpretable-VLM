@@ -125,7 +125,7 @@ def main():
     )
 
     prompt_1 = "In this image there is a pink circle, a orange square, a purple heart and a"
-    prompt_2 = "In this image there is a pink circle, a orange square, a"
+    prompt_2 = "In this image there is a pink circle, a blue triangle, a"
 
     text_prompt_c1 = get_text_prompt(model, prompt_1, image_c1, processor)
     text_prompt_c2 = get_text_prompt(model, prompt_2, image_c2, processor)

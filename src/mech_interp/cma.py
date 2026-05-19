@@ -138,7 +138,7 @@ def cma_head_patching(
     with torch.no_grad():
         with model.generate(max_new_tokens=2, pad_token_id=processor.tokenizer.eos_token_id) as tracer:
             with tracer.invoke(**inputs_c1):
-                for l, h in top_k_heads:
+                for l, h in sorted(top_k_heads):
                     target_layer = _resolve_layer_path(model, layer_template.format(l))
                     
                     # Intercept input to o_proj

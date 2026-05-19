@@ -255,8 +255,6 @@ def run_cma_for_ID_selection(
     print(f"Target Token ID (a1): {a1_id} -> '{processor.tokenizer.decode([a1_id])}'")
     print(f"Contrast Token ID (a1*): {a1_star_id} -> '{processor.tokenizer.decode([a1_star_id])}'")
 
-    # ID Selection Heads
-    print("cma for ID Selection Heads...")
     token_inputs = processor(text=text_prompt_c1, images=image_c1, return_tensors="pt")
     input_ids = token_inputs["input_ids"][0].tolist()
     token_pos = (len(input_ids)-1, len(input_ids))

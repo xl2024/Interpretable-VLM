@@ -2,11 +2,100 @@ import torch
 import einops
 import numpy as np
 from typing import Dict, List, Tuple, Any
+import copy
 
-# Internal project imports
 from src.utils.tools import _resolve_layer_path, get_layer_path_template, get_text_prompt, predict
 from src.mech_interp.tracer import gc_collect
 from src.data.synthetic_generator import generate_custom_image
+
+
+def run_cma_for_ID_retrieval(
+    model: Any,
+    processor: Any,
+    num_layers: int,
+    num_heads: int,
+    shapes: List[str],
+    colors: List[str],
+    _mediation_scores: List[List[Any]] = None
+) -> List[List[Any]]:
+    """
+    Executes Causal Mediation Analysis (Activation Patching) across all attention heads.
+    Patches activations from a modified context (c2) into the clean context (c1) following Eq. (1).
+    """
+    # ID Retrieval Heads
+    print("cma for ID Retrieval Heads...")
+
+    num_objs = len(shapes)
+    prompt = "In this image there is a"
+    for i in range(num_objs-1):
+        prompt += f" {colors[i]} {shapes[i]}, a"
+    prompt = prompt[:-3] + " and a"
+    
+    num_cols, num_rows = 2, int((num_objs+1)/2)
+    coords_c1 = []
+    coords_c2 = []
+    for i in range(num_rows):
+        for j in range(2):
+            coords_c1.append((i,j))
+            coords_c2.append((i,j))
+    coords_c2[-2:] = coords_c2[-1:-3:-1]
+    
+    image_c1 = generate_custom_image(
+        cols=num_cols,
+        rows=num_rows,
+        shapes=shapes,
+        colors=colors,
+        coords=coords_c1
+    )
+    image_c2 = generate_custom_image(
+        cols=num_cols,
+        rows=num_rows,
+        shapes=shapes,
+        colors=colors,
+        coords=coords_c2
+    )
+
+    text_prompt_c1 = get_text_prompt(model, prompt, image_c1, processor)
+    text_prompt_c2 = get_text_prompt(model, prompt, image_c2, processor)
+
+    print(f"Prediction: {predict(model, processor, image_c1, text_prompt_c1)} (target: {colors[-1]})")
+    print(f"Prediction: {predict(model, processor, image_c2, text_prompt_c2)} (target: {colors[-1]})")
+
+    token_inputs = processor(text=text_prompt_c1, images=image_c1, return_tensors="pt")
+    input_ids = token_inputs["input_ids"][0].tolist()
+    for index, token_id in enumerate(input_ids):
+        token_str = processor.tokenizer.decode(token_id).strip().lower()
+        if colors[-2] in token_str:
+            token_pos_1 = index
+        elif shapes[-2] in token_str:
+            token_pos_2 = index
+            break
+    token_pos = (token_pos_1, token_pos_2+1)
+
+    a1_tokens = processor.tokenizer.encode(colors[-1], add_special_tokens=False)
+    a1_star_tokens = processor.tokenizer.encode(colors[-2], add_special_tokens=False)
+    a1_id = a1_tokens[-1]
+    a1_star_id = a1_star_tokens[-1]
+
+    print(f"Target Token ID (a1): {a1_id} -> '{processor.tokenizer.decode([a1_id])}'")
+    print(f"Contrast Token ID (a1*): {a1_star_id} -> '{processor.tokenizer.decode([a1_star_id])}'")
+
+    mediation_scores_1 = cma_headwise(
+        model=model,
+        processor=processor,
+        num_layers=num_layers,
+        num_heads=num_heads,
+        prompt_c1=text_prompt_c1,
+        prompt_c2=text_prompt_c2,
+        image_c1=image_c1,
+        image_c2=image_c2,
+        token_pos=token_pos,
+        a1_id=a1_id,
+        a1_star_id=a1_star_id,
+        _mediation_scores=_mediation_scores
+    )
+
+    return mediation_scores_1
 
 def run_cma_for_ID_selection(
     model: Any,
@@ -21,8 +110,6 @@ def run_cma_for_ID_selection(
     Executes Causal Mediation Analysis (Activation Patching) across all attention heads.
     Patches activations from a modified context (c2) into the clean context (c1) following Eq. (1).
     """
-    print("Preparing Causal Mediation Analysis...")
-
     # ID Selection Heads
     print("cma for ID Selection Heads...")
     
@@ -50,7 +137,7 @@ def run_cma_for_ID_selection(
     )
     image_c2 = generate_custom_image(
         cols=num_cols,
-        rows=1,
+        rows=num_rows,
         shapes=shapes,
         colors=colors,
         coords=coords_c2
@@ -91,9 +178,87 @@ def run_cma_for_ID_selection(
         _mediation_scores=_mediation_scores
     )
 
-    print("cma finished")
-
     return mediation_scores_2
+
+def run_cma_for_feature_retrieval(
+    model: Any,
+    processor: Any,
+    num_layers: int,
+    num_heads: int,
+    shapes: List[str],
+    colors: List[str],
+    new_color: str = 'green',
+    _mediation_scores: List[List[Any]] = None
+) -> List[List[Any]]:
+    """
+    Executes Causal Mediation Analysis (Activation Patching) across all attention heads.
+    Patches activations from a modified context (c2) into the clean context (c1) following Eq. (1).
+    """
+    # Feature Retrieval Heads
+    print("cma for Feature Retrieval Heads...")
+
+    num_objs = len(shapes)
+    prompt = "In this image there is a"
+    for i in range(num_objs-1):
+        prompt += f" {colors[i]} {shapes[i]}, a"
+    prompt = prompt[:-3] + " and a"
+    colors_c2 = copy.deepcopy(colors)
+    colors_c2[-1] = new_color
+    num_cols, num_rows = 2, int((num_objs+1)/2)
+    coords = []
+    for i in range(num_rows):
+        for j in range(2):
+            coords.append((i,j))
+
+    image_c1 = generate_custom_image(
+        cols=num_cols,
+        rows=num_rows,
+        shapes=shapes,
+        colors=colors,
+        coords=coords
+    )
+    image_c2 = generate_custom_image(
+        cols=num_cols,
+        rows=num_rows,
+        shapes=shapes,
+        colors=colors_c2,
+        coords=coords
+    )
+
+    text_prompt_c1 = get_text_prompt(model, prompt, image_c1, processor)
+    text_prompt_c2 = get_text_prompt(model, prompt, image_c2, processor)
+
+    print(f"Prediction: {predict(model, processor, image_c1, text_prompt_c1)} (target: {colors[-1]})")
+    print(f"Prediction: {predict(model, processor, image_c2, text_prompt_c2)} (target: {new_color})")
+
+    a1_tokens = processor.tokenizer.encode(colors[-1], add_special_tokens=False)
+    a1_id = a1_tokens[-1]
+    a1_star_tokens = processor.tokenizer.encode(new_color, add_special_tokens=False)
+    a1_star_id = a1_star_tokens[-1]
+
+    print(f"Target Token ID (a1): {a1_id} -> '{processor.tokenizer.decode([a1_id])}'")
+    print(f"Contrast Token ID (a1*): {a1_star_id} -> '{processor.tokenizer.decode([a1_star_id])}'")
+
+    token_inputs = processor(text=text_prompt_c1, images=image_c1, return_tensors="pt")
+    input_ids = token_inputs["input_ids"][0].tolist()
+    token_pos = (len(input_ids)-1, len(input_ids))
+
+    mediation_scores_3 = cma_headwise(
+        model=model,
+        processor=processor,
+        num_layers=num_layers,
+        num_heads=num_heads,
+        prompt_c1=text_prompt_c1,
+        prompt_c2=text_prompt_c2,
+        image_c1=image_c1,
+        image_c2=image_c2,
+        token_pos=token_pos,
+        a1_id=a1_id,
+        a1_star_id=a1_star_id,
+        _mediation_scores=_mediation_scores
+    )
+
+    return mediation_scores_3
 
 def cma_headwise(
     model: Any,

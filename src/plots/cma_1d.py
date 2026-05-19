@@ -4,10 +4,9 @@ from matplotlib.patches import Rectangle
 from typing import Dict, List, Tuple, Any
 
 from src.model.loader import load_vlm
-from src.data.synthetic_generator import generate_custom_image
-from src.utils.tools import load_config, _resolve_text_model_dims, get_text_prompt, predict
+from src.utils.tools import load_config, _resolve_text_model_dims
 from src.plots.rsa_1c import get_num_hidden_layers
-from src.mech_interp.cma import cma_headwise
+from src.mech_interp.cma import run_cma_for_ID_retrieval, run_cma_for_ID_selection, run_cma_for_feature_retrieval
 
 # Reproduces Figure 1d and 20-25
 
@@ -34,115 +33,15 @@ def run_mediation_analysis(
     """
     print("Preparing Causal Mediation Analysis...")
 
-    # ID Retrieval Heads
-    print("cma for ID Retrieval Heads...")
+    shapes = ["circle", "square"]
+    colors = ["blue", "red"]
 
-    prompt = "In this image there is a blue circle and a"
+    mediation_scores_1 = run_cma_for_ID_retrieval(model, processor, num_layers, num_heads, shapes, colors)
+                            
+    mediation_scores_2 = run_cma_for_ID_selection(model, processor, num_layers, num_heads, shapes, colors)
 
-    image_c1 = generate_custom_image(
-        shapes=["circle", "square"],
-        colors=["blue", "red"],
-        coords=[(0,0), (0,1)]
-    )
-    image_c2 = generate_custom_image(
-        shapes=["circle", "square"],
-        colors=["blue", "red"],
-        coords=[(0,1), (0,0)]
-    )
-
-    text_prompt_c1 = get_text_prompt(model, prompt, image_c1, processor)
-    text_prompt_c2 = get_text_prompt(model, prompt, image_c2, processor)
-
-    print(f"Prediction: {predict(model, processor, image_c1, text_prompt_c1)} (target: red)")
-    print(f"Prediction: {predict(model, processor, image_c2, text_prompt_c2)} (target: red)")
-
-    token_inputs = processor(text=text_prompt_c1, images=image_c1, return_tensors="pt")
-    input_ids = token_inputs["input_ids"][0].tolist()
-    for index, token_id in enumerate(input_ids):
-        token_str = processor.tokenizer.decode(token_id).strip().lower()
-        if 'blue' in token_str:
-            token_pos_1 = index
-        elif 'circle' in token_str:
-            token_pos_2 = index
-            break
-    token_pos = (token_pos_1, token_pos_2+1)
-
-    a1_tokens = processor.tokenizer.encode("red", add_special_tokens=False)
-    a1_star_tokens = processor.tokenizer.encode("blue", add_special_tokens=False)
-    a1_id = a1_tokens[-1]
-    a1_star_id = a1_star_tokens[-1]
-
-    print(f"Target Token ID (a1): {a1_id} -> '{processor.tokenizer.decode([a1_id])}'")
-    print(f"Contrast Token ID (a1*): {a1_star_id} -> '{processor.tokenizer.decode([a1_star_id])}'")
-
-    mediation_scores_1 = cma_headwise(
-        model=model,
-        processor=processor,
-        num_layers=num_layers,
-        num_heads=num_heads,
-        prompt_c1=text_prompt_c1,
-        prompt_c2=text_prompt_c2,
-        image_c1=image_c1,
-        image_c2=image_c2,
-        token_pos=token_pos,
-        a1_id=a1_id,
-        a1_star_id=a1_star_id
-    )
-
-    # ID Selection Heads
-    print("cma for ID Selection Heads...")
-    token_inputs = processor(text=text_prompt_c1, images=image_c1, return_tensors="pt")
-    input_ids = token_inputs["input_ids"][0].tolist()
-    token_pos = (len(input_ids)-1, len(input_ids))
-
-    mediation_scores_2 = cma_headwise(
-        model=model,
-        processor=processor,
-        num_layers=num_layers,
-        num_heads=num_heads,
-        prompt_c1=text_prompt_c1,
-        prompt_c2=text_prompt_c2,
-        image_c1=image_c1,
-        image_c2=image_c2,
-        token_pos=token_pos,
-        a1_id=a1_id,
-        a1_star_id=a1_star_id
-    )
-
-    # Feature Retrieval Heads
-    print("cma for Feature Retrieval Heads...")
-
-    image_c1 = generate_custom_image(
-        shapes=["circle", "square"],
-        colors=["blue", "red"],
-        coords=[(0,0), (0,1)]
-    )
-    image_c2 = generate_custom_image(
-        shapes=["circle", "square"],
-        colors=["blue", "green"],
-        coords=[(0,0), (0,1)]
-    )
-
-    text_prompt_c2 = get_text_prompt(model, prompt, image_c2, processor)
-    
-    print(f"Prediction: {predict(model, processor, image_c2, text_prompt_c2)} (target: green)")
-
-    a1_star_tokens = processor.tokenizer.encode("green", add_special_tokens=False)
-    a1_star_id = a1_star_tokens[-1]
-
-    mediation_scores_3 = cma_headwise(
-        model=model,
-        processor=processor,
-        num_layers=num_layers,
-        num_heads=num_heads,
-        prompt_c1=text_prompt_c1,
-        prompt_c2=text_prompt_c2,
-        image_c1=image_c1,
-        image_c2=image_c2,
-        token_pos=token_pos,
-        a1_id=a1_id,
-        a1_star_id=a1_star_id
-    )
+    new_color = "green"
+    mediation_scores_3 = run_cma_for_feature_retrieval(model, processor, num_layers, num_heads, shapes, colors, new_color)
 
     print("cma finished")
 

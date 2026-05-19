@@ -136,8 +136,8 @@ def cma_head_patching(
         gc_collect()
 
     with torch.no_grad():
-        with model.generate(max_new_tokens=2, pad_token_id=processor.tokenizer.eos_token_id) as tracer:
-            with tracer.invoke(**inputs_c1):
+        with model.trace() as tracer:
+            with tracer.generate(prompt_c1, images=image_c1, max_new_tokens=1) as generator:
                 for l, h in sorted(top_k_heads):
                     target_layer = _resolve_layer_path(model, layer_template.format(l))
                     
@@ -151,7 +151,7 @@ def cma_head_patching(
                     # Repack dimensions safely
                     hs_input[:] = einops.rearrange(hs_heads, 's h d -> s (h d)')
         
-                patched_output = tracer.output.save()
+            patched_output = generator.output.save()
 
         gc_collect()
 

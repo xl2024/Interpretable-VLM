@@ -73,7 +73,7 @@ def main():
     )
     # top_k = int(0.1*num_layers*num_heads)
     for k in range(300):
-        top_k_heads = get_top_k_heads(mediation_scores, top_k=k)
+        top_k_heads = get_top_k_heads(mediation_scores, k)
 
         predicted_word = cma_head_patching(
             model=model,

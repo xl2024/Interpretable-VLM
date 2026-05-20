@@ -4,9 +4,9 @@ from typing import Dict, List, Tuple, Any
 
 from src.model.loader import load_vlm
 from src.data.synthetic_generator import generate_custom_image
-from src.utils.tools import load_config, _resolve_text_model_dims, get_text_prompt, predict
-from src.plots.rsa_1c import get_num_hidden_layers
-from src.mech_interp.cma import cma_head_patching, run_cma_for_ID_selection
+from src.utils.tools import load_config, _resolve_text_model_dims, get_text_prompt, get_num_hidden_layers
+from src.plots.cma_1d import run_mediation_analysis
+from src.mech_interp.cma import cma_head_patching
 
 
 
@@ -63,14 +63,9 @@ def main():
     text_prompt_c1 = get_text_prompt(model, prompt_1, image_c1, processor)
     text_prompt_c2 = get_text_prompt(model, prompt_2, image_c2, processor)
 
-    mediation_scores = run_cma_for_ID_selection(
-        model=model,
-        processor=processor,
-        num_layers=num_layers,
-        num_heads= num_heads,
-        shapes=["circle", "triangle"],
-        colors=["pink", "blue"]
-    )
+    mediation_scores = run_mediation_analysis(model, processor, num_layers, num_heads)
+    mediation_scores = mediation_scores[1]
+
     # [Note: alpha=3, k=0 -> 'purple', k=1,...,21 -> 'orange', k>=22 -> 'blue']
     # top_k = int(0.1*num_layers*num_heads)
     for k in range(50):

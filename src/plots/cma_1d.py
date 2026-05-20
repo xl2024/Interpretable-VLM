@@ -5,8 +5,7 @@ from typing import Dict, List, Tuple, Any
 from pathlib import Path
 
 from src.model.loader import load_vlm
-from src.utils.tools import load_config, _resolve_text_model_dims, get_model_id
-from src.plots.rsa_1c import get_num_hidden_layers
+from src.utils.tools import load_config, _resolve_text_model_dims, get_model_id, get_num_hidden_layers
 from src.mech_interp.cma import run_cma_for_ID_retrieval, run_cma_for_ID_selection, run_cma_for_feature_retrieval
 
 # Reproduces Figure 1d and 20-25

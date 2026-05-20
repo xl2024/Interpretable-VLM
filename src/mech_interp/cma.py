@@ -68,11 +68,7 @@ def cma_headwise(
         mediation_scores = _mediation_scores
     print(f"Executing intervention sweep across {num_layers} layers and {num_heads} heads per layer...")
     
-    print(f"skipping the first {int(num_layers/2)} layers for speeding up...")
     for l in range(num_layers):
-        # if l < num_layers*0.8:
-        #     continue
-
         print(f"Processing layer {l+1}/{num_layers}...")
         for h in range(num_heads):
             patched_logits = None

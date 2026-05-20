@@ -40,6 +40,9 @@ def main():
     num_layers = get_num_hidden_layers(model)
     _, num_heads = _resolve_text_model_dims(model)
     
+    mediation_scores = run_mediation_analysis(model, processor, num_layers, num_heads)
+    mediation_scores = mediation_scores[1]
+
     image_c1 = generate_custom_image(
         cols=3,
         rows=3,
@@ -63,12 +66,9 @@ def main():
     text_prompt_c1 = get_text_prompt(model, prompt_1, image_c1, processor)
     text_prompt_c2 = get_text_prompt(model, prompt_2, image_c2, processor)
 
-    mediation_scores = run_mediation_analysis(model, processor, num_layers, num_heads)
-    mediation_scores = mediation_scores[1]
-
     # [Note: alpha=3, k=0 -> 'purple', k=1,...,21 -> 'orange', k>=22 -> 'blue']
     # top_k = int(0.1*num_layers*num_heads)
-    for k in range(50):
+    for k in range(100):
         top_k_heads = get_top_k_heads(mediation_scores, k)
 
         predicted_word = cma_head_patching(

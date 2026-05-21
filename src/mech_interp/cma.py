@@ -387,7 +387,8 @@ def cma_head_patching(
     prompt_c2: str,
     image_c1: Any,
     image_c2: Any,
-    top_k_heads: List[Tuple[int, int]]
+    top_k_heads: List[Tuple[int, int]],
+    sanity_check: bool = False
 ) -> str:
     """
     Executes Causal Mediation Analysis (Activation Patching) across top k ID selection heads.
@@ -456,47 +457,48 @@ def cma_head_patching(
     
     # === end of predict by logits ===
 
-    # === predict by generator ===
-    with torch.no_grad():
-        with model.generate(max_new_tokens=2, pad_token_id=processor.tokenizer.eos_token_id) as tracer:
-            with tracer.invoke(**inputs_c1):
-                for l, h in sorted(top_k_heads):
-                    target_layer = _resolve_layer_path(model, layer_template.format(l))
-                    
-                    # Intercept input to o_proj
-                    hs_input = target_layer.self_attn.o_proj.input[0]
-                    hs_heads = einops.rearrange(hs_input, 's (h d) -> s h d', h=num_heads)
-                    
-                    # True CMA Patch: Inject cached c2 head state into c1 stream
-                    # hs_heads[-1, h, :] = c2_head_cache[l,h].to(model.device)
-                    c2_state = c2_head_cache[l, h].to(model.device)
-                    c1_state = hs_heads[-1, h, :]
-                    concept_vector = c2_state - c1_state
-                    hs_heads[-1, h, :] = c1_state + (1.0 * concept_vector)
-                    
-                    # Repack dimensions safely
-                    hs_input[:] = einops.rearrange(hs_heads, 's h d -> s (h d)')
-        
-                patched_output = tracer.result.save()
+    if sanity_check:
+        # === predict by generator ===
+        with torch.no_grad():
+            with model.generate(max_new_tokens=2, pad_token_id=processor.tokenizer.eos_token_id) as tracer:
+                with tracer.invoke(**inputs_c1):
+                    for l, h in sorted(top_k_heads):
+                        target_layer = _resolve_layer_path(model, layer_template.format(l))
+                        
+                        # Intercept input to o_proj
+                        hs_input = target_layer.self_attn.o_proj.input[0]
+                        hs_heads = einops.rearrange(hs_input, 's (h d) -> s h d', h=num_heads)
+                        
+                        # True CMA Patch: Inject cached c2 head state into c1 stream
+                        # hs_heads[-1, h, :] = c2_head_cache[l,h].to(model.device)
+                        c2_state = c2_head_cache[l, h].to(model.device)
+                        c1_state = hs_heads[-1, h, :]
+                        concept_vector = c2_state - c1_state
+                        hs_heads[-1, h, :] = c1_state + (1.0 * concept_vector)
+                        
+                        # Repack dimensions safely
+                        hs_input[:] = einops.rearrange(hs_heads, 's h d -> s (h d)')
+            
+                    patched_output = tracer.result.save()
 
-        gc_collect()
+            gc_collect()
 
-    # predicted_text = processor.decode(patched_output[0], skip_special_tokens=True)
-    # print(f"The patched model said: {predicted_text}")
+        # predicted_text = processor.decode(patched_output[0], skip_special_tokens=True)
+        # print(f"The patched model said: {predicted_text}")
 
-    input_length = inputs_c1["input_ids"].shape[1]
-    new_tokens = patched_output[0][input_length:]
-    predicted_word2 = processor.tokenizer.decode(new_tokens[0], skip_special_tokens=True)
-    predicted_words = processor.tokenizer.decode(new_tokens, skip_special_tokens=True)
-    # print(f"predicted_word: {predicted_word}")
+        input_length = inputs_c1["input_ids"].shape[1]
+        new_tokens = patched_output[0][input_length:]
+        predicted_word2 = processor.tokenizer.decode(new_tokens[0], skip_special_tokens=True)
+        predicted_words = processor.tokenizer.decode(new_tokens, skip_special_tokens=True)
+        # print(f"predicted_word: {predicted_word}")
 
-    # === end of predict by generator ===
+        # === end of predict by generator ===
 
-    if predicted_word != predicted_word2:
-        print("Not equal:", predicted_word, predicted_word2)
-    if predicted_words not in ["orange square", "purple heart", "pink circle", "blue triangle"]:
-        print("Not match:", predicted_words)
-    if predicted_word != predicted_word.strip() or predicted_word2 != predicted_word2.strip():
-        print("strip needed")
+        if predicted_word != predicted_word2:
+            print("Not equal:", predicted_word, predicted_word2)
+        if predicted_words not in ["orange square", "purple heart", "pink circle", "blue triangle"]:
+            print("Not match:", predicted_words)
+        if predicted_word != predicted_word.strip() or predicted_word2 != predicted_word2.strip():
+            print("strip needed")
 
     return predicted_word

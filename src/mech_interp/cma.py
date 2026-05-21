@@ -491,7 +491,9 @@ def cma_head_patching(
 
     # === end of predict by generator ===
 
-    if predicted_word != predicted_word2:
-        print(predicted_word, predicted_word2)
+    if predicted_word != predicted_word2[0]:
+        print("Not equal:", predicted_word, predicted_word2)
+    if predicted_word2 not in [["orange","square"], ["purple","heart"], ["pink","circle"], ["blue","triangle"]]:
+        print("Not match:", predicted_word2)
 
     return predicted_word

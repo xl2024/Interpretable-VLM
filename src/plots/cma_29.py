@@ -123,7 +123,7 @@ def cma_test_by_model(model_id):
                 predicted_words[predicted_word] += 1
 
         predicted_words = dict(sorted(predicted_words.items(), key=lambda item: item[1], reverse=True))
-        # print(f"k={k}: The model predicted: '{predicted_words}'")
+        print(f"k={k}: The model predicted: '{predicted_words}'")
         cma_by_model[k] = predicted_words
 
     return cma_by_model
@@ -149,7 +149,7 @@ def main():
 
     for model_id in model_ids:
         if model_id not in fig_29_results:
-            print(f"Generating results in figure 29 for {model_id}")
+            print(f"Generating results in figure 29 for {model_id}...")
             fig_29_results[model_id] = cma_test_by_model(model_id)
    
     np.savez(filename, **fig_29_results)

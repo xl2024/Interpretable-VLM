@@ -1,8 +1,6 @@
 import numpy as np
-import copy
-import random
 from typing import Dict, List, Tuple, Any
-
+from pathlib import Path
 
 from src.model.loader import load_vlm
 from src.data.synthetic_generator import generate_custom_image
@@ -66,10 +64,7 @@ def get_cma_test_cases():
 
     return shapes, colors, coords_1_list, coords_2_list
 
-def main():
-    print("=== Execution Suite: Live Mechanistic Head Interventions ===")
-    model_id = "Qwen/Qwen2-VL-7B-Instruct"
-    # model_id = "Qwen/Qwen2.5-VL-3B-Instruct"
+def cma_test_by_model(model_id):
     config = load_config()
     tier = config['pipeline']['tier']
     model, processor = load_vlm(model_id, tier)    
@@ -84,6 +79,7 @@ def main():
     prompt_1 = "In this image there is a pink circle, a orange square, a purple heart and a"
     prompt_2 = "In this image there is a pink circle, a blue triangle, a"
 
+    cma_by_model = {}
     # [Note: alpha=3, k=0 -> 'purple', k=1,...,21 -> 'orange', k>=22 -> 'blue']
     # top_k = int(0.1*num_layers*num_heads)
     for k in range(100):
@@ -127,7 +123,37 @@ def main():
                 predicted_words[predicted_word] += 1
 
         predicted_words = dict(sorted(predicted_words.items(), key=lambda item: item[1], reverse=True))
-        print(f"k={k}: The model predicted: '{predicted_words}'")
+        # print(f"k={k}: The model predicted: '{predicted_words}'")
+        cma_by_model[k] = predicted_words
+
+    return cma_by_model
+
+def main():
+    print("=== Execution Suite: Live Mechanistic Head Interventions ===")
+    # model_ids = ["Qwen/Qwen2.5-VL-3B-Instruct",
+    #              "Qwen/Qwen2.5-VL-7B-Instruct",
+    #              "Qwen/Qwen2.5-VL-32B-Instruct",
+    #              "Qwen/Qwen2-VL-7B-Instruct",
+    #              "llava-hf/llava-1.5-7b-hf",
+    #              "llava-hf/llava-1.5-13b-hf"
+    #              ]
+    model_ids = ["Qwen/Qwen2-VL-7B-Instruct"]
+
+    filename = "src/data/cma/figure_29_results.npz"
+    file_path = Path(filename)
+    if file_path.exists():
+        print(f"Found {filename}! Loading cma results for figure 29...")
+        fig_29_results = np.load(filename)
+    else:
+        fig_29_results = {}
+
+    for model_id in model_ids:
+        if model_id not in fig_29_results:
+            print(f"Generating results in figure 29 for {model_id}")
+            fig_29_results[model_id] = cma_test_by_model(model_id)
+   
+    np.savez(filename, **fig_29_results)
+    print(f"Saved in {filename}. fig_29_results: {fig_29_results}")
 
 if __name__ == "__main__":
     main()

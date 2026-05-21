@@ -60,7 +60,7 @@ def run_mediation_analysis(
                  mediation_scores_2=mediation_scores_2,
                  mediation_scores_3=mediation_scores_3
                  )
-        print(f"cma scores saved in {filename} successfully.")
+        print(f"cma scores successfully saved in {filename}.")
 
     return mediation_scores_1, mediation_scores_2, mediation_scores_3
 

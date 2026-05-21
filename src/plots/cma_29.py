@@ -6,7 +6,7 @@ from src.model.loader import load_vlm
 from src.data.synthetic_generator import generate_custom_image
 from src.utils.tools import load_config, _resolve_text_model_dims, get_text_prompt, get_num_hidden_layers
 from src.plots.cma_1d import run_mediation_analysis
-from src.mech_interp.cma import cma_head_patching, get_binding_ID
+from src.mech_interp.cma import cma_head_patching_by_logits, get_binding_ID
 
 
 
@@ -115,7 +115,7 @@ def cma_test_by_model(model_id):
                 top_k_heads=top_k_heads
             )
             
-            predicted_word = cma_head_patching(
+            predicted_word = cma_head_patching_by_logits(
                 model=model,
                 processor=processor,
                 num_layers=num_layers,

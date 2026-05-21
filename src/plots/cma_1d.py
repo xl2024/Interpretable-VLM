@@ -10,10 +10,10 @@ from src.mech_interp.cma import run_cma_for_ID_retrieval, run_cma_for_ID_selecti
 
 # Reproduces Figure 1d and 20-25
 
-model_id = "Qwen/Qwen2-VL-7B-Instruct"                      # Figure 1d
+# model_id = "Qwen/Qwen2-VL-7B-Instruct"                      # Figure 1d
 # model_id = "Qwen/Qwen2.5-VL-3B-Instruct"                    # Figure 20
 # model_id = "Qwen/Qwen2.5-VL-7B-Instruct"                    # Figure 21
-# model_id = "Qwen/Qwen2.5-VL-32B-Instruct"                   # Figure 22
+model_id = "Qwen/Qwen2.5-VL-32B-Instruct"                   # Figure 22
 # model_id = "llava-hf/llava-1.5-7b-hf"                       # Figure 23
 # model_id = "llava-hf/llava-1.5-13b-hf"                      # Figure 24
 # model_id = "bczhou/tiny-llava-v1-hf"
@@ -21,17 +21,17 @@ model_id = "Qwen/Qwen2-VL-7B-Instruct"                      # Figure 1d
 # model_id = "HuggingFaceM4/idefics2-8b-chatty"
 # model_id = "HuggingFaceM4/idefics2-8b"
 
-def run_mediation_analysis(
-    model: Any,
-    processor: Any,
-    num_layers: int,
-    num_heads: int
-) -> Tuple[List[List[Any]], List[List[Any]], List[List[Any]]]:
+def run_mediation_analysis(model_id: str) -> Tuple[List[List[Any]], List[List[Any]], List[List[Any]]]:
     """
     Executes Causal Mediation Analysis (Activation Patching) across all attention heads.
     Patches activations from a modified context (c2) into the clean context (c1) following Eq. (1).
     """
-    model_name = get_model_id(model).replace('/', '_')
+    config = load_config()
+    tier = config['pipeline']['tier']
+    model, processor = load_vlm(model_id, tier)    
+    num_layers = get_num_hidden_layers(model)
+    _, num_heads = _resolve_text_model_dims(model)
+    model_name = model_id.replace('/', '_')
     filename = f"src/data/cma/{model_name}.npz"
     file_path = Path(filename)
     if file_path.exists():
@@ -66,10 +66,9 @@ def run_mediation_analysis(
 
 def plot_causal_mediation(
     mediation_scores: Tuple[List[List[Any]], List[List[Any]], List[List[Any]]],
-    num_layers: int,
-    num_heads: int,
     save_path: str
 ):
+    num_layers, num_heads = mediation_scores[0].shape
     scores_blue, scores_red, scores_green = mediation_scores
 
     scores_blue = np.clip(scores_blue, 0, None)
@@ -117,24 +116,11 @@ def plot_causal_mediation(
 
 def main():
     print("=== Execution Suite: Live Mechanistic Head Interventions ===")
-    config = load_config()
-    # model_id = "bczhou/tiny-llava-v1-hf"
-    tier = config['pipeline']['tier']
-    model, processor = load_vlm(model_id, tier)    
-    num_layers = get_num_hidden_layers(model)
-    _, num_heads = _resolve_text_model_dims(model)
 
-    mediation_scores = run_mediation_analysis(
-        model=model,
-        processor=processor,
-        num_layers=num_layers,
-        num_heads= num_heads
-    )
+    mediation_scores = run_mediation_analysis(model_id)
     
     plot_causal_mediation(
         mediation_scores=mediation_scores,
-        num_layers=num_layers,
-        num_heads=num_heads,
         save_path="outputs/cma_figure_1d.png"
     )
 

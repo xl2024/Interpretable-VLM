@@ -59,7 +59,7 @@ def get_cma_test_cases():
                     other_pos_1 = list(set(coords_1) - set([common_abs_pos]))
                     other_pos_2 = list(set(coords_2) - set([common_abs_pos, new_rel_pos]))
                     # ["pink", "orange", "purple", "blue"]
-                    coords_1_list.append([other_pos_1[0], other_pos_1[1], other_pos_1[2], common_abs_pos])
+                    coords_1_list.append([other_pos_1[1], other_pos_1[0], other_pos_1[2], common_abs_pos])
                     coords_2_list.append([other_pos_2[0], new_rel_pos, common_abs_pos, other_pos_2[1]])
 
     return shapes, colors, coords_1_list, coords_2_list
@@ -156,4 +156,5 @@ def main():
     print(f"Saved in {filename}. fig_29_results: {fig_29_results}")
 
 if __name__ == "__main__":
-    main()
+    # main()
+    get_cma_test_cases()

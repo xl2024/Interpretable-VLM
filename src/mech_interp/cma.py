@@ -481,19 +481,20 @@ def cma_head_patching(
 
         gc_collect()
 
-    predicted_text = processor.decode(patched_output[0], skip_special_tokens=True)
-    print(f"The patched model said: {predicted_text}")
+    # predicted_text = processor.decode(patched_output[0], skip_special_tokens=True)
+    # print(f"The patched model said: {predicted_text}")
 
     input_length = inputs_c1["input_ids"].shape[1]
     new_tokens = patched_output[0][input_length:]
-    predicted_word2 = processor.tokenizer.decode(new_tokens, skip_special_tokens=True)
+    predicted_word2 = processor.tokenizer.decode(new_tokens[0], skip_special_tokens=True)
+    predicted_words = processor.tokenizer.decode(new_tokens, skip_special_tokens=True)
     # print(f"predicted_word: {predicted_word}")
 
     # === end of predict by generator ===
 
-    if predicted_word != predicted_word2[0]:
+    if predicted_word != predicted_word2:
         print("Not equal:", predicted_word, predicted_word2)
-    if predicted_word2 not in [["orange","square"], ["purple","heart"], ["pink","circle"], ["blue","triangle"]]:
-        print("Not match:", predicted_word2)
+    if predicted_words not in [["orange square"], ["purple heart"], ["pink circle"], ["blue triangle"]]:
+        print("Not match:", predicted_words)
 
     return predicted_word

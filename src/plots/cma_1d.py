@@ -26,11 +26,6 @@ def run_mediation_analysis(model_id: str) -> Tuple[List[List[Any]], List[List[An
     Executes Causal Mediation Analysis (Activation Patching) across all attention heads.
     Patches activations from a modified context (c2) into the clean context (c1) following Eq. (1).
     """
-    config = load_config()
-    tier = config['pipeline']['tier']
-    model, processor = load_vlm(model_id, tier)    
-    num_layers = get_num_hidden_layers(model)
-    _, num_heads = _resolve_text_model_dims(model)
     model_name = model_id.replace('/', '_')
     filename = f"src/data/cma/{model_name}.npz"
     file_path = Path(filename)
@@ -41,6 +36,12 @@ def run_mediation_analysis(model_id: str) -> Tuple[List[List[Any]], List[List[An
         mediation_scores_2 = loaded_data['mediation_scores_2']
         mediation_scores_3 = loaded_data['mediation_scores_3']
     else:
+        config = load_config()
+        tier = config['pipeline']['tier']
+        model, processor = load_vlm(model_id, tier)    
+        num_layers = get_num_hidden_layers(model)
+        _, num_heads = _resolve_text_model_dims(model)
+        
         print("Preparing Causal Mediation Analysis...")
 
         shapes = ["circle", "square"]

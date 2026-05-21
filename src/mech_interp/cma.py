@@ -378,45 +378,66 @@ def multi_runs_for_ID_selection(
         
     return mediation_scores_2
 
+def get_binding_ID(
+    model: Any,
+    processor: Any,
+    num_heads: int,
+    prompt_list: List[str],
+    image_list: List[Any],
+    top_k_heads: List[Tuple[int, int]]
+) -> Dict[Tuple[int, int], torch.Tensor]:
+    # 1. Resolve architecture dimensions dynamically
+    layer_template = get_layer_path_template(model)
+    
+    # 3. Cache c2 Counterfactual States
+    heads_by_layer = {}
+    for l, h in top_k_heads:
+        heads_by_layer.setdefault(l, []).append(h)
+    c2_head_cache = {}
+    num_runs = len(prompt_list)
+    for i in range(num_runs):
+        prompt_c2, image_c2 = prompt_list[i], image_list[i]
+        inputs_c2 = processor(text=prompt_c2, images=image_c2, return_tensors="pt").to(model.device)
+        with torch.no_grad():
+            with model.trace() as tracer:
+                with tracer.invoke(**inputs_c2):
+                    for l, heads_in_this_layer in sorted(heads_by_layer.items()):
+                        layer_module = _resolve_layer_path(model, layer_template.format(l))
+                        # Safely intercept full 3D tensor: [batch, seq_len, hidden_dim]
+                        attn_out = layer_module.self_attn.o_proj.input[0]
+                        hs_heads = einops.rearrange(attn_out, 's (h d) -> s h d', h=num_heads)
+                        for h in sorted(heads_in_this_layer):
+                            states = hs_heads[-1, h, :].save()
+                            c2_head_cache[l, h] = c2_head_cache.get((l, h), 0) + states
+
+            gc_collect()
+
+    for l, h in c2_head_cache:
+        c2_head_cache[l, h] = c2_head_cache[l, h] / num_runs
+    print(c2_head_cache.shape)
+    return c2_head_cache
+    
 def cma_head_patching(
     model: Any,
     processor: Any,
     num_layers: int,
     num_heads: int,
     prompt_c1: str,
-    prompt_c2: str,
     image_c1: Any,
-    image_c2: Any,
+    c2_head_cache: Dict[Tuple[int, int], torch.Tensor],
     top_k_heads: List[Tuple[int, int]],
+    alpha: float = 1.0,
     sanity_check: bool = False
 ) -> str:
     """
     Executes Causal Mediation Analysis (Activation Patching) across top k ID selection heads.
     """
-    # 1. Resolve architecture dimensions dynamically
     layer_template = get_layer_path_template(model)
-    
-    inputs_c1 = processor(text=prompt_c1, images=image_c1, return_tensors="pt").to(model.device)
-    inputs_c2 = processor(text=prompt_c2, images=image_c2, return_tensors="pt").to(model.device)
-
-    # 3. Cache c2 Counterfactual States
     heads_by_layer = {}
     for l, h in top_k_heads:
         heads_by_layer.setdefault(l, []).append(h)
-    c2_head_cache = {}
-    with torch.no_grad():
-        with model.trace() as tracer:
-            with tracer.invoke(**inputs_c2):
-                for l, heads_in_this_layer in sorted(heads_by_layer.items()):
-                    layer_module = _resolve_layer_path(model, layer_template.format(l))
-                    # Safely intercept full 3D tensor: [batch, seq_len, hidden_dim]
-                    attn_out = layer_module.self_attn.o_proj.input[0]
-                    hs_heads = einops.rearrange(attn_out, 's (h d) -> s h d', h=num_heads)
-                    for h in sorted(heads_in_this_layer):
-                        c2_head_cache[l,h] = hs_heads[-1, h, :].save()
-
-        gc_collect()
-
+        
+    inputs_c1 = processor(text=prompt_c1, images=image_c1, return_tensors="pt").to(model.device)
     # === predict by logits ===    
     patched_logits = None
     with torch.no_grad():
@@ -435,7 +456,7 @@ def cma_head_patching(
                         c2_state = c2_head_cache[l, h].to(model.device)
                         c1_state = hs_heads[-1, h, :]
                         concept_vector = c2_state - c1_state
-                        hs_heads[-1, h, :] = c1_state + (1.0 * concept_vector)
+                        hs_heads[-1, h, :] = c1_state + (alpha * concept_vector)
 
                     # Repack dimensions safely
                     hs_input[:] = einops.rearrange(hs_heads, 's h d -> s (h d)')
@@ -474,7 +495,7 @@ def cma_head_patching(
                         c2_state = c2_head_cache[l, h].to(model.device)
                         c1_state = hs_heads[-1, h, :]
                         concept_vector = c2_state - c1_state
-                        hs_heads[-1, h, :] = c1_state + (1.0 * concept_vector)
+                        hs_heads[-1, h, :] = c1_state + (alpha * concept_vector)
                         
                         # Repack dimensions safely
                         hs_input[:] = einops.rearrange(hs_heads, 's h d -> s (h d)')

@@ -494,9 +494,9 @@ def cma_head_patching(
 
     if predicted_word != predicted_word2:
         print("Not equal:", predicted_word, predicted_word2)
-    if predicted_words.strip() not in [["orange square"], ["purple heart"], ["pink circle"], ["blue triangle"]]:
+    if predicted_words not in ["orange square", "purple heart", "pink circle", "blue triangle"]:
         print("Not match:", predicted_words)
-    if predicted_word != predicted_word.strip() and predicted_word2 != predicted_word2.strip():
+    if predicted_word != predicted_word.strip() or predicted_word2 != predicted_word2.strip():
         print("strip needed")
 
     return predicted_word

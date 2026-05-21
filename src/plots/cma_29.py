@@ -37,6 +37,7 @@ def get_cma_test_cases():
     figure b always has a purple heart at the common abs position
     and an orange square at the new rel position
     so that prompts and stats don't have to change
+    2a and 2b are the same as the example in figure 13
     """
     shapes = ["circle", "square", "heart", "triangle"]
     colors = ["pink", "orange", "purple", "blue"]
@@ -56,10 +57,10 @@ def get_cma_test_cases():
                     new_rel_pos_1 = common_abs_pos[0] + s2[0] - s1[0]
                     new_rel_pos_2 = common_abs_pos[1] + s2[1] - s1[1]
                     new_rel_pos = (new_rel_pos_1, new_rel_pos_2)
-                    other_pos_1 = list(set(coords_1) - set([common_abs_pos]))
-                    other_pos_2 = list(set(coords_2) - set([common_abs_pos, new_rel_pos]))
+                    other_pos_1 = [c for c in coords_1 if c!= common_abs_pos ]
+                    other_pos_2 = [c for c in coords_2 if c not in [common_abs_pos, new_rel_pos]]
                     # ["pink", "orange", "purple", "blue"]
-                    coords_1_list.append([other_pos_1[1], other_pos_1[0], other_pos_1[2], common_abs_pos])
+                    coords_1_list.append([other_pos_1[0], other_pos_1[1], other_pos_1[2], common_abs_pos])
                     coords_2_list.append([other_pos_2[0], new_rel_pos, common_abs_pos, other_pos_2[1]])
 
     return shapes, colors, coords_1_list, coords_2_list
@@ -156,5 +157,4 @@ def main():
     print(f"Saved in {filename}. fig_29_results: {fig_29_results}")
 
 if __name__ == "__main__":
-    # main()
-    get_cma_test_cases()
+    main()

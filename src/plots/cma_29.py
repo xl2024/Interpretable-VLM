@@ -68,8 +68,8 @@ def get_cma_test_cases():
 
 def main():
     print("=== Execution Suite: Live Mechanistic Head Interventions ===")
-    model_id = "Qwen/Qwen2-VL-7B-Instruct"
-    model_id = "bczhou/tiny-llava-v1-hf"
+    # model_id = "Qwen/Qwen2-VL-7B-Instruct"
+    model_id = "Qwen/Qwen2.5-VL-3B-Instruct"
     config = load_config()
     tier = config['pipeline']['tier']
     model, processor = load_vlm(model_id, tier)    

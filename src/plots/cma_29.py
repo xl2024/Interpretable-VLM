@@ -66,14 +66,14 @@ def get_cma_test_cases():
     return shapes, colors, coords_1_list, coords_2_list
 
 def cma_test_by_model(model_id):
+    mediation_scores = run_mediation_analysis(model_id)
+    mediation_scores = mediation_scores[1]
+    
     config = load_config()
     tier = config['pipeline']['tier']
     model, processor = load_vlm(model_id, tier)    
     num_layers = get_num_hidden_layers(model)
     _, num_heads = _resolve_text_model_dims(model)
-    
-    mediation_scores = run_mediation_analysis(model, processor, num_layers, num_heads)
-    mediation_scores = mediation_scores[1]
 
     shapes, colors, coords_1_list, coords_2_list = get_cma_test_cases()
 

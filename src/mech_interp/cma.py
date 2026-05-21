@@ -424,9 +424,10 @@ def cma_head_patching(
     num_heads: int,
     prompt_c1: str,
     image_c1: Any,
-    c2_head_cache: Dict[Tuple[int, int], torch.Tensor],
+    d_t_head_cache: Dict[Tuple[int, int], torch.Tensor],
     top_k_heads: List[Tuple[int, int]],
     alpha: float = 1.0,
+    d_o_head_cache: Dict[Tuple[int, int], torch.Tensor] = None,
     sanity_check: bool = False
 ) -> str:
     """
@@ -452,10 +453,13 @@ def cma_head_patching(
                     
                     for h in sorted(heads_in_this_layer):
                         # True CMA Patch: Inject cached c2 head state into c1 stream
-                        # hs_heads[-1, h, :] = c2_head_cache[l, h].to(model.device)
-                        c2_state = c2_head_cache[l, h].to(model.device)
+                        # hs_heads[-1, h, :] = d_t_head_cache[l, h].to(model.device)
+                        c2_state = d_t_head_cache[l, h].to(model.device)
                         c1_state = hs_heads[-1, h, :]
-                        concept_vector = c2_state - c1_state
+                        if d_o_head_cache is None:
+                            concept_vector = c2_state - c1_state
+                        else:
+                            concept_vector = c2_state - d_o_head_cache[l, h].to(model.device)
                         hs_heads[-1, h, :] = c1_state + (alpha * concept_vector)
 
                     # Repack dimensions safely
@@ -491,10 +495,13 @@ def cma_head_patching(
                         hs_heads = einops.rearrange(hs_input, 's (h d) -> s h d', h=num_heads)
                         
                         # True CMA Patch: Inject cached c2 head state into c1 stream
-                        # hs_heads[-1, h, :] = c2_head_cache[l,h].to(model.device)
-                        c2_state = c2_head_cache[l, h].to(model.device)
+                        # hs_heads[-1, h, :] = d_t_head_cache[l,h].to(model.device)
+                        c2_state = d_t_head_cache[l, h].to(model.device)
                         c1_state = hs_heads[-1, h, :]
-                        concept_vector = c2_state - c1_state
+                        if d_o_head_cache is None:
+                            concept_vector = c2_state - c1_state
+                        else:
+                            concept_vector = c2_state - d_o_head_cache[l, h].to(model.device)
                         hs_heads[-1, h, :] = c1_state + (alpha * concept_vector)
                         
                         # Repack dimensions safely

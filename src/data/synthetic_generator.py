@@ -107,6 +107,23 @@ def generate_custom_image(
                 (xr, yc),      # Center of right circle
                 (tx_r, ty_r)   # Right tangent point
             ], fill=color)
+        elif shape_type == "sun":
+            # Central circle
+            sun_r = w / 5
+            draw.ellipse([cx - sun_r, cy - sun_r, cx + sun_r, cy + sun_r], fill=color)
+            
+            # 8 outer rays
+            ray_inner = sun_r * 1.4
+            ray_outer = w / 2
+            ray_thickness = max(2, int(w / 15))
+            
+            for i in range(8):
+                angle = i * math.pi / 4
+                rx0 = cx + ray_inner * math.cos(angle)
+                ry0 = cy + ray_inner * math.sin(angle)
+                rx1 = cx + ray_outer * math.cos(angle)
+                ry1 = cy + ray_outer * math.sin(angle)
+                draw.line([(rx0, ry0), (rx1, ry1)], fill=color, width=ray_thickness)
         else:
             print(f"Warning: Unknown shape '{shape}'. Defaulting to square.")
             draw.rectangle(bbox, fill=color)
@@ -131,8 +148,8 @@ if __name__ == "__main__":
         image_size=(336, 336),
         cols=3,
         rows=2,
-        shapes=['circle', 'square', 'star', 'cross', 'heart', 'triangle'],
-        colors=['blue', 'red', 'purple', 'orange', 'yellow', 'green'],
+        shapes=['sun', 'square', 'star', 'cross', 'heart', 'triangle'],
+        colors=['black', 'red', 'purple', 'orange', 'yellow', 'green'],
         coords=[(0,0), (0,1), (0,2), (1,0), (1,1), (1,2)],
         save_path="src/data/test_6_shapes.png"
     )

@@ -146,7 +146,7 @@ def main():
     #              "llava-hf/llava-1.5-7b-hf",
     #              "Qwen/Qwen2.5-VL-3B-Instruct",
     #              ]
-    model_ids = ["Qwen/Qwen2.5-VL-32B-Instruct"]
+    model_ids = ["llava-hf/llava-1.5-13b-hf"]
 
     filename = "src/data/cma/figure_29_results.npz"
     file_path = Path(filename)

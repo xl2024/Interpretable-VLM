@@ -152,7 +152,7 @@ def main():
     file_path = Path(filename)
     if file_path.exists():
         print(f"Found {filename}! Loading cma results for figure 29...")
-        data = np.load(filename)
+        data = np.load(filename, allow_pickle=True)
         fig_29_results = dict(data)
         data.close()
     else:

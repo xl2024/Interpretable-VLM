@@ -122,7 +122,7 @@ def cma_test_by_model(model_id):
                 num_heads=num_heads,
                 prompt_c1=text_prompt_c2,
                 image_c1=image_c2,
-                c2_head_cache=head_cache,
+                d_t_head_cache=head_cache,
                 top_k_heads=top_k_heads
             )
 

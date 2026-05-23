@@ -139,10 +139,10 @@ def cma_test_by_model(model_id):
 
 def main():
     print("=== Execution Suite: Live Mechanistic Head Interventions ===")
-    model_ids = ["Qwen/Qwen2.5-VL-32B-Instruct",
+    model_ids = ["Qwen/Qwen2-VL-7B-Instruct",
                  "llava-hf/llava-1.5-13b-hf",
                  "Qwen/Qwen2.5-VL-7B-Instruct",
-                 "Qwen/Qwen2-VL-7B-Instruct",
+                 "Qwen/Qwen2.5-VL-32B-Instruct",
                  "llava-hf/llava-1.5-7b-hf",
                  "Qwen/Qwen2.5-VL-3B-Instruct",
                  ]

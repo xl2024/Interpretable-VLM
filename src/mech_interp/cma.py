@@ -414,7 +414,7 @@ def get_binding_ID(
 
     for l, h in c2_head_cache:
         c2_head_cache[l, h] = c2_head_cache[l, h] / num_runs
-    print(c2_head_cache.shape)
+    print(c2_head_cache.keys())
     return c2_head_cache
 
 def cma_head_patching_by_generator(

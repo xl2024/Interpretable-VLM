@@ -45,8 +45,10 @@ def generate_custom_image(
         shape_type = shape.lower()
         if shape_type == "circle":
             draw.ellipse(bbox, fill=color)
+
         elif shape_type == "square":
             draw.rectangle(bbox, fill=color)
+
         elif shape_type == "triangle":
             # An upward-pointing equilateral-ish triangle
             points = [
@@ -55,6 +57,7 @@ def generate_custom_image(
                 (cx + half_size, cy + half_size)      # Bottom right
             ]
             draw.polygon(points, fill=color)
+
         elif shape_type == "cross":
             thickness = int(w * 0.3)
             delta = int(thickness / 1.4)
@@ -62,6 +65,7 @@ def generate_custom_image(
             draw.line([(x0+delta, y0+delta), (x1-delta, y1-delta)], fill=color, width=thickness)
             # Bottom-left to top-right
             draw.line([(x0+delta, y1-delta), (x1-delta, y0+delta)], fill=color, width=thickness)
+        
         elif shape_type == "star":
             # 5-pointed star using trigonometry
             points = []
@@ -77,6 +81,7 @@ def generate_custom_image(
                 points.append((x, y))
                 
             draw.polygon(points, fill=color)
+
         elif shape_type == "heart":
             r = w / 4
             # Centers of the left and right upper circles
@@ -107,6 +112,7 @@ def generate_custom_image(
                 (xr, yc),      # Center of right circle
                 (tx_r, ty_r)   # Right tangent point
             ], fill=color)
+
         elif shape_type == "sun":
             # Central circle
             sun_r = w / 5
@@ -124,6 +130,84 @@ def generate_custom_image(
                 rx1 = cx + ray_outer * math.cos(angle)
                 ry1 = cy + ray_outer * math.sin(angle)
                 draw.line([(rx0, ry0), (rx1, ry1)], fill=color, width=ray_thickness)
+
+        elif shape_type == "umbrella":
+            # 1. Draw the Canopy (semi-circle top, scalloped bottom)
+            y_offset = w * 0.05
+            _cy = cy + y_offset
+            canopy_pts = []
+            # Top arc (Left to Right)
+            for i in range(180, 361):
+                rad = math.radians(i)
+                canopy_pts.append((cx + half_size * math.cos(rad), _cy + half_size * math.sin(rad)))
+            
+            # Bottom scallops (Right back to Left)
+            scallops_centers = [(cx + box_size / 3, _cy), (cx, _cy), (cx - box_size / 3, _cy)]
+            for ctr_x, ctr_y in scallops_centers:
+                for i in range(360, 179, -1):
+                    rad = math.radians(i)
+                    canopy_pts.append((ctr_x + box_size * math.cos(rad) / 6, ctr_y + box_size * math.sin(rad) / 6))
+
+            draw.polygon(canopy_pts, fill=color)
+            
+            # 2. Draw the Handle (Shaft + J-hook)
+            thickness = max(2, int(w * 0.05))
+            hook_radius = half_size * 0.25
+            shaft_bottom = y1 - hook_radius
+            
+            # Straight shaft down the middle
+            draw.line([(cx, y0), (cx, shaft_bottom)], fill=color, width=thickness)
+            
+            # J-Hook curving to the left
+            hook_bbox = [
+                cx - 2 * hook_radius,       # x0_hook
+                shaft_bottom - hook_radius, # y0_hook
+                cx,                         # x1_hook
+                shaft_bottom + hook_radius  # y1_hook
+            ]
+            # Arc from 0 to 180 degrees draws the bottom half of the circle
+            draw.arc(hook_bbox, 0, 180, fill=color, width=thickness)
+
+        elif shape_type == "plane":
+            # Define a plane profile using normalized coordinates (-1.0 to 1.0)
+            plane_profile = [
+                (0.00, -1.00),  # Nose
+                (0.08, -0.70),  # Right nose curve
+                (0.10, -0.30),  # Right wing root front
+                (0.80,  0.20),  # Right wing tip front
+                (0.80,  0.25),  # Right wing tip back
+                (0.10,  0.10),  # Right wing root back
+                (0.08,  0.70),  # Right tail root front
+                (0.35,  0.85),  # Right tail tip front
+                (0.35,  1.00),  # Right tail tip back
+                (0.05,  0.95),  # Right tail inner
+                (0.00,  1.00),  # Tail center bottom (exhaust)
+                (-0.05, 0.95),  # Left tail inner
+                (-0.35, 1.00),  # Left tail tip back
+                (-0.35, 0.85),  # Left tail tip front
+                (-0.08, 0.70),  # Left tail root front
+                (-0.10, 0.10),  # Left wing root back
+                (-0.80, 0.25),  # Left wing tip back
+                (-0.80, 0.20),  # Left wing tip front
+                (-0.10, -0.30), # Left wing root front
+                (-0.08, -0.70)  # Left nose curve
+            ]
+            
+            angle = math.radians(90)
+            cos_a = math.cos(angle)
+            sin_a = math.sin(angle)
+            
+            points = []
+            for px, py in plane_profile:
+                # Apply 2D Rotation matrix
+                rx = px * cos_a - py * sin_a
+                ry = px * sin_a + py * cos_a
+                
+                # Scale the normalized points by half_size and translate to grid center
+                points.append((cx + rx * half_size, cy + ry * half_size))
+                
+            draw.polygon(points, fill=color)
+
         else:
             print(f"Warning: Unknown shape '{shape}'. Defaulting to square.")
             draw.rectangle(bbox, fill=color)
@@ -147,9 +231,9 @@ if __name__ == "__main__":
     test_img = generate_custom_image(
         image_size=(336, 336),
         cols=3,
-        rows=2,
-        shapes=['sun', 'square', 'star', 'cross', 'heart', 'triangle'],
-        colors=['black', 'red', 'purple', 'orange', 'yellow', 'green'],
-        coords=[(0,0), (0,1), (0,2), (1,0), (1,1), (1,2)],
-        save_path="src/data/test_6_shapes.png"
+        rows=3,
+        shapes=['circle', 'star', 'plane', 'square', 'umbrella', 'triangle', 'sun', 'heart', 'cross'],
+        colors=['red', 'gold', 'grey', 'blue', 'hotpink', 'lime', 'black', 'purple', 'darkorange'],
+        coords=[(0,0), (0,1), (0,2), (1,0), (1,1), (1,2), (2,0), (2,1), (2,2)],
+        save_path="src/data/test_9_shapes.png"
     )

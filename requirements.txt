@@ -32,3 +32,7 @@ plotly>=5.19.0
 
 # Colab / Notebook Support
 ipykernel>=6.29.0
+
+# for PUG dataset generation
+unrealcv>=0.4.0
+tqdm>=4.66.0

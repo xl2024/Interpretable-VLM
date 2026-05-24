@@ -1,3 +1,5 @@
+# The instructions to run this script are described in dataset/figure_3/README.md
+
 import os
 import random
 import numpy as np
@@ -5,7 +7,9 @@ from tqdm import tqdm
 import time
 from unrealcv import Client
 
+
 client = Client(('127.0.0.1', 9000))
+
 class PUGDatasetGenerator:
     def __init__(self, output_dir="dataset/figure_3"):
         self.output_dir = output_dir

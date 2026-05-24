@@ -30,7 +30,7 @@ UnrealCV bridges Python to UE5 to manipulate objects with code, so you need to i
 
 ## Generating the Dataset
 
-1. Search for and download 3D models for camel, dolphin and elephant and textures for floors/terrains as well as your preferred decorations in different environments. Arrange them in UE5 appropriately. Ensure all animal meshes have their Transform Mobility set to **Movable**.
+1. Search for and download 3D models for camel, dolphin and elephant and textures for floors/terrains as well as your preferred decorations in different environments. Arrange them in UE5 and update their object IDs in the Python script accordingly. Ensure all animal meshes have their Transform Mobility set to **Movable**.
 
 2. Launch the Engine when you have done arranging the 3D assets, and hit the green **Play** button in the editor.
 

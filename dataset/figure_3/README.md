@@ -6,9 +6,9 @@ This dataset generation pipeline utilizes Unreal Engine 5 (UE5) and Python scrip
 There are three characters in this dataset. Let's start by meeting them.
 
 <p align="center">
-  <img src="figure_3/characters/camel_at_salt_desert.png" width="30%" alt="Camel in Salt Desert">
-  <img src="figure_3/characters/dolphin_at_beach.png" width="30%" alt="Dolphin at the Beach">
-  <img src="figure_3/characters/elephant_at_museum.png" width="30%" alt="Elephant in the Museum">
+  <img src="characters/camel_at_salt_desert.png" width="30%" alt="Camel in Salt Desert">
+  <img src="characters/dolphin_at_beach.png" width="30%" alt="Dolphin at the Beach">
+  <img src="characters/elephant_at_museum.png" width="30%" alt="Elephant in the Museum">
 </p>
 <p align="center">
   <em>(Left to Right: Camel in the Salt Desert, Dolphin at the Beach, Elephant in the Museum)</em>

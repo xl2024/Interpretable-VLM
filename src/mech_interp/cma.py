@@ -384,7 +384,8 @@ def get_head_embeddings(
     num_heads: int,
     prompt_list: List[str],
     image_list: List[Any],
-    top_k_heads: List[Tuple[int, int]]
+    top_k_heads: List[Tuple[int, int]],
+    stage: int = 2
 ) -> Dict[Tuple[int, int], torch.Tensor]:
     # 1. Resolve architecture dimensions dynamically
     layer_template = get_layer_path_template(model)
@@ -404,7 +405,12 @@ def get_head_embeddings(
                     for l, heads_in_this_layer in sorted(heads_by_layer.items()):
                         layer_module = _resolve_layer_path(model, layer_template.format(l))
                         # Safely intercept full 3D tensor: [batch, seq_len, hidden_dim]
-                        attn_out = layer_module.self_attn.o_proj.input[0]
+                        if stage == 3:    # Feature Retrieval
+                            hook_target = layer_module.self_attn.q_proj.output
+                            attn_out = hook_target[0] if isinstance(hook_target, tuple) else hook_target
+                        else:
+                            attn_out = layer_module.self_attn.o_proj.input[0]
+
                         hs_heads = einops.rearrange(attn_out, 's (h d) -> s h d', h=num_heads)
                         for h in sorted(heads_in_this_layer):
                             states = hs_heads[-1, h, :].save()

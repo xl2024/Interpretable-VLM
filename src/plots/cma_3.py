@@ -62,7 +62,7 @@ def cma_loading_ue5_dataset(split, dataset_dir="dataset/figure_3"):
 
     return dataset
 
-def cma_binding_embeddings(model, processor, num_heads, top_k_heads, est_dataset):
+def cma_binding_embeddings(model, processor, num_heads, top_k_heads, stage, est_dataset):
     text_prompts = {"left_target": [], "right_target": []}
     image_list = []
     for image_data in est_dataset:
@@ -78,7 +78,8 @@ def cma_binding_embeddings(model, processor, num_heads, top_k_heads, est_dataset
         num_heads=num_heads, 
         prompt_list=text_prompts["left_target"], 
         image_list=image_list, 
-        top_k_heads=top_k_heads
+        top_k_heads=top_k_heads,
+        stage=stage
     )
 
     right_binding_embs = get_head_embeddings(
@@ -87,7 +88,8 @@ def cma_binding_embeddings(model, processor, num_heads, top_k_heads, est_dataset
         num_heads=num_heads, 
         prompt_list=text_prompts["right_target"], 
         image_list=image_list, 
-        top_k_heads=top_k_heads
+        top_k_heads=top_k_heads,
+        stage=stage
     )
 
     return left_binding_embs, right_binding_embs
@@ -196,6 +198,7 @@ def main():
                     processor=processor, 
                     num_heads=num_heads, 
                     top_k_heads=top_k_heads, 
+                    stage=stage+1,    # 0 base to 1 base
                     est_dataset=est_dataset
                 )
 

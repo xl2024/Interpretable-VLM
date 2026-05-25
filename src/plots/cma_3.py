@@ -190,7 +190,7 @@ def main():
             patching_results[model_id][stage] = {}
             for k in k_list:
                 top_k_heads = get_top_k_heads(mediation_scores, k)
-                print("Calculating binding embeddings...")
+                print(f"Calculating binding embeddings (stage={stage+1}, k={k})...")
                 left_binding_embs, right_binding_embs = cma_binding_embeddings(
                     model=model, 
                     processor=processor, 
@@ -199,7 +199,7 @@ def main():
                     est_dataset=est_dataset
                 )
 
-                print("Patching embeddings...")
+                print(f"Patching embeddings (stage={stage+1}, k={k})...")
                 left_patching_results, right_patching_results = get_patching_results(
                     model=model, 
                     processor=processor, 
@@ -215,6 +215,7 @@ def main():
                 
                 patching_results[model_id][stage][k] = {"left": left_patching_results, "right": right_patching_results}
 
+    print("final patching_results: ", patching_results)
 
 if __name__ == "__main__":
     main()

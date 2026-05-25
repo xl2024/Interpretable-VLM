@@ -426,6 +426,7 @@ def cma_head_patching_by_generator(
     image_c1: Any,
     d_t_head_cache: Dict[Tuple[int, int], torch.Tensor],
     top_k_heads: List[Tuple[int, int]],
+    stage: int = 2,
     alpha: float = 1.0,
     d_o_head_cache: Dict[Tuple[int, int], torch.Tensor] = None
 ) -> Tuple[str, str]:
@@ -445,8 +446,12 @@ def cma_head_patching_by_generator(
                 for l, h in sorted(top_k_heads):
                     target_layer = _resolve_layer_path(model, layer_template.format(l))
                     
-                    # Intercept input to o_proj
-                    hs_input = target_layer.self_attn.o_proj.input[0]
+                    if stage == 3:    # Feature Retrieval
+                        hook_target = target_layer.self_attn.q_proj.output
+                        hs_input = hook_target[0] if isinstance(hook_target, tuple) else hook_target
+                    else:             # Intercept input to o_proj
+                        hs_input = target_layer.self_attn.o_proj.input[0]
+
                     hs_heads = einops.rearrange(hs_input, 's (h d) -> s h d', h=num_heads)
                     
                     # True CMA Patch: Inject cached c2 head state into c1 stream
@@ -486,6 +491,7 @@ def cma_head_patching_by_logits(
     image_c1: Any,
     d_t_head_cache: Dict[Tuple[int, int], torch.Tensor],
     top_k_heads: List[Tuple[int, int]],
+    stage: int = 2,
     alpha: float = 1.0,
     d_o_head_cache: Dict[Tuple[int, int], torch.Tensor] = None,
     sanity_check: bool = False
@@ -507,8 +513,12 @@ def cma_head_patching_by_logits(
                 for l, heads_in_this_layer in sorted(heads_by_layer.items()):
                     target_layer = _resolve_layer_path(model, layer_template.format(l))
                     
-                    # Intercept input to o_proj
-                    hs_input = target_layer.self_attn.o_proj.input[0]
+                    if stage == 3:    # Feature Retrieval
+                        hook_target = target_layer.self_attn.q_proj.output
+                        hs_input = hook_target[0] if isinstance(hook_target, tuple) else hook_target
+                    else:             # Intercept input to o_proj
+                        hs_input = target_layer.self_attn.o_proj.input[0]
+
                     hs_heads = einops.rearrange(hs_input, 's (h d) -> s h d', h=num_heads)
                     
                     for h in sorted(heads_in_this_layer):
@@ -550,6 +560,7 @@ def cma_head_patching_by_logits(
             image_c1=image_c1,
             d_t_head_cache=d_t_head_cache,
             top_k_heads=top_k_heads,
+            stage=stage,
             alpha=alpha,
             d_o_head_cache=d_o_head_cache
         )

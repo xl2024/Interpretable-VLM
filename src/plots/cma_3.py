@@ -6,11 +6,11 @@ from typing import Dict, List, Tuple, Any
 from pathlib import Path
 
 from src.model.loader import load_vlm
-from src.data.synthetic_generator import generate_custom_image
 from src.utils.tools import load_config, _resolve_text_model_dims, get_text_prompt, get_num_hidden_layers
 from src.plots.cma_1d import run_mediation_analysis
 from src.mech_interp.cma import cma_head_patching_by_logits, get_head_embeddings, get_top_k_heads
 
+# Reproduces Figure 3 and 37-43
 
 def cma_loading_ue5_dataset(split, dataset_dir="dataset/figure_3"):
     """
@@ -92,95 +92,128 @@ def cma_binding_embeddings(model, processor, num_heads, top_k_heads, est_dataset
 
     return left_binding_embs, right_binding_embs
 
-def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, left_binding_embs, right_binding_embs, eval_dataset):
-    left_patching_results = []
-    right_patching_results = []
-    for image_data in eval_dataset:
-        left_prompt = f"In this image there is a {image_data['right_color']} {image_data['right_animal']} and a"
-        left_prompt_text = get_text_prompt(model, left_prompt, image_data["image"], processor)
+def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, left_binding_embs, right_binding_embs, stage, alpha_list, eval_dataset):
+    def print_results(alpha, pos, patching_results):
+        matchings = sum(1 for pairs in patching_results if len(set(pairs)) == 1)
+        patching_acc = matchings / len(patching_results)
+        print(f"patching_acc (alpha={alpha}, position={pos}): {patching_acc}, patching_results: {patching_results}")
 
-        predicted_word = cma_head_patching_by_logits(
-            model=model,
-            processor=processor,
-            num_layers=num_layers,
-            num_heads=num_heads,
-            prompt_c1=left_prompt_text,
-            image_c1=image_data["image"],
-            d_t_head_cache=right_binding_embs,
-            top_k_heads=top_k_heads,
-            alpha=3,
-            d_o_head_cache=left_binding_embs
-        )
-        left_patching_results.append([image_data["right_color"], predicted_word])
-        
-        right_prompt = f"In this image there is a {image_data['left_color']} {image_data['left_animal']} and a"
-        right_prompt_text = get_text_prompt(model, right_prompt, image_data["image"], processor)
+    left_patching_results = {}
+    right_patching_results = {}
+    for alpha in alpha_list:
+        left_patching_results[alpha] = []
+        right_patching_results[alpha] = []
+        for image_data in eval_dataset:
+            left_prompt = f"In this image there is a {image_data['right_color']} {image_data['right_animal']} and a"
+            left_prompt_text = get_text_prompt(model, left_prompt, image_data["image"], processor)
 
-        predicted_word = cma_head_patching_by_logits(
-            model=model,
-            processor=processor,
-            num_layers=num_layers,
-            num_heads=num_heads,
-            prompt_c1=right_prompt_text,
-            image_c1=image_data["image"],
-            d_t_head_cache=left_binding_embs,
-            top_k_heads=top_k_heads,
-            alpha=3,
-            d_o_head_cache=right_binding_embs
-        )
-        right_patching_results.append([image_data["left_color"], predicted_word])
+            predicted_word = cma_head_patching_by_logits(
+                model=model,
+                processor=processor,
+                num_layers=num_layers,
+                num_heads=num_heads,
+                prompt_c1=left_prompt_text,
+                image_c1=image_data["image"],
+                d_t_head_cache=right_binding_embs,
+                top_k_heads=top_k_heads,
+                stage=stage,
+                alpha=alpha,
+                d_o_head_cache=left_binding_embs
+            )
+            left_patching_results[alpha].append([image_data["right_color"], predicted_word])
         
+            right_prompt = f"In this image there is a {image_data['left_color']} {image_data['left_animal']} and a"
+            right_prompt_text = get_text_prompt(model, right_prompt, image_data["image"], processor)
+
+            predicted_word = cma_head_patching_by_logits(
+                model=model,
+                processor=processor,
+                num_layers=num_layers,
+                num_heads=num_heads,
+                prompt_c1=right_prompt_text,
+                image_c1=image_data["image"],
+                d_t_head_cache=left_binding_embs,
+                top_k_heads=top_k_heads,
+                stage=stage,
+                alpha=alpha,
+                d_o_head_cache=right_binding_embs
+            )
+            right_patching_results[alpha].append([image_data["left_color"], predicted_word])
+
+        print_results(alpha, "left", left_patching_results[alpha])
+        print_results(alpha, "right", right_patching_results[alpha])
+
     return left_patching_results, right_patching_results
 
 def main():
-    model_id = "Qwen/Qwen2-VL-7B-Instruct"
-    
-    stage = 2
-    mediation_scores = run_mediation_analysis(model_id)
-    mediation_scores = mediation_scores[stage-1]
-    k = 10
-    top_k_heads = get_top_k_heads(mediation_scores, k)
+    # model_id_list = ["Qwen/Qwen2-VL-7B-Instruct",                 # figure 40
+    #                  "Qwen/Qwen2.5-VL-3B-Instruct",               # figure 37
+    #                  "Qwen/Qwen2.5-VL-7B-Instruct",               # figure 38
+    #                  "Qwen/Qwen2.5-VL-32B-Instruct",              # figure 39
+    #                  "llava-hf/llava-1.5-7b-hf",                  # figure 41
+    #                  "llava-hf/llava-1.5-13b-hf",                 # figure 42
+    #                  "llava-hf/llava-onevision-qwen2-7b-ov-hf"    # figure 43
+    # ]
+    # k_list = [2,3,5,10,12,15,20,30,40,50,60,100]
+    # alpha_lists = [
+    #     [5,10,15,20,30,50,100,150,200,300],
+    #     [1,2,3,4,5,10,15],
+    #     [1,2,3,10,15,20,50,100]
+    # ]
 
-    config = load_config()
-    tier = config['pipeline']['tier']
-    model, processor = load_vlm(model_id, tier)    
-    num_layers = get_num_hidden_layers(model)
-    _, num_heads = _resolve_text_model_dims(model)
+    model_id_list = ["Qwen/Qwen2-VL-7B-Instruct"                 # figure 40
+    ]
+    k_list = [10]
+    alpha_lists = [
+        [3],[3],[3]
+    ]
 
     print("Loading estimation dataset...")
     est_dataset = cma_loading_ue5_dataset("est")
 
-    print("Calculating binding embeddings...")
-    left_binding_embs, right_binding_embs = cma_binding_embeddings(
-        model=model, 
-        processor=processor, 
-        num_heads=num_heads, 
-        top_k_heads=top_k_heads, 
-        est_dataset=est_dataset
-    )
- 
     print("Loading evaluation dataset...")
     eval_dataset = cma_loading_ue5_dataset("eval")
 
-    print("Patching embeddings...")
-    left_patching_results, right_patching_results = get_patching_results(
-        model=model, 
-        processor=processor, 
-        num_layers=num_layers, 
-        num_heads=num_heads, 
-        top_k_heads=top_k_heads, 
-        left_binding_embs=left_binding_embs, 
-        right_binding_embs=right_binding_embs, 
-        eval_dataset=eval_dataset
-    )
+    patching_results = {}
+    for model_id in model_id_list:
+        config = load_config()
+        tier = config['pipeline']['tier']
+        model, processor = load_vlm(model_id, tier)    
+        num_layers = get_num_hidden_layers(model)
+        _, num_heads = _resolve_text_model_dims(model)
+        mediation_scores_list = run_mediation_analysis(model_id)
 
-    left_matching = sum(1 for pairs in left_patching_results if len(set(pairs)) == 1)
-    left_patching_acc = left_matching / len(left_patching_results)
-    right_matching = sum(1 for pairs in right_patching_results if len(set(pairs)) == 1)
-    right_patching_acc = right_matching / len(right_patching_results)
+        patching_results[model_id] = {}
+        for stage in range(3):
+            mediation_scores = mediation_scores_list[stage]
 
-    print("left_patching_acc:", left_patching_acc, "left_patching_results:", left_patching_results)
-    print("right_patching_acc", right_patching_acc, "right_patching_results", right_patching_results)
+            patching_results[model_id][stage] = {}
+            for k in k_list:
+                top_k_heads = get_top_k_heads(mediation_scores, k)
+                print("Calculating binding embeddings...")
+                left_binding_embs, right_binding_embs = cma_binding_embeddings(
+                    model=model, 
+                    processor=processor, 
+                    num_heads=num_heads, 
+                    top_k_heads=top_k_heads, 
+                    est_dataset=est_dataset
+                )
+
+                print("Patching embeddings...")
+                left_patching_results, right_patching_results = get_patching_results(
+                    model=model, 
+                    processor=processor, 
+                    num_layers=num_layers, 
+                    num_heads=num_heads, 
+                    top_k_heads=top_k_heads, 
+                    left_binding_embs=left_binding_embs, 
+                    right_binding_embs=right_binding_embs, 
+                    stage=stage+1,    # 0 base to 1 base
+                    alpha_list=alpha_lists[stage],
+                    eval_dataset=eval_dataset
+                )
+                
+                patching_results[model_id][stage][k] = {"left": left_patching_results, "right": right_patching_results}
 
 
 if __name__ == "__main__":

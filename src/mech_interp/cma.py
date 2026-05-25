@@ -385,6 +385,7 @@ def get_head_embeddings(
     prompt_list: List[str],
     image_list: List[Any],
     top_k_heads: List[Tuple[int, int]],
+    token_pos_list: List[int] = None,
     stage: int = 2
 ) -> Dict[Tuple[int, int], torch.Tensor]:
     # 1. Resolve architecture dimensions dynamically
@@ -413,7 +414,8 @@ def get_head_embeddings(
 
                         hs_heads = einops.rearrange(attn_out, 's (h d) -> s h d', h=num_heads)
                         for h in sorted(heads_in_this_layer):
-                            states = hs_heads[-1, h, :].save()
+                            token_pos = token_pos_list[i] if token_pos_list is not None else -1
+                            states = hs_heads[token_pos, h, :].save()
                             c2_head_cache[l, h] = c2_head_cache.get((l, h), 0) + states
 
             gc_collect()
@@ -432,6 +434,7 @@ def cma_head_patching_by_generator(
     image_c1: Any,
     d_t_head_cache: Dict[Tuple[int, int], torch.Tensor],
     top_k_heads: List[Tuple[int, int]],
+    token_pos: int = -1,
     stage: int = 2,
     alpha: float = 1.0,
     d_o_head_cache: Dict[Tuple[int, int], torch.Tensor] = None
@@ -453,8 +456,7 @@ def cma_head_patching_by_generator(
                     target_layer = _resolve_layer_path(model, layer_template.format(l))
                     
                     if stage == 3:    # Feature Retrieval
-                        hook_target = target_layer.self_attn.q_proj.output
-                        hs_input = hook_target[0] if isinstance(hook_target, tuple) else hook_target
+                        hs_input = target_layer.self_attn.q_proj.output[0]
                     else:             # Intercept input to o_proj
                         hs_input = target_layer.self_attn.o_proj.input[0]
 
@@ -463,12 +465,12 @@ def cma_head_patching_by_generator(
                     # True CMA Patch: Inject cached c2 head state into c1 stream
                     # hs_heads[-1, h, :] = d_t_head_cache[l,h].to(model.device)
                     c2_state = d_t_head_cache[l, h].to(model.device)
-                    c1_state = hs_heads[-1, h, :]
+                    c1_state = hs_heads[token_pos, h, :]
                     if d_o_head_cache is None:
                         concept_vector = c2_state - c1_state
                     else:
                         concept_vector = c2_state - d_o_head_cache[l, h].to(model.device)
-                    hs_heads[-1, h, :] = c1_state + (alpha * concept_vector)
+                    hs_heads[token_pos, h, :] = c1_state + (alpha * concept_vector)
                     
                     # Repack dimensions safely
                     hs_input[:] = einops.rearrange(hs_heads, 's h d -> s (h d)')
@@ -497,6 +499,7 @@ def cma_head_patching_by_logits(
     image_c1: Any,
     d_t_head_cache: Dict[Tuple[int, int], torch.Tensor],
     top_k_heads: List[Tuple[int, int]],
+    token_pos: int = -1,
     stage: int = 2,
     alpha: float = 1.0,
     d_o_head_cache: Dict[Tuple[int, int], torch.Tensor] = None,
@@ -520,8 +523,7 @@ def cma_head_patching_by_logits(
                     target_layer = _resolve_layer_path(model, layer_template.format(l))
                     
                     if stage == 3:    # Feature Retrieval
-                        hook_target = target_layer.self_attn.q_proj.output
-                        hs_input = hook_target[0] if isinstance(hook_target, tuple) else hook_target
+                        hs_input = target_layer.self_attn.q_proj.output[0]
                     else:             # Intercept input to o_proj
                         hs_input = target_layer.self_attn.o_proj.input[0]
 
@@ -531,12 +533,12 @@ def cma_head_patching_by_logits(
                         # True CMA Patch: Inject cached c2 head state into c1 stream
                         # hs_heads[-1, h, :] = d_t_head_cache[l, h].to(model.device)
                         c2_state = d_t_head_cache[l, h].to(model.device)
-                        c1_state = hs_heads[-1, h, :]
+                        c1_state = hs_heads[token_pos, h, :]
                         if d_o_head_cache is None:
                             concept_vector = c2_state - c1_state
                         else:
                             concept_vector = c2_state - d_o_head_cache[l, h].to(model.device)
-                        hs_heads[-1, h, :] = c1_state + (alpha * concept_vector)
+                        hs_heads[token_pos, h, :] = c1_state + (alpha * concept_vector)
 
                     # Repack dimensions safely
                     hs_input[:] = einops.rearrange(hs_heads, 's h d -> s (h d)')
@@ -566,6 +568,7 @@ def cma_head_patching_by_logits(
             image_c1=image_c1,
             d_t_head_cache=d_t_head_cache,
             top_k_heads=top_k_heads,
+            token_pos=token_pos,
             stage=stage,
             alpha=alpha,
             d_o_head_cache=d_o_head_cache

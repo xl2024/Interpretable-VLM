@@ -107,6 +107,7 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
             image_c1=image_data["image"],
             d_t_head_cache=right_binding_embs,
             top_k_heads=top_k_heads,
+            alpha=3,
             d_o_head_cache=left_binding_embs
         )
         left_patching_results.append([image_data["right_color"], predicted_word])
@@ -123,6 +124,7 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
             image_c1=image_data["image"],
             d_t_head_cache=left_binding_embs,
             top_k_heads=top_k_heads,
+            alpha=3,
             d_o_head_cache=right_binding_embs
         )
         right_patching_results.append([image_data["left_color"], predicted_word])

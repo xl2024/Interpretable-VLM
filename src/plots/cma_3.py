@@ -17,6 +17,7 @@ def cma_loading_ue5_dataset(split, dataset_dir="dataset/figure_3"):
     Scans the dataset directory, parses filenames, and returns a list of dictionaries.
     The dataset was generated using UE5 in PUG-style as described in the paper. Details in dataset/figure_3/README.md.
     """
+    print(f"Loading dataset {split}...")
     dataset = []
     
     # Recursively find all .png files in the est/ and eval/ folders
@@ -58,7 +59,8 @@ def cma_loading_ue5_dataset(split, dataset_dir="dataset/figure_3"):
         }
         
         dataset.append(image_data)
-        
+    print("Dataset loading complete!")
+    
     return dataset
 
 def cma_binding_embeddings(model, processor, num_heads, top_k_heads, est_dataset):

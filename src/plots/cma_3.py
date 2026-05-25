@@ -17,7 +17,6 @@ def cma_loading_ue5_dataset(split, dataset_dir="dataset/figure_3"):
     Scans the dataset directory, parses filenames, and returns a list of dictionaries.
     The dataset was generated using UE5 in PUG-style as described in the paper. Details in dataset/figure_3/README.md.
     """
-    print(f"Loading dataset {split}...")
     dataset = []
     
     # Recursively find all .png files in the est/ and eval/ folders
@@ -46,6 +45,7 @@ def cma_loading_ue5_dataset(split, dataset_dir="dataset/figure_3"):
             img_data = Image.open(filepath).convert('RGB')
         except Exception as e:
             print(f"Error loading image {filepath}: {e}")
+            continue
 
         # Build the dictionary
         image_data = {
@@ -59,8 +59,7 @@ def cma_loading_ue5_dataset(split, dataset_dir="dataset/figure_3"):
         }
         
         dataset.append(image_data)
-    print("Dataset loading complete!")
-    
+
     return dataset
 
 def cma_binding_embeddings(model, processor, num_heads, top_k_heads, est_dataset):
@@ -68,9 +67,9 @@ def cma_binding_embeddings(model, processor, num_heads, top_k_heads, est_dataset
     image_list = []
     for image_data in est_dataset:
         image_list.append(image_data["image"])
-        left_prompt = f"In this image there is a {image_data["right_color"]} {image_data["right_animal"]} and a"
+        left_prompt = f"In this image there is a {image_data['right_color']} {image_data['right_animal']} and a"
         text_prompts["left_target"].append(get_text_prompt(model, left_prompt, image_data["image"], processor))
-        right_prompt = f"In this image there is a {image_data["left_color"]} {image_data["left_animal"]} and a"
+        right_prompt = f"In this image there is a {image_data['left_color']} {image_data['left_animal']} and a"
         text_prompts["right_target"].append(get_text_prompt(model, right_prompt, image_data["image"], processor))
 
     left_binding_embs = get_head_embeddings(
@@ -97,7 +96,7 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
     left_patching_results = []
     right_patching_results = []
     for image_data in eval_dataset:
-        left_prompt = f"In this image there is a {image_data["right_color"]} {image_data["right_animal"]} and a"
+        left_prompt = f"In this image there is a {image_data['right_color']} {image_data['right_animal']} and a"
         left_prompt_text = get_text_prompt(model, left_prompt, image_data["image"], processor)
 
         predicted_word = cma_head_patching_by_logits(
@@ -114,7 +113,7 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
         )
         left_patching_results.append([image_data["right_color"], predicted_word])
         
-        right_prompt = f"In this image there is a {image_data["left_color"]} {image_data["left_animal"]} and a"
+        right_prompt = f"In this image there is a {image_data['left_color']} {image_data['left_animal']} and a"
         right_prompt_text = get_text_prompt(model, right_prompt, image_data["image"], processor)
 
         predicted_word = cma_head_patching_by_logits(
@@ -148,7 +147,10 @@ def main():
     num_layers = get_num_hidden_layers(model)
     _, num_heads = _resolve_text_model_dims(model)
 
+    print("Loading estimation dataset...")
     est_dataset = cma_loading_ue5_dataset("est")
+
+    print("Calculating binding embeddings...")
     left_binding_embs, right_binding_embs = cma_binding_embeddings(
         model=model, 
         processor=processor, 
@@ -157,7 +159,10 @@ def main():
         est_dataset=est_dataset
     )
  
+    print("Loading evaluation dataset...")
     eval_dataset = cma_loading_ue5_dataset("eval")
+
+    print("Patching embeddings...")
     left_patching_results, right_patching_results = get_patching_results(
         model=model, 
         processor=processor, 
@@ -169,8 +174,14 @@ def main():
         eval_dataset=eval_dataset
     )
 
-    print("left_patching_results:", left_patching_results)
-    print("right_patching_results", right_patching_results)
+    left_matching = sum(1 for pairs in left_patching_results if len(set(pairs)) == 1)
+    left_patching_acc = left_matching / len(left_patching_results)
+    right_matching = sum(1 for pairs in right_patching_results if len(set(pairs)) == 1)
+    right_patching_acc = right_matching / len(right_patching_results)
+
+    print("left_patching_acc:", left_patching_acc, "left_patching_results:", left_patching_results)
+    print("right_patching_acc", right_patching_acc, "right_patching_results", right_patching_results)
+
 
 if __name__ == "__main__":
     main()

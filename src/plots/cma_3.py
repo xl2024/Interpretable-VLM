@@ -170,3 +170,5 @@ def main():
     print("left_patching_results:", left_patching_results)
     print("right_patching_results", right_patching_results)
 
+if __name__ == "__main__":
+    main()

@@ -137,7 +137,7 @@ def main():
     stage = 2
     mediation_scores = run_mediation_analysis(model_id)
     mediation_scores = mediation_scores[stage-1]
-    k = 1
+    k = 10
     top_k_heads = get_top_k_heads(mediation_scores, k)
 
     config = load_config()

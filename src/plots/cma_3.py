@@ -109,8 +109,7 @@ def cma_binding_embeddings(model, processor, num_heads, top_k_heads, stage, est_
 def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, left_binding_embs, right_binding_embs, stage, alpha_list, eval_dataset):
     def print_results(alpha, pos, patching_results):
         matchings = sum(1 for pairs in patching_results if len(set(pairs)) == 1)
-        patching_acc = matchings / len(patching_results)
-        print(f"patching_acc (alpha={alpha}, position={pos}): {patching_acc}, patching_results: {patching_results}")
+        print(f"patching_acc (alpha={alpha}, position={pos}): {matchings}/{len(patching_results)}, patching_results: {patching_results}")
 
     left_patching_results = {}
     right_patching_results = {}
@@ -121,6 +120,8 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
             left_prompt = f"In this image there is a {image_data['right_color']} {image_data['right_animal']} and a"
             left_prompt_text = get_text_prompt(model, left_prompt, image_data["image"], processor)
             left_token_pos = get_token_position(processor, left_prompt_text, image_data['image'], image_data['right_color']) if stage == 1 else None
+            left_d_t = left_binding_embs if stage == 1 else right_binding_embs
+            left_d_o = right_binding_embs if stage == 1 else left_binding_embs
             predicted_word = cma_head_patching_by_logits(
                 model=model,
                 processor=processor,
@@ -128,18 +129,20 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
                 num_heads=num_heads,
                 prompt_c1=left_prompt_text,
                 image_c1=image_data["image"],
-                d_t_head_cache=right_binding_embs,
+                d_t_head_cache=left_d_t,
                 top_k_heads=top_k_heads,
                 token_pos=left_token_pos,
                 stage=stage,
                 alpha=alpha,
-                d_o_head_cache=left_binding_embs
+                d_o_head_cache=left_d_o
             )
             left_patching_results[alpha].append([image_data["right_color"], predicted_word])
         
             right_prompt = f"In this image there is a {image_data['left_color']} {image_data['left_animal']} and a"
             right_prompt_text = get_text_prompt(model, right_prompt, image_data["image"], processor)
             right_token_pos = get_token_position(processor, right_prompt_text, image_data['image'], image_data['left_color']) if stage == 1 else None
+            right_d_t = right_binding_embs if stage == 1 else left_binding_embs
+            right_d_o = left_binding_embs if stage == 1 else right_binding_embs
             predicted_word = cma_head_patching_by_logits(
                 model=model,
                 processor=processor,
@@ -147,12 +150,12 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
                 num_heads=num_heads,
                 prompt_c1=right_prompt_text,
                 image_c1=image_data["image"],
-                d_t_head_cache=left_binding_embs,
+                d_t_head_cache=right_d_t,
                 top_k_heads=top_k_heads,
                 token_pos=right_token_pos,
                 stage=stage,
                 alpha=alpha,
-                d_o_head_cache=right_binding_embs
+                d_o_head_cache=right_d_o
             )
             right_patching_results[alpha].append([image_data["left_color"], predicted_word])
 
@@ -201,6 +204,8 @@ def main():
 
         patching_results[model_id] = {}
         for stage in range(3):
+            # [Note: When stage=2 (for feature retrieval), patches should be gotten w.r.t. colors,
+            # and patching should be done with ???.]
             mediation_scores = mediation_scores_list[stage]
 
             patching_results[model_id][stage] = {}

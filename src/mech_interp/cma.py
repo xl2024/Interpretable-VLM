@@ -407,8 +407,7 @@ def get_head_embeddings(
                         layer_module = _resolve_layer_path(model, layer_template.format(l))
                         # Safely intercept full 3D tensor: [batch, seq_len, hidden_dim]
                         if stage == 3:    # Feature Retrieval
-                            hook_target = layer_module.self_attn.q_proj.output
-                            attn_out = hook_target[0] if isinstance(hook_target, tuple) else hook_target
+                            attn_out = layer_module.self_attn.q_proj.output[0][0]
                         else:
                             attn_out = layer_module.self_attn.o_proj.input[0]
 

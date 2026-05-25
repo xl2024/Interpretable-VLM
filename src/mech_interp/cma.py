@@ -456,7 +456,7 @@ def cma_head_patching_by_generator(
                     target_layer = _resolve_layer_path(model, layer_template.format(l))
                     
                     if stage == 3:    # Feature Retrieval
-                        hs_input = target_layer.self_attn.q_proj.output[0]
+                        hs_input = target_layer.self_attn.q_proj.output[0][0]
                     else:             # Intercept input to o_proj
                         hs_input = target_layer.self_attn.o_proj.input[0]
 
@@ -523,7 +523,7 @@ def cma_head_patching_by_logits(
                     target_layer = _resolve_layer_path(model, layer_template.format(l))
                     
                     if stage == 3:    # Feature Retrieval
-                        hs_input = target_layer.self_attn.q_proj.output[0]
+                        hs_input = target_layer.self_attn.q_proj.output[0][0]
                     else:             # Intercept input to o_proj
                         hs_input = target_layer.self_attn.o_proj.input[0]
 

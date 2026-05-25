@@ -6,29 +6,13 @@ from src.model.loader import load_vlm
 from src.data.synthetic_generator import generate_custom_image
 from src.utils.tools import load_config, _resolve_text_model_dims, get_text_prompt, get_num_hidden_layers
 from src.plots.cma_1d import run_mediation_analysis
-from src.mech_interp.cma import cma_head_patching_by_logits, get_binding_ID
+from src.mech_interp.cma import cma_head_patching_by_logits, get_head_embeddings, get_top_k_heads
 
 
 
 
 absolute_score = 0
 relative_score = 0
-
-def get_top_k_heads(mediation_scores: np.ndarray, k: int) -> List[Tuple[int, int]]:
-    """
-    Returns the (layer, head) coordinates for the top k highest mediation scores.
-    """
-    # 1. Flatten, sort ascending, reverse to descending, and grab top k
-    top_k_flat_indices = np.argsort(mediation_scores.flatten())[::-1][:k]    # [::-1]=[-1::-1]=[start:stop:step]
-    
-    # 2. Convert flat 1D indices back into 2D (layer, head) coordinates
-    layers, heads = np.unravel_index(top_k_flat_indices, mediation_scores.shape)
-    layers = layers.tolist()    # np.int64 -> int
-    heads = heads.tolist()
-
-    print(f"Found top {k}/{mediation_scores.size} heads.")
-
-    return list(zip(layers, heads))
 
 def get_cma_test_cases():
     """
@@ -106,7 +90,7 @@ def cma_test_by_model(model_id):
             text_prompt_c1 = get_text_prompt(model, prompt_1, image_c1, processor)
             text_prompt_c2 = get_text_prompt(model, prompt_2, image_c2, processor)
 
-            head_cache = get_binding_ID(
+            head_cache = get_head_embeddings(
                 model=model, 
                 processor=processor, 
                 num_heads=num_heads, 

@@ -378,7 +378,7 @@ def multi_runs_for_ID_selection(
         
     return mediation_scores_2
 
-def get_binding_ID(
+def get_head_embeddings(
     model: Any,
     processor: Any,
     num_heads: int,
@@ -561,3 +561,19 @@ def cma_head_patching_by_logits(
             print("strip needed")
 
     return predicted_word
+
+def get_top_k_heads(mediation_scores: np.ndarray, k: int) -> List[Tuple[int, int]]:
+    """
+    Returns the (layer, head) coordinates for the top k highest mediation scores.
+    """
+    # 1. Flatten, sort ascending, reverse to descending, and grab top k
+    top_k_flat_indices = np.argsort(mediation_scores.flatten())[::-1][:k]    # [::-1]=[-1::-1]=[start:stop:step]
+    
+    # 2. Convert flat 1D indices back into 2D (layer, head) coordinates
+    layers, heads = np.unravel_index(top_k_flat_indices, mediation_scores.shape)
+    layers = layers.tolist()    # np.int64 -> int
+    heads = heads.tolist()
+
+    print(f"Found top {k}/{mediation_scores.size} heads.")
+
+    return list(zip(layers, heads))

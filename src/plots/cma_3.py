@@ -200,7 +200,7 @@ def main():
 
     model_id_list = ["Qwen/Qwen2.5-VL-7B-Instruct"
     ]
-    k_list = [1,2,3,4,5]
+    k_list = [1,2,3,4,5,10,20,50,100]
     alpha_lists = [
         [100],[5],[5]
     ]

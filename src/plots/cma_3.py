@@ -192,8 +192,8 @@ def main():
     # ]
     # k_list = [2,3,5,10,12,15,20,30,40,50,60,100,200]
     # alpha_lists = [
-    #     [5,10,15,20,30,50,100,150,200,300],
-    #     [1,2,3,4,5,10,15],
+    #     [1,5,10,15,20,30,50,100,150,200,300],
+    #     [1,2,3,4,5,10,15,100],
     #     [1,2,3,10,15,20,50,100]
     # ]
 
@@ -201,7 +201,7 @@ def main():
     ]
     k_list = [2,10,200]
     alpha_lists = [
-        [5,100,300],[1,5,15],[1,5,100]
+        [1,100,300],[1,5,15],[1,5,100]
     ]
 
     print("Loading estimation dataset...")
@@ -216,7 +216,7 @@ def main():
         filename = f"src/data/cma/sweeping/{model_name}.npz"
         file_path = Path(filename)
         if file_path.exists():
-            print(f"Found {filename}! Loading hyper params sweeping results for intervention...")
+            print(f"Found {filename}! Loading sweeping results for hyperparameters...")
             loaded_data = np.load(filename)
             patching_results[model_id] = loaded_data
             continue

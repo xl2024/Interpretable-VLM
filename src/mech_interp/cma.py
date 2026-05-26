@@ -388,7 +388,6 @@ def get_head_embeddings(
     token_pos_list: List[int] = None,
     stage: int = 2
 ) -> Dict[Tuple[int, int], torch.Tensor]:
-    token_pos_list = None
     # 1. Resolve architecture dimensions dynamically
     layer_template = get_layer_path_template(model)
     

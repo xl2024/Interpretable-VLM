@@ -253,5 +253,6 @@ def get_token_position(processor, text_prompt, image, word):
     for index, token_id in enumerate(input_ids):
         token_str = processor.tokenizer.decode(token_id).strip().lower()
         if word in token_str:
+            print(f"found '{word}' at index {index}")
             return index
     return -1

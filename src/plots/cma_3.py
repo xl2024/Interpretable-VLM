@@ -234,7 +234,7 @@ def main():
             # while patching the query embeddings asks the moddel about the feature of the position ID gotten from stage 2 and stored in the patchings.]
             mediation_scores = mediation_scores_list[stage-1]
 
-            patching_results[model_id][stage] = {}
+            patching_results[model_id][str(stage)] = {}
             for k in k_list:
                 top_k_heads = get_top_k_heads(mediation_scores, k)
                 print(f"Calculating binding embeddings (stage={stage}, k={k})...")

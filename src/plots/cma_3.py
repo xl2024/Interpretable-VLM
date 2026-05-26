@@ -200,7 +200,7 @@ def main():
 
     model_id_list = ["Qwen/Qwen2.5-VL-7B-Instruct"
     ]
-    k_list = [0,1,2,3,4,5,10,20,50,100]
+    k_list = [10]
     alpha_lists = [
         [100],[5],[5]
     ]
@@ -222,8 +222,8 @@ def main():
 
         patching_results[model_id] = {}
         for stage in range(1, 4):
-            # [Note: When stage=2 (for feature retrieval), patches should be gotten w.r.t. colors,
-            # and patching should be done with ???.]
+            # [Note: In stage 3 (feature retrival), patching the output of attn heads would let the model to predict the feature information in the patching embeddings, 
+            # while patching the query embeddings asks the moddel about the feature of the position ID gotten from stage 2 and stored in the patchings.]
             mediation_scores = mediation_scores_list[stage-1]
 
             patching_results[model_id][stage] = {}

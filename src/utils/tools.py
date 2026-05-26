@@ -211,7 +211,7 @@ def get_text_prompt(model, text, image, processor):
             {
                 "role": "system",
                 "content": [
-                    {"type": "text", "text": "Complete the sentence describing the scene."}
+                    {"type": "text", "text": "Complete the sentence describing the scene, starting by the color of the missing object."}
                 ]
             },
             {

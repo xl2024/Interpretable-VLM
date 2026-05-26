@@ -1,6 +1,7 @@
 import os
 import glob
 from PIL import Image
+import random
 import numpy as np
 from typing import Dict, List, Tuple, Any
 from pathlib import Path
@@ -24,6 +25,9 @@ def cma_loading_ue5_dataset(split, dataset_dir="dataset/figure_3"):
     image_paths = glob.glob(search_pattern)
     
     for filepath in image_paths:
+        if random.random() > 0.1:
+            continue
+        
         # Get just the filename (e.g., "pug_red_camel_green_dolphin_salt_desert_1.png")
         filename = os.path.basename(filepath)
         

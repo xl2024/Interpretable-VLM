@@ -199,9 +199,13 @@ def main():
 
     model_id_list = ["Qwen/Qwen2.5-VL-7B-Instruct", "Qwen/Qwen2-VL-7B-Instruct"
     ]
-    k_list = [2,10,200]
+    # k_list = [2,10,200]
+    # alpha_lists = [
+    #     [1,100,300],[1,5,15,100],[1,5,100]
+    # ]
+    k_list = [10]
     alpha_lists = [
-        [1,100,300],[1,5,15,100],[1,5,100]
+        [100],[5],[5]
     ]
 
     print("Loading estimation dataset...")

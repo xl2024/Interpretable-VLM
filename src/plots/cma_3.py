@@ -202,7 +202,7 @@ def main():
     ]
     k_list = [100]
     alpha_lists = [
-        [10],[10],[10]
+        [100],[5],[5]
     ]
 
     print("Loading estimation dataset...")

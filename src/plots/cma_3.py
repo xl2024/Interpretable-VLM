@@ -27,7 +27,7 @@ def cma_loading_ue5_dataset(split, dataset_dir="dataset/figure_3"):
     for filepath in image_paths:
         if random.random() > 0.1:
             continue
-        
+
         # Get just the filename (e.g., "pug_red_camel_green_dolphin_salt_desert_1.png")
         filename = os.path.basename(filepath)
         
@@ -123,7 +123,7 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
         for image_data in eval_dataset:
             left_prompt = f"In this image there is a {image_data['right_color']} {image_data['right_animal']} and a"
             left_prompt_text = get_text_prompt(model, left_prompt, image_data["image"], processor)
-            left_token_pos = get_token_position(processor, left_prompt_text, image_data['image'], image_data['right_color']) if stage == 1 else None
+            left_token_pos = get_token_position(processor, left_prompt_text, image_data['image'], image_data['right_color']) if stage == 1 else -1
             left_d_t = left_binding_embs if stage == 1 else right_binding_embs
             left_d_o = right_binding_embs if stage == 1 else left_binding_embs
             predicted_word = cma_head_patching_by_logits(
@@ -144,7 +144,7 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
         
             right_prompt = f"In this image there is a {image_data['left_color']} {image_data['left_animal']} and a"
             right_prompt_text = get_text_prompt(model, right_prompt, image_data["image"], processor)
-            right_token_pos = get_token_position(processor, right_prompt_text, image_data['image'], image_data['left_color']) if stage == 1 else None
+            right_token_pos = get_token_position(processor, right_prompt_text, image_data['image'], image_data['left_color']) if stage == 1 else -1
             right_d_t = right_binding_embs if stage == 1 else left_binding_embs
             right_d_o = left_binding_embs if stage == 1 else right_binding_embs
             predicted_word = cma_head_patching_by_logits(

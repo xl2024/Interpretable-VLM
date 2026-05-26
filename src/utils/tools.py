@@ -247,14 +247,19 @@ def get_layer_path_template(model):
     else:
         return "model.language_model.layers[{}]"
     
-def get_token_position(processor, text_prompt, image, word):
+def get_token_position(processor, text_prompt, image, word, for_comma):
     # find the index of comma after the word
     token_inputs = processor(text=text_prompt, images=image, return_tensors="pt")
     input_ids = token_inputs["input_ids"][0].tolist()
-    for index in range(1, len(input_ids)):
-        token_ids = input_ids[index-1:index+1]
-        token_str = processor.tokenizer.decode(token_ids).strip().lower()
-        if ',' in token_str and word in token_str:
-            return index
+    if for_comma:
+        for index in range(1, len(input_ids)):
+            token_ids = input_ids[index-1:index+1]
+            token_str = processor.tokenizer.decode(token_ids).strip().lower()
+            if ',' in token_str and word in token_str:
+                return index
+    else:
+        for index, token_id in enumerate(input_ids):
+            if word in processor.tokenizer.decode(token_id).strip().lower():
+                return index
         
     raise ValueError(f"Could not find '{word}' in prompt: {text_prompt}")

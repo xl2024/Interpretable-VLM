@@ -413,8 +413,11 @@ def get_head_embeddings(
 
                         hs_heads = einops.rearrange(attn_out, 's (h d) -> s h d', h=num_heads)
                         for h in sorted(heads_in_this_layer):
-                            token_pos = token_pos_list[i] if token_pos_list is not None else -1
-                            states = hs_heads[token_pos, h, :].save()
+                            token_pos = token_pos_list[i] if token_pos_list is not None else [-1]
+                            if len(token_pos) == 1:
+                                states = hs_heads[token_pos[0]:, h, :].save()
+                            elif len(token_pos) == 2:
+                                states = hs_heads[token_pos[0]:token_pos[1]+1, h, :].save()
                             c2_head_cache[l, h] = c2_head_cache.get((l, h), 0) + states
 
             gc_collect()
@@ -433,7 +436,7 @@ def cma_head_patching_by_generator(
     image_c1: Any,
     d_t_head_cache: Dict[Tuple[int, int], torch.Tensor],
     top_k_heads: List[Tuple[int, int]],
-    token_pos: int = -1,
+    token_pos: List[int] = [-1],
     stage: int = 2,
     alpha: float = 1.0,
     d_o_head_cache: Dict[Tuple[int, int], torch.Tensor] = None
@@ -464,12 +467,20 @@ def cma_head_patching_by_generator(
                     # True CMA Patch: Inject cached c2 head state into c1 stream
                     # hs_heads[-1, h, :] = d_t_head_cache[l,h].to(model.device)
                     c2_state = d_t_head_cache[l, h].to(model.device)
-                    c1_state = hs_heads[token_pos, h, :]
+                    if len(token_pos) == 1:
+                        c1_state = hs_heads[token_pos[0]:, h, :]
+                    elif len(token_pos) == 2:
+                        c1_state = hs_heads[token_pos[0]:token_pos[1], h, :]
+
                     if d_o_head_cache is None:
                         concept_vector = c2_state - c1_state
                     else:
                         concept_vector = c2_state - d_o_head_cache[l, h].to(model.device)
-                    hs_heads[token_pos, h, :] = c1_state + (alpha * concept_vector)
+
+                    if len(token_pos) == 1:
+                        hs_heads[token_pos[0]:, h, :] = c1_state + (alpha * concept_vector)
+                    elif len(token_pos) == 2:
+                        hs_heads[token_pos[0]:token_pos[1], h, :] = c1_state + (alpha * concept_vector)
                     
                     # Repack dimensions safely
                     hs_input[:] = einops.rearrange(hs_heads, 's h d -> s (h d)')
@@ -498,7 +509,7 @@ def cma_head_patching_by_logits(
     image_c1: Any,
     d_t_head_cache: Dict[Tuple[int, int], torch.Tensor],
     top_k_heads: List[Tuple[int, int]],
-    token_pos: int = -1,
+    token_pos: List[int] = [-1],
     stage: int = 2,
     alpha: float = 1.0,
     d_o_head_cache: Dict[Tuple[int, int], torch.Tensor] = None,
@@ -532,12 +543,20 @@ def cma_head_patching_by_logits(
                         # True CMA Patch: Inject cached c2 head state into c1 stream
                         # hs_heads[-1, h, :] = d_t_head_cache[l, h].to(model.device)
                         c2_state = d_t_head_cache[l, h].to(model.device)
-                        c1_state = hs_heads[token_pos, h, :]
+                        if len(token_pos) == 1:
+                            c1_state = hs_heads[token_pos[0]:, h, :]
+                        elif len(token_pos) == 2:
+                            c1_state = hs_heads[token_pos[0]:token_pos[1]+1, h, :]
+
                         if d_o_head_cache is None:
                             concept_vector = c2_state - c1_state
                         else:
                             concept_vector = c2_state - d_o_head_cache[l, h].to(model.device)
-                        hs_heads[token_pos, h, :] = c1_state + (alpha * concept_vector)
+                        
+                        if len(token_pos) == 1:
+                            hs_heads[token_pos[0]:, h, :] = c1_state + (alpha * concept_vector)
+                        elif len(token_pos) == 2:
+                            hs_heads[token_pos[0]:token_pos[1]+1, h, :] = c1_state + (alpha * concept_vector)
 
                     # Repack dimensions safely
                     hs_input[:] = einops.rearrange(hs_heads, 's h d -> s (h d)')

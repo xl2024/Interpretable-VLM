@@ -83,8 +83,12 @@ def cma_binding_embeddings(model, processor, num_heads, top_k_heads, stage, est_
         text_prompts["right_target"].append(right_text_prompt)
 
         if stage == 1:
-            left_token_pos_list.append(get_token_position(processor, left_text_prompt, image_data['image'], image_data['right_animal']))
-            right_token_pos_list.append(get_token_position(processor, right_text_prompt, image_data['image'], image_data['left_animal']))
+            left_token_pos_1 = get_token_position(processor, left_text_prompt, image_data['image'], image_data['right_color'], False)
+            left_token_pos_2 = get_token_position(processor, left_text_prompt, image_data['image'], image_data['right_animal'], False)
+            left_token_pos_list.append([left_token_pos_1, left_token_pos_2])
+            right_token_pos_1 = get_token_position(processor, right_text_prompt, image_data['image'], image_data['left_color'], False)
+            right_token_pos_2 = get_token_position(processor, right_text_prompt, image_data['image'], image_data['left_animal'], False)
+            right_token_pos_list.append([right_token_pos_1, right_token_pos_2])
 
     left_binding_embs = get_head_embeddings(
         model=model, 
@@ -123,7 +127,12 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
         for image_data in eval_dataset:
             left_prompt = f"In this image there is a {image_data['right_color']} {image_data['right_animal']}, and a"
             left_prompt_text = get_text_prompt(model, left_prompt, image_data["image"], processor)
-            left_token_pos = get_token_position(processor, left_prompt_text, image_data['image'], image_data['right_animal']) if stage == 1 else -1
+            if stage == 1:
+                left_token_pos_1 = get_token_position(processor, left_prompt_text, image_data['image'], image_data['right_color'], False)
+                left_token_pos_2 = get_token_position(processor, left_prompt_text, image_data['image'], image_data['right_animal'], False)
+                left_token_pos = [left_token_pos_1, left_token_pos_2]
+            else:
+                left_token_pos = [-1]
             left_d_t = right_binding_embs
             left_d_o = left_binding_embs
             predicted_word = cma_head_patching_by_logits(
@@ -144,7 +153,12 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
         
             right_prompt = f"In this image there is a {image_data['left_color']} {image_data['left_animal']}, and a"
             right_prompt_text = get_text_prompt(model, right_prompt, image_data["image"], processor)
-            right_token_pos = get_token_position(processor, right_prompt_text, image_data['image'], image_data['left_animal']) if stage == 1 else -1
+            if stage == 1:
+                right_token_pos_1 = get_token_position(processor, right_prompt_text, image_data['image'], image_data['left_color'], False)
+                right_token_pos_2 = get_token_position(processor, right_prompt_text, image_data['image'], image_data['left_animal'], False)
+                right_token_pos = [right_token_pos_1, right_token_pos_2]
+            else:
+                right_token_pos = [-1]
             right_d_t = left_binding_embs
             right_d_o = right_binding_embs
             predicted_word = cma_head_patching_by_logits(

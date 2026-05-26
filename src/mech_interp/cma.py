@@ -4,7 +4,7 @@ import numpy as np
 from typing import Dict, List, Tuple, Any
 import copy
 
-from src.utils.tools import _resolve_layer_path, get_layer_path_template, get_text_prompt, predict
+from src.utils.tools import _resolve_layer_path, get_layer_path_template, get_text_prompt, predict, get_token_position
 from src.mech_interp.tracer import gc_collect
 from src.data.synthetic_generator import generate_custom_image
 
@@ -155,15 +155,8 @@ def run_cma_for_ID_retrieval(
     print(f"Prediction: {predict(model, processor, image_c1, text_prompt_c1)} (target: {colors[-1]})")
     print(f"Prediction: {predict(model, processor, image_c2, text_prompt_c2)} (target: {colors[-1]})")
 
-    token_inputs = processor(text=text_prompt_c1, images=image_c1, return_tensors="pt")
-    input_ids = token_inputs["input_ids"][0].tolist()
-    for index, token_id in enumerate(input_ids):
-        token_str = processor.tokenizer.decode(token_id).strip().lower()
-        if colors[-2] in token_str:
-            token_pos_1 = index
-        elif shapes[-2] in token_str:
-            token_pos_2 = index
-            break
+    token_pos_1 = get_token_position(processor, text_prompt_c1, image_c1, colors[-2], False)
+    token_pos_2 = get_token_position(processor, text_prompt_c1, image_c1, shapes[-2], False)
     token_pos = (token_pos_1, token_pos_2)
 
     a1_tokens = processor.tokenizer.encode(colors[-1], add_special_tokens=False)

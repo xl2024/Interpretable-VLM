@@ -213,7 +213,7 @@ def main():
     patching_results = {}
     for model_id in model_id_list:
         model_name = model_id.replace('/', '_')
-        filename = f"src/data/cma/sweeping/{model_name}.npz"
+        filename = f"src/data/cma/sweeping/{model_name}.json"
         file_path = Path(filename)
         if file_path.exists():
             print(f"Found {filename}! Loading sweeping results for hyperparameters...")

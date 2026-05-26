@@ -27,7 +27,7 @@ def run_mediation_analysis(model_id: str) -> Tuple[List[List[Any]], List[List[An
     Patches activations from a modified context (c2) into the clean context (c1) following Eq. (1).
     """
     model_name = model_id.replace('/', '_')
-    filename = f"src/data/cma/{model_name}.npz"
+    filename = f"src/data/cma/scores/{model_name}.npz"
     file_path = Path(filename)
     if file_path.exists():
         print(f"Found {filename}! Loading cma scores...")

@@ -1,10 +1,9 @@
 import os
 import glob
 from PIL import Image
-import random
 import numpy as np
-from typing import Dict, List, Tuple, Any
 from pathlib import Path
+import random
 
 from src.model.loader import load_vlm
 from src.utils.tools import load_config, _resolve_text_model_dims, get_text_prompt, get_num_hidden_layers, get_token_position
@@ -213,6 +212,15 @@ def main():
 
     patching_results = {}
     for model_id in model_id_list:
+        model_name = model_id.replace('/', '_')
+        filename = f"src/data/cma/sweeping/{model_name}.npz"
+        file_path = Path(filename)
+        if file_path.exists():
+            print(f"Found {filename}! Loading hyper params sweeping results for intervention...")
+            loaded_data = np.load(filename)
+            patching_results[model_id] = loaded_data
+            continue
+
         config = load_config()
         tier = config['pipeline']['tier']
         model, processor = load_vlm(model_id, tier)    
@@ -254,6 +262,9 @@ def main():
                 )
                 
                 patching_results[model_id][stage][k] = {"left": left_patching_results, "right": right_patching_results}
+        
+        np.savez(filename, **patching_results[model_id])
+        print(f"Sweeping results successfully saved in {filename}.")
 
     print("final patching_results: ", patching_results)
 

@@ -248,10 +248,10 @@ def get_layer_path_template(model):
         return "model.language_model.layers[{}]"
     
 def get_token_position(processor, text_prompt, image, word):
-    # token_inputs = processor(text=text_prompt, images=image, return_tensors="pt")
-    # input_ids = token_inputs["input_ids"][0].tolist()
-    # for index, token_id in enumerate(input_ids):
-    #     token_str = processor.tokenizer.decode(token_id).strip().lower()
-    #     if word in token_str:
-    #         return index
+    token_inputs = processor(text=text_prompt, images=image, return_tensors="pt")
+    input_ids = token_inputs["input_ids"][0].tolist()
+    for index, token_id in enumerate(input_ids):
+        token_str = processor.tokenizer.decode(token_id).strip().lower()
+        if word in token_str:
+            return index
     return -1

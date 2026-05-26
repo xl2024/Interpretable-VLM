@@ -148,7 +148,7 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
                 alpha=alpha,
                 d_o_head_cache=left_d_o
             )
-            left_patching_results[alpha].append([image_data["right_color"], predicted_word])
+            left_patching_results[str(alpha)].append([image_data["right_color"], predicted_word])
         
             right_prompt = f"In this image there is a {image_data['left_color']} {image_data['left_animal']} and a"
             right_prompt_text = get_text_prompt(model, right_prompt, image_data["image"], processor)
@@ -174,7 +174,7 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
                 alpha=alpha,
                 d_o_head_cache=right_d_o
             )
-            right_patching_results[alpha].append([image_data["left_color"], predicted_word])
+            right_patching_results[str(alpha)].append([image_data["left_color"], predicted_word])
 
         print_results(alpha, "left", left_patching_results[alpha])
         print_results(alpha, "right", right_patching_results[alpha])
@@ -190,7 +190,7 @@ def main():
     #                  "llava-hf/llava-1.5-13b-hf",                 # figure 42
     #                  "llava-hf/llava-onevision-qwen2-7b-ov-hf"    # figure 43
     # ]
-    # k_list = [2,3,5,10,12,15,20,30,40,50,60,100]
+    # k_list = [2,3,5,10,12,15,20,30,40,50,60,100,200]
     # alpha_lists = [
     #     [5,10,15,20,30,50,100,150,200,300],
     #     [1,2,3,4,5,10,15],
@@ -261,7 +261,7 @@ def main():
                     eval_dataset=eval_dataset
                 )
                 
-                patching_results[model_id][stage][k] = {"left": left_patching_results, "right": right_patching_results}
+                patching_results[model_id][str(stage)][str(k)] = {"left": left_patching_results, "right": right_patching_results}
         
         np.savez(filename, **patching_results[model_id])
         print(f"Sweeping results successfully saved in {filename}.")

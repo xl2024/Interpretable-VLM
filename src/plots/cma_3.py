@@ -190,19 +190,19 @@ def main():
     #                  "llava-hf/llava-1.5-13b-hf",                 # figure 42
     #                  "llava-hf/llava-onevision-qwen2-7b-ov-hf"    # figure 43
     # ]
-    k_list = [2,3,5,10,12,15,20,30,40,50,60,100,200]
-    alpha_lists = [
-        [5,10,15,20,30,50,100,150,200,300],
-        [1,2,3,4,5,10,15],
-        [1,2,3,10,15,20,50,100]
-    ]
+    # k_list = [2,3,5,10,12,15,20,30,40,50,60,100,200]
+    # alpha_lists = [
+    #     [5,10,15,20,30,50,100,150,200,300],
+    #     [1,2,3,4,5,10,15],
+    #     [1,2,3,10,15,20,50,100]
+    # ]
 
     model_id_list = ["Qwen/Qwen2.5-VL-7B-Instruct", "Qwen/Qwen2-VL-7B-Instruct"
     ]
-    # k_list = [10]
-    # alpha_lists = [
-    #     [100],[5],[5]
-    # ]
+    k_list = [2,10,200]
+    alpha_lists = [
+        [5,100,300],[1,5,15],[1,5,100]
+    ]
 
     print("Loading estimation dataset...")
     est_dataset = cma_loading_ue5_dataset("est")

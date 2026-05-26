@@ -51,7 +51,7 @@ def cma_headwise(
         with model.trace() as tracer:
             with tracer.invoke(**inputs_c1):
                 # Safely slice 3D logit tensor preserving batch dim
-                clean_logits = model.lm_head.output[:, token_pos[0]:token_pos[1], :].save()
+                clean_logits = model.lm_head.output[:, token_pos[0]:token_pos[1]+1, :].save()
 
         gc_collect()
 
@@ -82,13 +82,13 @@ def cma_headwise(
                         hs_heads = einops.rearrange(hs_input, 's (h d) -> s h d', h=num_heads)
                         
                         # True CMA Patch: Inject cached c2 head state into c1 stream
-                        hs_heads[token_pos[0]:token_pos[1], h, :] = c2_head_cache[l][token_pos[0]:token_pos[1], h, :].to(model.device)
+                        hs_heads[token_pos[0]:token_pos[1]+1, h, :] = c2_head_cache[l][token_pos[0]:token_pos[1]+1, h, :].to(model.device)
                         
                         # Repack dimensions safely
                         hs_input[:] = einops.rearrange(hs_heads, 's h d -> s (h d)')
                         
                         # Capture patched output logits safely
-                        patched_logits = model.lm_head.output[:, token_pos[0]:token_pos[1], :].save()
+                        patched_logits = model.lm_head.output[:, token_pos[0]:token_pos[1]+1, :].save()
 
                 gc_collect()
             
@@ -164,7 +164,7 @@ def run_cma_for_ID_retrieval(
         elif shapes[-2] in token_str:
             token_pos_2 = index
             break
-    token_pos = (token_pos_1, token_pos_2+1)
+    token_pos = (token_pos_1, token_pos_2)
 
     a1_tokens = processor.tokenizer.encode(colors[-1], add_special_tokens=False)
     a1_star_tokens = processor.tokenizer.encode(colors[-2], add_special_tokens=False)
@@ -253,7 +253,7 @@ def run_cma_for_ID_selection(
 
     token_inputs = processor(text=text_prompt_c1, images=image_c1, return_tensors="pt")
     input_ids = token_inputs["input_ids"][0].tolist()
-    token_pos = (len(input_ids)-1, len(input_ids))
+    token_pos = (len(input_ids)-1, len(input_ids)-1)
 
     mediation_scores_2 = cma_headwise(
         model=model,
@@ -333,7 +333,7 @@ def run_cma_for_feature_retrieval(
 
     token_inputs = processor(text=text_prompt_c1, images=image_c1, return_tensors="pt")
     input_ids = token_inputs["input_ids"][0].tolist()
-    token_pos = (len(input_ids)-1, len(input_ids))
+    token_pos = (len(input_ids)-1, len(input_ids)-1)
 
     mediation_scores_3 = cma_headwise(
         model=model,
@@ -470,7 +470,7 @@ def cma_head_patching_by_generator(
                     if len(token_pos) == 1:
                         c1_state = hs_heads[token_pos[0]:, h, :]
                     elif len(token_pos) == 2:
-                        c1_state = hs_heads[token_pos[0]:token_pos[1], h, :]
+                        c1_state = hs_heads[token_pos[0]:token_pos[1]+1, h, :]
 
                     if d_o_head_cache is None:
                         concept_vector = c2_state - c1_state
@@ -480,7 +480,7 @@ def cma_head_patching_by_generator(
                     if len(token_pos) == 1:
                         hs_heads[token_pos[0]:, h, :] = c1_state + (alpha * concept_vector)
                     elif len(token_pos) == 2:
-                        hs_heads[token_pos[0]:token_pos[1], h, :] = c1_state + (alpha * concept_vector)
+                        hs_heads[token_pos[0]:token_pos[1]+1, h, :] = c1_state + (alpha * concept_vector)
                     
                     # Repack dimensions safely
                     hs_input[:] = einops.rearrange(hs_heads, 's h d -> s (h d)')

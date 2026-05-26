@@ -203,25 +203,27 @@ def main():
         mediation_scores_list = run_mediation_analysis(model_id)
 
         patching_results[model_id] = {}
-        for stage in range(3):
+        for stage in range(1, 4):
+            if stage != 2:
+                continue
             # [Note: When stage=2 (for feature retrieval), patches should be gotten w.r.t. colors,
             # and patching should be done with ???.]
-            mediation_scores = mediation_scores_list[stage]
+            mediation_scores = mediation_scores_list[stage-1]
 
             patching_results[model_id][stage] = {}
             for k in k_list:
                 top_k_heads = get_top_k_heads(mediation_scores, k)
-                print(f"Calculating binding embeddings (stage={stage+1}, k={k})...")
+                print(f"Calculating binding embeddings (stage={stage}, k={k})...")
                 left_binding_embs, right_binding_embs = cma_binding_embeddings(
                     model=model, 
                     processor=processor, 
                     num_heads=num_heads, 
                     top_k_heads=top_k_heads, 
-                    stage=stage+1,    # 0 base to 1 base
+                    stage=stage,
                     est_dataset=est_dataset
                 )
 
-                print(f"Patching embeddings (stage={stage+1}, k={k})...")
+                print(f"Patching embeddings (stage={stage}, k={k})...")
                 left_patching_results, right_patching_results = get_patching_results(
                     model=model, 
                     processor=processor, 
@@ -230,8 +232,8 @@ def main():
                     top_k_heads=top_k_heads, 
                     left_binding_embs=left_binding_embs, 
                     right_binding_embs=right_binding_embs, 
-                    stage=stage+1,    # 0 base to 1 base
-                    alpha_list=alpha_lists[stage],
+                    stage=stage,
+                    alpha_list=alpha_lists[stage-1],
                     eval_dataset=eval_dataset
                 )
                 

@@ -121,8 +121,8 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
     left_patching_results = {}
     right_patching_results = {}
     for alpha in alpha_list:
-        left_patching_results[alpha] = []
-        right_patching_results[alpha] = []
+        left_patching_results[str(alpha)] = []
+        right_patching_results[str(alpha)] = []
         for image_data in eval_dataset:
             left_prompt = f"In this image there is a {image_data['right_color']} {image_data['right_animal']} and a"
             left_prompt_text = get_text_prompt(model, left_prompt, image_data["image"], processor)

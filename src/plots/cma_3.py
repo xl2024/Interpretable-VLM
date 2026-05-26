@@ -74,11 +74,11 @@ def cma_binding_embeddings(model, processor, num_heads, top_k_heads, stage, est_
 
     for image_data in est_dataset:
         image_list.append(image_data["image"])
-        left_prompt = f"In this image there is a {image_data['right_color']} {image_data['right_animal']} and a "
+        left_prompt = f"In this image there is a {image_data['right_color']} {image_data['right_animal']} and a"
         left_text_prompt = get_text_prompt(model, left_prompt, image_data["image"], processor)
         text_prompts["left_target"].append(left_text_prompt)
         
-        right_prompt = f"In this image there is a {image_data['left_color']} {image_data['left_animal']} and a "
+        right_prompt = f"In this image there is a {image_data['left_color']} {image_data['left_animal']} and a"
         right_text_prompt = get_text_prompt(model, right_prompt, image_data["image"], processor)
         text_prompts["right_target"].append(right_text_prompt)
 
@@ -125,7 +125,7 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
         left_patching_results[alpha] = []
         right_patching_results[alpha] = []
         for image_data in eval_dataset:
-            left_prompt = f"In this image there is a {image_data['right_color']} {image_data['right_animal']} and a "
+            left_prompt = f"In this image there is a {image_data['right_color']} {image_data['right_animal']} and a"
             left_prompt_text = get_text_prompt(model, left_prompt, image_data["image"], processor)
             if stage == 1:
                 left_token_pos_1 = get_token_position(processor, left_prompt_text, image_data['image'], image_data['right_color'], False)
@@ -151,7 +151,7 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
             )
             left_patching_results[alpha].append([image_data["right_color"], predicted_word])
         
-            right_prompt = f"In this image there is a {image_data['left_color']} {image_data['left_animal']} and a "
+            right_prompt = f"In this image there is a {image_data['left_color']} {image_data['left_animal']} and a"
             right_prompt_text = get_text_prompt(model, right_prompt, image_data["image"], processor)
             if stage == 1:
                 right_token_pos_1 = get_token_position(processor, right_prompt_text, image_data['image'], image_data['left_color'], False)

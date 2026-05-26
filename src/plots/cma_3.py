@@ -1,7 +1,7 @@
 import os
 import glob
 from PIL import Image
-import numpy as np
+import json
 from pathlib import Path
 import random
 
@@ -217,9 +217,8 @@ def main():
         file_path = Path(filename)
         if file_path.exists():
             print(f"Found {filename}! Loading sweeping results for hyperparameters...")
-            loaded_data = np.load(filename, allow_pickle=True)
-            patching_results[model_id] = dict(loaded_data)
-            loaded_data.close()
+            with open(filename, 'r') as f:
+                patching_results[model_id] = json.load(f)
             continue
 
         config = load_config()
@@ -264,7 +263,9 @@ def main():
                 
                 patching_results[model_id][str(stage)][str(k)] = {"left": left_patching_results, "right": right_patching_results}
         
-        np.savez(filename, **patching_results[model_id])
+        with open(filename, 'w') as f:
+            # indent=4 formats it nicely to read it in a text editor
+            json.dump(patching_results[model_id], f, indent=4)
         print(f"Sweeping results successfully saved in {filename}.")
 
     print("final patching_results: ", patching_results)

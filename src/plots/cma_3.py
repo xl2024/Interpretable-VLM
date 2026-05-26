@@ -217,8 +217,9 @@ def main():
         file_path = Path(filename)
         if file_path.exists():
             print(f"Found {filename}! Loading sweeping results for hyperparameters...")
-            loaded_data = np.load(filename)
-            patching_results[model_id] = loaded_data
+            loaded_data = np.load(filename, allow_pickle=True)
+            patching_results[model_id] = dict(loaded_data)
+            loaded_data.close()
             continue
 
         config = load_config()

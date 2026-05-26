@@ -441,7 +441,6 @@ def cma_head_patching_by_generator(
     """
     Executes Causal Mediation Analysis (Activation Patching) across top k ID selection heads.
     """
-    token_pos = -1
     layer_template = get_layer_path_template(model)
     heads_by_layer = {}
     for l, h in top_k_heads:
@@ -508,7 +507,6 @@ def cma_head_patching_by_logits(
     """
     Executes Causal Mediation Analysis (Activation Patching) across top k ID selection heads.
     """
-    token_pos = -1
     layer_template = get_layer_path_template(model)
     heads_by_layer = {}
     for l, h in top_k_heads:

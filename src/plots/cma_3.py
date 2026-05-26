@@ -148,6 +148,7 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
                 alpha=alpha,
                 d_o_head_cache=left_d_o
             )
+            print("left_patching_results:", left_patching_results)
             left_patching_results[str(alpha)].append([image_data["right_color"], predicted_word])
         
             right_prompt = f"In this image there is a {image_data['left_color']} {image_data['left_animal']} and a"

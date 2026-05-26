@@ -198,9 +198,9 @@ def main():
     #     [1,2,3,10,15,20,50,100]
     # ]
 
-    model_id_list = ["llava-hf/llava-1.5-7b-hf"
+    model_id_list = ["Qwen/Qwen2.5-VL-7B-Instruct"
     ]
-    k_list = [2]
+    k_list = [100]
     alpha_lists = [
         [10],[10],[10]
     ]

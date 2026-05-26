@@ -208,8 +208,6 @@ def main():
 
         patching_results[model_id] = {}
         for stage in range(1, 4):
-            if stage != 2:
-                continue
             # [Note: When stage=2 (for feature retrieval), patches should be gotten w.r.t. colors,
             # and patching should be done with ???.]
             mediation_scores = mediation_scores_list[stage-1]

@@ -11,7 +11,7 @@ from src.utils.tools import predict, get_num_hidden_layers, load_config, get_tex
 
 # Reproduces Figure 2 and 26-28
 
-model_id = "Qwen/Qwen2-VL-7B-Instruct"                      # Figure 2 and 27a
+# model_id = "Qwen/Qwen2-VL-7B-Instruct"                      # Figure 2 and 27a
 # model_id = "Qwen/Qwen2.5-VL-3B-Instruct"                    # Figure 26a
 # model_id = "Qwen/Qwen2.5-VL-7B-Instruct"                    # Figure 26b
 # model_id = "Qwen/Qwen2.5-VL-32B-Instruct"                   # Figure 26c
@@ -107,7 +107,7 @@ def get_dynamic_token_indices(model: Any, processor: Any, colors: List[str], sha
             'index': len(input_ids)-1}
     return indices, text_prompt
 
-def main():
+def rsa_pos_by_model(model_id, save_path):
     print("=== Starting Figure 2 RSA Reproduction ===")
     config = load_config()
 
@@ -174,8 +174,26 @@ def main():
         config=config,
         num_layers=num_layers,
         trials=trials,
-        save_path="outputs/rsa_figure_2e.png"
+        save_path=save_path
     )
 
+def main():
+    model_id_list = [
+        ("Qwen/Qwen2-VL-7B-Instruct", "2_27a"),
+        ("Qwen/Qwen2.5-VL-3B-Instruct", "26a"),
+        ("Qwen/Qwen2.5-VL-7B-Instruct", "26b"),
+        # ("Qwen/Qwen2.5-VL-32B-Instruct", "26c"),
+        ("llava-hf/llava-1.5-7b-hf", "27b"),
+        # ("llava-hf/llava-1.5-13b-hf", "27c"),
+        ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "x"),
+        ("HuggingFaceM4/idefics2-8b-chatty", "28x"),
+        ("HuggingFaceM4/idefics2-8b", "28a")
+    ]
+    for model_id, fig_num in model_id_list:
+        model_name = model_id.replace('/', '_')
+        save_path = f"outputs/rsa/pos/rsa_fig_{fig_num}_{model_name}.png"
+        rsa_pos_by_model(model_id, save_path)
+
+    
 if __name__ == "__main__":
     main()

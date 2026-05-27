@@ -11,7 +11,7 @@ from src.utils.tools import predict, get_num_hidden_layers, load_config, get_per
 
 # Reproduces Figure 1c and 14-19
 
-model_id = "Qwen/Qwen2-VL-7B-Instruct"                      # Figure 1c
+# model_id = "Qwen/Qwen2-VL-7B-Instruct"                      # Figure 1c
 # model_id = "Qwen/Qwen2.5-VL-3B-Instruct"                    # Figure 14
 # model_id = "Qwen/Qwen2.5-VL-7B-Instruct"                    # Figure 15
 # model_id = "Qwen/Qwen2.5-VL-32B-Instruct"                   # Figure 16
@@ -116,7 +116,7 @@ def get_dynamic_token_indices(model: Any, processor: Any, colors: List[str], sha
     indices.append({'coords': coords[shuffle[-1]], 'color': colors[shuffle[-1]], 'shape': shapes[shuffle[-1]], 'index': len(input_ids)-1})
     return indices, text_prompt
 
-def main():
+def rsa_by_model(model_id, save_path):
     print("=== Starting Figure 1c RSA Reproduction ===")
     config = load_config()
 
@@ -177,8 +177,26 @@ def main():
         config=config,
         num_layers=num_layers,
         trials=trials,
-        save_path="outputs/rsa_figure_1c.png"
+        save_path=save_path
     )
+
+def main():
+    model_id_list = [
+        ("Qwen/Qwen2-VL-7B-Instruct", "1c"),
+        ("Qwen/Qwen2.5-VL-3B-Instruct", "14"),
+        ("Qwen/Qwen2.5-VL-7B-Instruct", "15"),
+        # ("Qwen/Qwen2.5-VL-32B-Instruct", "16"),
+        ("llava-hf/llava-1.5-7b-hf", "17"),
+        # ("llava-hf/llava-1.5-13b-hf", "x"),
+        ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "18"),
+        ("HuggingFaceM4/idefics2-8b-chatty", "19a"),
+        ("HuggingFaceM4/idefics2-8b", "19b")
+    ]
+    for model_id, fig_num in model_id_list:
+        model_name = model_id.replace('/', '_')
+        save_path = f"outputs/rsa/stage/rsa_fig_{fig_num}_{model_name}.png"
+        rsa_by_model(model_id, save_path)
+
 
 if __name__ == "__main__":
     main()

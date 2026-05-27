@@ -191,7 +191,7 @@ def main():
         states_27=states_27,
         pos_labels=pos_labels,
         feat_labels=feat_labels,
-        save_path="outputs/pca_figure_1b.png"
+        save_path="outputs/pca/pca_fig_1b.png"
     )
 
 if __name__ == "__main__":

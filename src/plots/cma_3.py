@@ -100,16 +100,8 @@ def plot_cma_sweeping_results(model_results, save_path=None):
                         
     if save_path is not None:
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
+        print(f"Graph successfully saved to {save_path}")
     # plt.show()
-
-
-
-
-
-
-
-
-
 
 def cma_loading_ue5_dataset(split, dataset_dir="dataset/figure_3"):
     """
@@ -123,8 +115,8 @@ def cma_loading_ue5_dataset(split, dataset_dir="dataset/figure_3"):
     image_paths = glob.glob(search_pattern)
     
     for filepath in image_paths:
-        if random.random() > 0.1:
-            continue
+        # if random.random() > 0.1:
+        #     continue
 
         # Get just the filename (e.g., "pug_red_camel_green_dolphin_salt_desert_1.png")
         filename = os.path.basename(filepath)
@@ -281,26 +273,19 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
     return left_patching_results, right_patching_results
 
 def main():
-    # model_id_list = ["Qwen/Qwen2-VL-7B-Instruct",                 # figure 40
-    #                  "Qwen/Qwen2.5-VL-3B-Instruct",               # figure 37
-    #                  "Qwen/Qwen2.5-VL-7B-Instruct",               # figure 38
-    #                  "Qwen/Qwen2.5-VL-32B-Instruct",              # figure 39
-    #                  "llava-hf/llava-1.5-7b-hf",                  # figure 41
-    #                  "llava-hf/llava-1.5-13b-hf",                 # figure 42
-    #                  "llava-hf/llava-onevision-qwen2-7b-ov-hf"    # figure 43
-    # ]
-    # k_list = [2,3,5,10,12,15,20,30,40,50,60,100,200]
-    # alpha_lists = [
-    #     [1,5,10,15,20,30,50,100,150,200,300],
-    #     [1,2,3,4,5,10,15,100],
-    #     [1,2,3,10,15,20,50,100]
-    # ]
-
-    model_id_list = ["Qwen/Qwen2.5-VL-7B-Instruct", "Qwen/Qwen2-VL-7B-Instruct"
+    model_id_list = [("Qwen/Qwen2-VL-7B-Instruct", 40),                 # figure 40
+                     ("Qwen/Qwen2.5-VL-3B-Instruct", 37),               # figure 37
+                     ("Qwen/Qwen2.5-VL-7B-Instruct", 38),               # figure 38
+                    #  ("Qwen/Qwen2.5-VL-32B-Instruct", 39),              # figure 39
+                     ("llava-hf/llava-1.5-7b-hf", 41),                  # figure 41
+                    #  ("llava-hf/llava-1.5-13b-hf", 42),                 # figure 42
+                     ("llava-hf/llava-onevision-qwen2-7b-ov-hf", 43)    # figure 43
     ]
-    k_list = [2,10,200]
+    k_list = [2,3,5,10,12,15,20,30,40,50,60,100,200]
     alpha_lists = [
-        [1,100,300],[1,5,15,100],[1,5,100]
+        [1,5,10,15,20,30,50,100,150,200,300],
+        [1,2,3,4,5,10,15,20,30,50,100],
+        [1,2,3,10,15,20,50,100]
     ]
 
     print("Loading estimation dataset...")
@@ -310,16 +295,16 @@ def main():
     eval_dataset = cma_loading_ue5_dataset("eval")
 
     patching_results = {}
-    for model_id in model_id_list:
+    for model_id, fig_num in model_id_list:
         model_name = model_id.replace('/', '_')
         filename = f"src/data/cma/sweeping/{model_name}.json"
-        imgname = f"outputs/cma/sweeping/{model_name}.png"
+        imgname = f"outputs/cma/sweeping/cma_fig_{fig_num}_{model_name}.png"
         file_path = Path(filename)
         if file_path.exists():
             print(f"Found {filename}! Loading sweeping results for hyperparameters...")
             with open(filename, 'r') as f:
                 patching_results[model_id] = json.load(f)
-            plot_cma_sweeping_results(patching_results[model_id], imgname)
+            # plot_cma_sweeping_results(patching_results[model_id], imgname)
             continue
 
         config = load_config()

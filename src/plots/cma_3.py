@@ -3,6 +3,8 @@ import glob
 from PIL import Image
 import json
 from pathlib import Path
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 import random
 
 from src.model.loader import load_vlm
@@ -11,6 +13,103 @@ from src.plots.cma_1d import run_mediation_analysis
 from src.mech_interp.cma import cma_head_patching_by_logits, get_head_embeddings, get_top_k_heads
 
 # Reproduces Figure 3 and 37-43
+
+
+def plot_cma_sweeping_results(model_results, save_path=None):
+    """
+    Parses the model_results dictionary and generates a 1x3 subplot figure
+    """
+    def _aggregate_for_accuracy(stage_data, k, alpha, pairs):
+        """Helper function to calculate matches and safely add them to the dictionary."""
+        k = int(k)
+        alpha = float(alpha)
+        
+        if k not in stage_data:
+            stage_data[k] = {}
+        if alpha not in stage_data[k]:
+            stage_data[k][alpha] = {"correct": 0, "total": 0}
+            
+        correct = sum(1 for gt, pred in pairs if gt == pred)
+        
+        stage_data[k][alpha]["correct"] += correct
+        stage_data[k][alpha]["total"] += len(pairs)
+
+    # parsed[stage][k][alpha] = {"correct": X, "total": Y}    
+    parsed = {1: {}, 2: {}, 3: {}}
+
+    for stage, stage_dict in model_results.items():            
+        for k_val, k_dict in stage_dict.items():
+            for direction, alpha_data in k_dict.items():
+                for alpha_val, pairs in alpha_data.items():
+                    _aggregate_for_accuracy(parsed[eval(stage)], k_val, alpha_val, pairs)
+
+    stage_titles = {
+        1: 'Id Retrieval Heads', 
+        2: 'Id Selection Heads', 
+        3: 'Feature Retrieval Heads'
+    }
+    
+    # Find all unique 'K' values across all stages to build a consistent colormap
+    all_ks = set()
+    for stage_data in parsed.values():
+        all_ks.update(stage_data.keys())
+    sorted_ks = sorted(list(all_ks))
+    
+    # Build the colormap (viridis_r maps low K to yellow, and high K to dark purple)
+    if len(sorted_ks) > 1:
+        colors = {k: cm.viridis_r(i / (len(sorted_ks) - 1)) for i, k in enumerate(sorted_ks)}
+    else:
+        colors = {sorted_ks[0]: cm.viridis_r(0)} # Fallback if only 1 K exists
+
+    # Setup the 1x3 subplots
+    fig, axes = plt.subplots(1, 3, figsize=(15, 4), sharey=True)    # sharey -> share_y
+    fig.subplots_adjust(wspace=0.05, left=0.15) # Shrink whitespace, leave room for legend
+    
+    for stage in range(1,4):
+        ax = axes[stage-1]
+        stage_data = parsed.get(stage, {})
+        
+        for k in sorted_ks:
+            if k in stage_data:
+                alphas = []
+                accs = []
+                for alpha in sorted(stage_data[k].keys(), key=lambda x: float(x)):
+                    # Log scales cannot plot 0
+                    if float(alpha) > 0:
+                        acc = stage_data[k][alpha]["correct"] / stage_data[k][alpha]["total"]
+                        alphas.append(float(alpha))
+                        accs.append(acc)
+                
+                ax.plot(alphas, accs, marker='o', markersize=5, color=colors[k], label=f'Top-K={k}')
+        
+        ax.set_title(stage_titles[stage], fontsize=12)
+        ax.set_xscale('log')
+        ax.set_xlabel('Magnitude of Intervention', fontsize=11)
+        ax.grid(True, linewidth=0.7, alpha=0.8)
+        
+        # Add Legend and Y-label only to the leftmost plot
+        if stage == 1:
+            ax.set_ylabel('Accuracy', fontsize=11)
+            ax.set_ylim(-0.05, 1.05)
+            
+            # Extract legend handles, deduplicate them, and place outside the plot
+            handles, labels = ax.get_legend_handles_labels()
+            ax.legend(handles, labels, 
+                        loc='center right', bbox_to_anchor=(-0.15, 0.5), 
+                        frameon=True, fontsize=10)
+                        
+    if save_path is not None:
+        plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    # plt.show()
+
+
+
+
+
+
+
+
+
 
 def cma_loading_ue5_dataset(split, dataset_dir="dataset/figure_3"):
     """
@@ -214,11 +313,13 @@ def main():
     for model_id in model_id_list:
         model_name = model_id.replace('/', '_')
         filename = f"src/data/cma/sweeping/{model_name}.json"
+        imgname = f"outputs/cma/sweeping/{model_name}.png"
         file_path = Path(filename)
         if file_path.exists():
             print(f"Found {filename}! Loading sweeping results for hyperparameters...")
             with open(filename, 'r') as f:
                 patching_results[model_id] = json.load(f)
+            plot_cma_sweeping_results(patching_results[model_id], imgname)
             continue
 
         config = load_config()
@@ -268,7 +369,10 @@ def main():
             json.dump(patching_results[model_id], f, indent=4)
         print(f"Sweeping results successfully saved in {filename}.")
 
-    print("final patching_results: ", patching_results)
+        plot_cma_sweeping_results(patching_results[model_id], imgname)
+
+    # print("final patching_results: ", patching_results)
+
 
 if __name__ == "__main__":
     main()

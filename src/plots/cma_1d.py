@@ -122,7 +122,7 @@ def main():
     
     plot_causal_mediation(
         mediation_scores=mediation_scores,
-        save_path="outputs/cma_figure_1d.png"
+        save_path="outputs/cma/scores/cma_figure_1d.png"
     )
 
 if __name__ == "__main__":

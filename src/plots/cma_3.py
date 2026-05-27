@@ -213,8 +213,6 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
     left_patching_results = {}
     right_patching_results = {}
     for alpha in alpha_list:
-        if alpha != 2: 
-            continue
         left_patching_results[str(alpha)] = []
         right_patching_results[str(alpha)] = []
         for image_data in eval_dataset:
@@ -273,7 +271,7 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
         print_results(alpha, "left", left_patching_results[str(alpha)])
         print_results(alpha, "right", right_patching_results[str(alpha)])
 
-    return left_patching_results['2'], right_patching_results['2']
+    return left_patching_results, right_patching_results
 
 def main():
     model_id_list = [("Qwen/Qwen2-VL-7B-Instruct", 40),                 # figure 40
@@ -308,7 +306,7 @@ def main():
             with open(filename, 'r') as f:
                 patching_results[model_id] = json.load(f)
             # plot_cma_sweeping_results(patching_results[model_id], imgname)
-            # continue
+            continue
 
         config = load_config()
         tier = config['pipeline']['tier']
@@ -317,15 +315,13 @@ def main():
         _, num_heads = _resolve_text_model_dims(model)
         mediation_scores_list = run_mediation_analysis(model_id)
 
-        # patching_results[model_id] = {}
+        patching_results[model_id] = {}
         for stage in range(1, 4):
-            if stage != 1:
-                continue
             # [Note: In stage 3 (feature retrival), patching the output of attn heads would let the model to predict the feature information in the patching embeddings, 
             # while patching the query embeddings asks the moddel about the feature of the position ID gotten from stage 2 and stored in the patchings.]
             mediation_scores = mediation_scores_list[stage-1]
 
-            # patching_results[model_id][str(stage)] = {}
+            patching_results[model_id][str(stage)] = {}
             for k in k_list:
                 top_k_heads = get_top_k_heads(mediation_scores, k)
                 print(f"Calculating binding embeddings (stage={stage}, k={k})...")
@@ -352,9 +348,8 @@ def main():
                     eval_dataset=eval_dataset
                 )
                 
-                # patching_results[model_id][str(stage)][str(k)] = {"left": left_patching_results, "right": right_patching_results}
-                patching_results[model_id][str(stage)][str(k)]['left']['2'] = left_patching_results
-                patching_results[model_id][str(stage)][str(k)]['right']['2'] = right_patching_results
+                patching_results[model_id][str(stage)][str(k)] = {"left": left_patching_results, "right": right_patching_results}
+        
         with open(filename, 'w') as f:
             # indent=4 formats it nicely to read it in a text editor
             json.dump(patching_results[model_id], f, indent=4)

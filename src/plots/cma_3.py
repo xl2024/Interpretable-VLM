@@ -207,7 +207,8 @@ def cma_binding_embeddings(model, processor, num_heads, top_k_heads, stage, est_
 def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, left_binding_embs, right_binding_embs, stage, alpha_list, eval_dataset):
     def print_results(alpha, pos, patching_results):
         matchings = sum(1 for pairs in patching_results if len(set(pairs)) == 1)
-        print(f"patching_acc (alpha={alpha}, position={pos}): {matchings}/{len(patching_results)}, patching_results: {patching_results}")
+        # print(f"patching_acc (alpha={alpha}, position={pos}): {matchings}/{len(patching_results)}, patching_results: {patching_results}")
+        print(f"patching_acc (alpha={alpha}, position={pos}): {matchings}/{len(patching_results)}")
 
     left_patching_results = {}
     right_patching_results = {}

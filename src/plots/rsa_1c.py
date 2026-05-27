@@ -188,7 +188,7 @@ def main():
         # ("Qwen/Qwen2.5-VL-32B-Instruct", "16"),
         # ("llava-hf/llava-1.5-7b-hf", "17"),
         # ("llava-hf/llava-1.5-13b-hf", "x"),
-        ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "18"),
+        # ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "18"),    # scale up
         ("HuggingFaceM4/idefics2-8b-chatty", "19a"),
         ("HuggingFaceM4/idefics2-8b", "19b")
     ]

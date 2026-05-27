@@ -420,6 +420,65 @@ def get_head_embeddings(
     # print(c2_head_cache.keys())
     return c2_head_cache
 
+def get_head_embeddings_and_generation(
+    model: Any,
+    processor: Any,
+    num_heads: int,
+    prompt_list: List[str],
+    image_list: List[Any],
+    top_k_heads: List[Tuple[int, int]],
+    token_pos_list: List[int] = None,
+    stage: int = 2,
+    max_new_tokens: int = 2
+) -> Tuple[Dict[Tuple[int, int], torch.Tensor], List[str]]:
+    # 1. Resolve architecture dimensions dynamically
+    layer_template = get_layer_path_template(model)
+    
+    # 3. Cache c2 Counterfactual States
+    heads_by_layer = {}
+    for l, h in top_k_heads:
+        heads_by_layer.setdefault(l, []).append(h)
+    c2_head_cache = {}
+    predicted_words_list = []
+    num_runs = len(prompt_list)
+    for i in range(num_runs):
+        prompt_c2, image_c2 = prompt_list[i], image_list[i]
+        inputs_c2 = processor(text=prompt_c2, images=image_c2, return_tensors="pt").to(model.device)
+        
+        with torch.no_grad():
+            with model.generate(max_new_tokens=max_new_tokens, pad_token_id=processor.tokenizer.eos_token_id) as tracer:
+                with tracer.invoke(**inputs_c2):
+                    for l, heads_in_this_layer in sorted(heads_by_layer.items()):
+                        layer_module = _resolve_layer_path(model, layer_template.format(l))
+                        # Safely intercept full 3D tensor: [batch, seq_len, hidden_dim]
+                        if stage == 3:    # Feature Retrieval
+                            attn_out = layer_module.self_attn.q_proj.output[0]
+                        else:
+                            attn_out = layer_module.self_attn.o_proj.input[0]
+
+                        hs_heads = einops.rearrange(attn_out, 's (h d) -> s h d', h=num_heads)
+                        for h in sorted(heads_in_this_layer):
+                            token_pos = token_pos_list[i] if token_pos_list is not None else [-1]
+                            if len(token_pos) == 1:
+                                states = hs_heads[token_pos[0]:, h, :].save()
+                            elif len(token_pos) == 2:
+                                states = hs_heads[token_pos[0]:token_pos[1]+1, h, :].save()
+                            c2_head_cache[l, h] = c2_head_cache.get((l, h), 0) + states
+
+                    patched_output = tracer.result.save()
+
+            gc_collect()
+
+        input_length = inputs_c2["input_ids"].shape[1]
+        new_tokens = patched_output[0][input_length:]
+        predicted_words = processor.tokenizer.decode(new_tokens, skip_special_tokens=True)
+        predicted_words_list.append(predicted_words)
+
+    for l, h in c2_head_cache:
+        c2_head_cache[l, h] = c2_head_cache[l, h] / num_runs
+    # print(c2_head_cache.keys())
+    return c2_head_cache, predicted_words_list
+
 def cma_head_patching_by_generator(
     model: Any,
     processor: Any,
@@ -437,11 +496,7 @@ def cma_head_patching_by_generator(
     """
     Executes Causal Mediation Analysis (Activation Patching) across top k ID selection heads.
     """
-    layer_template = get_layer_path_template(model)
-    heads_by_layer = {}
-    for l, h in top_k_heads:
-        heads_by_layer.setdefault(l, []).append(h)
-        
+    layer_template = get_layer_path_template(model)        
     inputs_c1 = processor(text=prompt_c1, images=image_c1, return_tensors="pt").to(model.device)
 
     with torch.no_grad():

@@ -124,9 +124,9 @@ def main():
                      ("llava-hf/llava-1.5-7b-hf", "23"),
                      ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "25")
                      ("HuggingFaceM4/idefics2-8b-chatty", "x"),
-                     ("HuggingFaceM4/idefics2-8b", "x"),
-                     ("llava-hf/llava-1.5-13b-hf", "24"),
-                     ("Qwen/Qwen2.5-VL-32B-Instruct", "22")
+                     ("HuggingFaceM4/idefics2-8b", "x")
+                    #  ("llava-hf/llava-1.5-13b-hf", "24"),
+                    #  ("Qwen/Qwen2.5-VL-32B-Instruct", "22")
     ]
     for model_id, fig_num in model_id_list:
         mediation_scores = run_mediation_analysis(model_id)

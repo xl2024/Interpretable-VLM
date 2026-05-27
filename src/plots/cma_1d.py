@@ -10,7 +10,7 @@ from src.mech_interp.cma import run_cma_for_ID_retrieval, run_cma_for_ID_selecti
 
 # Reproduces Figure 1d and 20-25
 
-model_id = "Qwen/Qwen2-VL-7B-Instruct"                      # Figure 1d
+# model_id = "Qwen/Qwen2-VL-7B-Instruct"                      # Figure 1d
 # model_id = "Qwen/Qwen2.5-VL-3B-Instruct"                    # Figure 20
 # model_id = "Qwen/Qwen2.5-VL-7B-Instruct"                    # Figure 21
 # model_id = "Qwen/Qwen2.5-VL-32B-Instruct"                   # Figure 22
@@ -118,12 +118,24 @@ def plot_causal_mediation(
 def main():
     print("=== Execution Suite: Live Mechanistic Head Interventions ===")
 
-    mediation_scores = run_mediation_analysis(model_id)
-    
-    plot_causal_mediation(
-        mediation_scores=mediation_scores,
-        save_path="outputs/cma/scores/cma_figure_1d.png"
-    )
+    model_id_list = [("Qwen/Qwen2-VL-7B-Instruct", "1d"), 
+                     ("Qwen/Qwen2.5-VL-3B-Instruct", "20"),
+                     ("Qwen/Qwen2.5-VL-7B-Instruct", "21")
+                     ("llava-hf/llava-1.5-7b-hf", "23"),
+                     ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "25")
+                     ("HuggingFaceM4/idefics2-8b-chatty", "x"),
+                     ("HuggingFaceM4/idefics2-8b", "x"),
+                     ("llava-hf/llava-1.5-13b-hf", "24"),
+                     ("Qwen/Qwen2.5-VL-32B-Instruct", "22")
+    ]
+    for model_id, fig_num in model_id_list:
+        mediation_scores = run_mediation_analysis(model_id)
+
+        model_name = model_id.replace('/', '_')
+        plot_causal_mediation(
+            mediation_scores=mediation_scores,
+            save_path=f"outputs/cma/scores/cma_fig_{fig_num}_{model_name}.png"
+        )
 
 if __name__ == "__main__":
     main()

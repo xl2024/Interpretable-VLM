@@ -204,15 +204,19 @@ def get_permutations(objects):
 def get_model_id(model) -> str:
     return model.repo_id
 
-def get_text_prompt(model, text, image, processor):   
+def get_text_prompt(model, text, image, processor, color_first=True):   
     model_id_lower = get_model_id(model).lower()
     if "qwen" in model_id_lower or "onevision" in model_id_lower or "idefics" in model_id_lower:
+        system_prompt = "Complete the sentence describing the scene"
+        if color_first:
+            system_prompt += ", starting by the color of the missing object"
+        system_prompt += "."
         messages = [
             {
                 "role": "system",
                 "content": [
                     # [Note: the second half helps prevent the model from starting a new sentence.]
-                    {"type": "text", "text": "Complete the sentence describing the scene, starting by the color of the missing object."}
+                    {"type": "text", "text": system_prompt}
                 ]
             },
             {

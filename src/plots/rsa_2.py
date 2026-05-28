@@ -181,17 +181,17 @@ def main():
     model_id_list = [
         # ("Qwen/Qwen2-VL-7B-Instruct", "2_27a"),
         # ("Qwen/Qwen2.5-VL-3B-Instruct", "26a"),
-        # ("Qwen/Qwen2.5-VL-7B-Instruct", "26b"),
+        ("Qwen/Qwen2.5-VL-7B-Instruct", "26b"),
         # ("Qwen/Qwen2.5-VL-32B-Instruct", "26c"),
         # ("llava-hf/llava-1.5-7b-hf", "27b"),
         # ("llava-hf/llava-1.5-13b-hf", "27c"),
         # ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "x"),    # scale up
-        ("HuggingFaceM4/idefics2-8b-chatty", "28x"),
-        ("HuggingFaceM4/idefics2-8b", "28a")
+        # ("HuggingFaceM4/idefics2-8b-chatty", "28x"),
+        # ("HuggingFaceM4/idefics2-8b", "28a")
     ]
     for model_id, fig_num in model_id_list:
         model_name = model_id.replace('/', '_')
-        save_path = f"outputs/rsa/pos/rsa_fig_{fig_num}_{model_name}.png"
+        save_path = f"outputs/rsa/pos2/rsa_fig_{fig_num}_{model_name}.png"
         rsa_pos_by_model(model_id, save_path)
 
     

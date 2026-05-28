@@ -49,7 +49,7 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=None
             print(f"Warning: Skipping corrupted image {filename}: {e}")
             continue
 
-        prompt_text = get_text_prompt(model, prompt, img, processor, False)
+        prompt_text = get_text_prompt(model, prompt, img, processor, "[OBJECT1] 2. a [OBJECT2]")
         
         
         # We need to let it generate enough tokens to spit out two objects
@@ -113,7 +113,7 @@ def run_cma_coco_unit(
     
     source_prompt = "In this image there is 1. a"
     source_prompt_texts = [
-        get_text_prompt(model, source_prompt, img, processor, False) for img in source_images
+        get_text_prompt(model, source_prompt, img, processor, "[OBJECT1] 2. a [OBJECT2]") for img in source_images
     ]
     
     estimated_id_embeddings = get_head_embeddings(
@@ -133,7 +133,7 @@ def run_cma_coco_unit(
         o_0 = object_mapping[target_filenames[i]]['O_0']
         
         intervention_prompt = f"In this image there is 1. a {o_0} 2. a"
-        intervention_prompt_text = get_text_prompt(model, intervention_prompt, img, processor, False)
+        intervention_prompt_text = get_text_prompt(model, intervention_prompt, img, processor, "[OBJECT]")
         
         predicted_word = cma_head_patching_by_logits(
             model=model,

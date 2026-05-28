@@ -210,12 +210,17 @@ def get_permutations(objects):
 def get_model_id(model) -> str:
     return model.repo_id
 
-def get_text_prompt(model, text, image, processor, color_first=True):   
+def get_text_prompt(model, text, image, processor, format="color_first"):   
     model_id_lower = get_model_id(model).lower()
     if "qwen" in model_id_lower or "onevision" in model_id_lower or "idefics" in model_id_lower:
         system_prompt = "Complete the sentence describing the scene"
-        if color_first:
+        if format == "color_first":
             system_prompt += ", starting by the color of the missing object"
+        elif format == "object_first":
+            pass
+        else:
+            # [Note: it might be better to also use format for color_first and object_first]
+            system_prompt += f" using the format: {format}"
         system_prompt += "."
         messages = [
             {

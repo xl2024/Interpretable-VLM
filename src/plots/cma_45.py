@@ -132,7 +132,7 @@ def run_cma_coco_unit(
         o_0 = object_mapping[target_filenames[i]]['O_0']
         
         intervention_prompt = f"In this image there is 1. a {o_0} 2. a"
-        intervention_prompt_text = get_text_prompt(model, intervention_prompt, img, processor, "object_first")
+        intervention_prompt_text = get_text_prompt(model, intervention_prompt, img, processor, "starting by an object")
         
         predicted_word = cma_head_patching_by_logits(
             model=model,

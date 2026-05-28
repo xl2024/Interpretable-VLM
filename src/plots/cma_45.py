@@ -44,7 +44,7 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100)
     
     for idx, img_path in enumerate(all_image_paths):
         filename = os.path.basename(img_path)
-        print("filename", filename)
+        print("filename:", filename)
         
         try:
             img = Image.open(img_path).convert('RGB')

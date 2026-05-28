@@ -223,7 +223,8 @@ def get_text_prompt(model, text, image, processor, format="color_first"):
         if format == "color_first":
             system_prompt += ", starting by the color of the missing object"
         elif format == "object_first":
-            pass
+            # pass
+            system_prompt += " using the format: [OBJECT]"
         else:
             # [Note: it might be better to also use format for color_first and object_first]
             system_prompt += f" using the format: {format}"

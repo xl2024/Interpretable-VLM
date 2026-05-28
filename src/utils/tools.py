@@ -3,6 +3,11 @@ from nnsight import LanguageModel
 from typing import Dict, Any, List, Tuple
 import gc
 import yaml
+import os
+import glob
+import urllib.request
+import zipfile
+import sys
 
 
 def gc_collect():
@@ -15,11 +20,12 @@ def predict(
     model: LanguageModel, 
     processor: Any,
     image: Any, 
-    text_prompt: str
+    text_prompt: str,
+    max_new_tokens: int = 2
 ) -> str:
     inputs = processor(text=text_prompt, images=image, return_tensors="pt").to(model.device)
     with torch.no_grad():
-        with model.generate(max_new_tokens=2, pad_token_id=processor.tokenizer.eos_token_id) as tracer:
+        with model.generate(max_new_tokens=max_new_tokens, pad_token_id=processor.tokenizer.eos_token_id) as tracer:
             with tracer.invoke(**inputs):
                 output = tracer.result.save()
         
@@ -268,3 +274,60 @@ def get_token_position(processor, text_prompt, image, word, for_comma):
                 return index
         
     raise ValueError(f"Could not find '{word}' in prompt: {text_prompt}")
+
+def _download_progress(count, block_size, total_size):
+    """
+    displays a progress bar in the terminal.
+    """
+    if total_size > 0:
+        percent = min(int(count * block_size * 100 / total_size), 100)
+        downloaded_mb = (count * block_size) / (1024 * 1024)
+        total_mb = total_size / (1024 * 1024)
+        # \r forces the terminal to overwrite the current line
+        sys.stdout.write(f"\rDownloading: {percent}%  ({downloaded_mb:.1f} MB / {total_mb:.1f} MB)")
+        sys.stdout.flush()    # clear the output buffer immediately
+
+def setup_dataset_from_zip(dataset_name, data_url, target_dir):
+    # 1. Define paths
+    file_name = data_url.split('/')[-1]
+    zip_path = os.path.join(target_dir, file_name)
+    extract_dir = os.path.join(target_dir, file_name.split('.')[0])
+
+    # Create the target directory if it doesn't exist
+    os.makedirs(target_dir, exist_ok=True)
+
+    # 2. Check if it's already downloaded and extracted
+    if os.path.exists(extract_dir):
+        num_images = len(glob.glob(os.path.join(extract_dir, "*.jpg")))
+        if num_images == 5000:
+            print(f"COCO Val2017 already exists in {extract_dir} ({num_images} images).")
+            return extract_dir
+
+    # 3. Download the ZIP file using urllib
+    print(f"Starting download of {dataset_name} to {zip_path}...")
+    try:
+        urllib.request.urlretrieve(data_url, zip_path, reporthook=_download_progress)
+        print("\nDownload complete!") # Move to a new line after the progress bar finishes
+    except Exception as e:
+        print(f"\nError downloading the file: {e}")
+        return None
+
+    # 4. Extract the ZIP file using zipfile
+    print("Extracting images (this might take a minute or two)...")
+    try:
+        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            zip_ref.extractall(target_dir)
+    except zipfile.BadZipFile:
+        print("Error: The downloaded zip file is corrupted.")
+        return None
+
+    # 5. Cleanup the massive ZIP file to save disk space
+    print("Cleaning up zip file...")
+    if os.path.exists(zip_path):
+        os.remove(zip_path)
+
+    # 6. Verify success
+    num_images = len(glob.glob(os.path.join(extract_dir, "*.jpg")))
+    print(f"Success! Extracted {num_images} images to {extract_dir}.")
+    
+    return extract_dir

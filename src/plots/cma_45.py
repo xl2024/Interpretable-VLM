@@ -56,7 +56,7 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100)
         
         # We need to let it generate enough tokens to spit out two objects
         # e.g., " cat 2. a dog" -> approx 10 tokens
-        raw_output = predict(model, processor, img, prompt_text, 15, True)
+        raw_output = predict(model, processor, img, prompt_text, 25, True)
         print("raw_output:", raw_output)
         
         # 3. Parse the response to extract O_0 and O_1
@@ -150,7 +150,7 @@ def run_cma_coco_unit(
             d_t_head_cache=estimated_id_embeddings,
             top_k_heads=top_k_heads,
             token_pos=[token_pos,token_pos],
-            max_new_tokens = 5
+            max_new_tokens = 10
         )
         
         print(f"o_0: {o_0} o_1: {o_1} predicted_word: {predicted_word[1]}")

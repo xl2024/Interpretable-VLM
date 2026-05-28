@@ -64,6 +64,7 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100)
         parts = raw_output.split("2. a")
         
         if len(parts) == 2:
+            print("parts[1]:",parts[1],"parts[1].split():",parts[1].split())
             o_0 = parts[0].strip().lower()
             o_1 = parts[1].split()[0].strip().lower() # Grab just the first word of the second part
             

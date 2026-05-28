@@ -32,12 +32,14 @@ def predict(
         
         gc_collect()
         
-    if new_only:
+    if True:
         input_length = inputs["input_ids"].shape[1]
         new_tokens = output[0][input_length:]
-        generated_text = processor.tokenizer.decode(new_tokens, skip_special_tokens=True)
-    else:
+        generated_text1 = processor.tokenizer.decode(new_tokens, skip_special_tokens=True)
+    # else:
         generated_text = processor.decode(output[0], skip_special_tokens=True)
+        print("generated_text": generated_text)
+        print("generated_text_new": generated_text1)
     # print(f"Model predicted: '{generated_text.strip()}'")
     
     return generated_text

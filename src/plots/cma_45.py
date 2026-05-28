@@ -73,6 +73,7 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100)
             
             # 4. Filter out duplicates
             if o_0 and o_1 and (o_0 != o_1):
+                print(f"Got O_0: {o_0}, O_1: {o_1}")
                 object_mapping[filename] = {"O_0": o_0, "O_1": o_1}
             
         if (idx + 1) % 50 == 0:
@@ -131,7 +132,7 @@ def run_cma_coco_unit(
         img = target_images[i]
         o_0 = object_mapping[target_filenames[i]]['O_0']
         
-        intervention_prompt = f"In this image there is 1. a {o_0} 2. a "
+        intervention_prompt = f"In this image there is 1. a {o_0} 2. a"
         intervention_prompt_text = get_text_prompt(model, intervention_prompt, img, processor, "[OBJECT]")
         
         predicted_word = cma_head_patching_by_logits(

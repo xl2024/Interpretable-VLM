@@ -16,7 +16,7 @@ from src.plots.cma_1d import run_mediation_analysis
 
 
 # def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=None):
-def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100):
+def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=200):
     """
     Loads or generates the O_0 and O_1 objects for the COCO dataset, 
     filtering out cases where the model describes the same object twice.
@@ -64,14 +64,12 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100)
         parts = raw_output.split("2. a")
         
         if len(parts) == 2:
-            o_0 = parts[0]
-            o_1 = parts[1].split()[0]
-            # o_0 = parts[0].strip().lower()
-            # o_1 = parts[1].split()[0].strip().lower() # Grab just the first word of the second part
+            o_0 = parts[0].strip().lower()
+            o_1 = parts[1].split()[0].strip().lower() # Grab just the first word of the second part
             
-            # # Remove punctuation (commas, periods)
-            # o_0 = ''.join(c for c in o_0 if c.isalnum())    # alphanumeric A-Z, a-z, 0-9
-            # o_1 = ''.join(c for c in o_1 if c.isalnum())
+            # Remove punctuation (commas, periods)
+            o_0 = ''.join(c for c in o_0 if c.isalnum())    # alphanumeric A-Z, a-z, 0-9
+            o_1 = ''.join(c for c in o_1 if c.isalnum())
             
             # 4. Filter out duplicates
             if o_0 and o_1 and (o_0 != o_1):
@@ -253,7 +251,7 @@ def main():
         print("No coco_directory.")
         return
     
-    model_id = "Qwen/Qwen2.5-VL-7B-Instruct"
+    model_id = "Qwen/Qwen2.5-VL-3B-Instruct"
     k_list = [50]
     cache_dir = "src/data/cma/coco"
     coco_results = run_cma_coco(model_id, k_list, coco_directory, cache_dir)

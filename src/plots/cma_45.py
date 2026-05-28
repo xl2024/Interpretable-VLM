@@ -40,6 +40,7 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100)
         
     object_mapping = {}
     prompt = "In this image there is 1. a"
+    system_format = "OBJECT1 2. a OBJECT2, replacing OBJECT1 and OBJECT2 with the first and second object in the image, respectively"
     
     for idx, img_path in enumerate(all_image_paths):
         filename = os.path.basename(img_path)
@@ -50,7 +51,7 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100)
             print(f"Warning: Skipping corrupted image {filename}: {e}")
             continue
 
-        prompt_text = get_text_prompt(model, prompt, img, processor, "OBJECT1 2. a OBJECT2, replacing OBJECT1 and OBJECT2 with the first and second object in the image, respectively")
+        prompt_text = get_text_prompt(model, prompt, img, processor, system_format)
         
         
         # We need to let it generate enough tokens to spit out two objects
@@ -63,8 +64,7 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100)
         # We split by '2. a' to isolate the nouns
         parts = raw_output.split("2. a")
         
-        if len(parts) == 2:
-            print("parts[1]:",parts[1],"parts[1].split():",parts[1].split())
+        if len(parts) == 2 and len(parts[0].strip()) > 0 and len(parts[1].strip()) > 0:
             o_0 = parts[0].strip().lower()
             o_1 = parts[1].split()[0].strip().lower() # Grab just the first word of the second part
             
@@ -113,8 +113,9 @@ def run_cma_coco_unit(
     print("Estimating average position ID (IDO_0) from the Source Set...")
     
     source_prompt = "In this image there is 1. a"
+    system_format = "OBJECT1 2. a OBJECT2, replacing OBJECT1 and OBJECT2 with the first and second object in the image, respectively"
     source_prompt_texts = [
-        get_text_prompt(model, source_prompt, img, processor, "OBJECT1 2. a OBJECT2, replacing OBJECT1 and OBJECT2 with the first and second object in the image, respectively") for img in source_images
+        get_text_prompt(model, source_prompt, img, processor, system_format) for img in source_images
     ]
     top_k_heads={}
     estimated_id_embeddings = get_head_embeddings(
@@ -134,7 +135,8 @@ def run_cma_coco_unit(
         o_0 = object_mapping[target_filenames[i]]['O_0']
         
         intervention_prompt = f"In this image there is 1. a {o_0} 2. a"
-        intervention_prompt_text = get_text_prompt(model, intervention_prompt, img, processor, "OBJECT, replacing OBJECT with the second object in the image")
+        intervention_system_format = "OBJECT, replacing OBJECT with the second object in the image"
+        intervention_prompt_text = get_text_prompt(model, intervention_prompt, img, processor, intervention_system_format)
         
         predicted_word = cma_head_patching_by_logits(
             model=model,

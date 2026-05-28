@@ -491,7 +491,8 @@ def cma_head_patching_by_generator(
     token_pos: List[int] = [-1],
     stage: int = 2,
     alpha: float = 1.0,
-    d_o_head_cache: Dict[Tuple[int, int], torch.Tensor] = None
+    d_o_head_cache: Dict[Tuple[int, int], torch.Tensor] = None,
+    max_new_tokens: int = 2
 ) -> Tuple[str, str]:
     """
     Executes Causal Mediation Analysis (Activation Patching) across top k ID selection heads.
@@ -500,7 +501,7 @@ def cma_head_patching_by_generator(
     inputs_c1 = processor(text=prompt_c1, images=image_c1, return_tensors="pt").to(model.device)
 
     with torch.no_grad():
-        with model.generate(max_new_tokens=2, pad_token_id=processor.tokenizer.eos_token_id) as tracer:
+        with model.generate(max_new_tokens=max_new_tokens, pad_token_id=processor.tokenizer.eos_token_id) as tracer:
             with tracer.invoke(**inputs_c1):
                 for l, h in sorted(top_k_heads):
                     target_layer = _resolve_layer_path(model, layer_template.format(l))

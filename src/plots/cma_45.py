@@ -10,8 +10,8 @@ from typing import List, Dict, Tuple, Any
 
 
 from src.model.loader import load_vlm
-from src.utils.tools import load_config, get_text_prompt, get_num_hidden_layers, _resolve_text_model_dims, setup_dataset_from_zip, predict
-from src.mech_interp.cma import cma_head_patching_by_logits, get_head_embeddings, get_top_k_heads
+from src.utils.tools import load_config, get_text_prompt, get_num_hidden_layers, _resolve_text_model_dims, setup_dataset_from_zip, predict, get_token_position
+from src.mech_interp.cma import cma_head_patching_by_generator, get_head_embeddings, get_top_k_heads
 from src.plots.cma_1d import run_mediation_analysis
 
 
@@ -66,7 +66,7 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100)
         
         if len(parts) == 2 and len(parts[0].strip()) > 0 and len(parts[1].strip()) > 0:
             o_0 = parts[0].strip().lower()
-            o_1 = parts[1].split()[0].strip().lower() # Grab just the first word of the second part
+            o_1 = parts[1].strip().lower()
             
             # Remove punctuation (commas, periods)
             o_0 = ''.join(c for c in o_0 if c.isalnum())    # alphanumeric A-Z, a-z, 0-9
@@ -74,8 +74,8 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100)
             
             # 4. Filter out duplicates
             if o_0 and o_1 and (o_0 != o_1):
-                print(f"Got O_0: {parts[0].strip()} O_1: {o_1}")
-                object_mapping[filename] = {"O_0": parts[0].strip(), "O_1": o_1}
+                print(f"Got O_0: {parts[0].strip()} O_1: {parts[1].strip()}")
+                object_mapping[filename] = {"O_0": parts[0].strip(), "O_1": parts[1].strip()}
             
         if (idx + 1) % 50 == 0:
             print(f"Processed {idx + 1}/{len(all_image_paths)} images...")
@@ -137,8 +137,9 @@ def run_cma_coco_unit(
         intervention_prompt = f"In this image there is 1. a {o_0} 2. a"
         intervention_system_format = "OBJECT, replacing OBJECT with the second object in the image"
         intervention_prompt_text = get_text_prompt(model, intervention_prompt, img, processor, intervention_system_format)
+        token_pos = get_token_position(processor, intervention_prompt_text, img, intervention_prompt_text[-1], False)
         
-        predicted_word = cma_head_patching_by_logits(
+        predicted_word = cma_head_patching_by_generator(
             model=model,
             processor=processor,
             num_layers=num_layers,
@@ -146,7 +147,9 @@ def run_cma_coco_unit(
             prompt_c1=intervention_prompt_text,
             image_c1=img,
             d_t_head_cache=estimated_id_embeddings,
-            top_k_heads=top_k_heads
+            top_k_heads=top_k_heads,
+            token_pos=[token_pos,token_pos],
+            max_new_tokens = 5
         )
         
         print(f"o_0: {o_0}, predicted_word: {predicted_word}")

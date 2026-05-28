@@ -118,7 +118,7 @@ def run_cma_coco_unit(
     source_prompt_texts = [
         get_text_prompt(model, source_prompt, img, processor, system_format) for img in source_images
     ]
-    top_k_heads={}
+    # top_k_heads={}
     estimated_id_embeddings = get_head_embeddings(
         model=model,
         processor=processor,

@@ -40,7 +40,7 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100)
         
     object_mapping = {}
     prompt = "In this image there is 1. a"
-    system_format = "OBJECT1 2. a OBJECT2, replacing OBJECT1 and OBJECT2 with the first and second object in the image, respectively"
+    system_format = "OBJECT1 2. a OBJECT2, replacing OBJECT1 and OBJECT2 with the first and second object in the image, respectively. Do not repeat the prompt words, just complete it"
     
     for idx, img_path in enumerate(all_image_paths):
         filename = os.path.basename(img_path)
@@ -113,7 +113,7 @@ def run_cma_coco_unit(
     print("Estimating average position ID (IDO_0) from the Source Set...")
     
     source_prompt = "In this image there is 1. a"
-    system_format = "OBJECT1 2. a OBJECT2, replacing OBJECT1 and OBJECT2 with the first and second object in the image, respectively"
+    system_format = "OBJECT1 2. a OBJECT2, replacing OBJECT1 and OBJECT2 with the first and second object in the image, respectively. Do not repeat the prompt words, just complete it"
     source_prompt_texts = [
         get_text_prompt(model, source_prompt, img, processor, system_format) for img in source_images
     ]

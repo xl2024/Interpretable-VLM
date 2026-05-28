@@ -275,7 +275,9 @@ def get_token_position(processor, text_prompt, image, word, for_comma):
     # find the index of comma after the word
     token_inputs = processor(text=text_prompt, images=image, return_tensors="pt")
     input_ids = token_inputs["input_ids"][0].tolist()
-    if for_comma:
+    if len(word.strip()) == 0:
+        return len(input_ids)-1
+    elif for_comma:
         for index in range(1, len(input_ids)):
             token_ids = input_ids[index-1:index+1]
             token_str = processor.tokenizer.decode(token_ids).strip().lower()

@@ -1,0 +1,210 @@
+{
+    "000000274272.jpg": {
+        "O_0": "bus",
+        "O_1": "traffic"
+    },
+    "000000291634.jpg": {
+        "O_0": "bike",
+        "O_1": "motorcycle"
+    },
+    "000000320696.jpg": {
+        "O_0": "surfboard",
+        "O_1": "surfer"
+    },
+    "000000027932.jpg": {
+        "O_0": "baseball glove",
+        "O_1": "baseball"
+    },
+    "000000515266.jpg": {
+        "O_0": "white truck",
+        "O_1": "tire"
+    },
+    "000000091921.jpg": {
+        "O_0": "zebra",
+        "O_1": "tree"
+    },
+    "000000261535.jpg": {
+        "O_0": "woman",
+        "O_1": "tennis"
+    },
+    "000000549055.jpg": {
+        "O_0": "man",
+        "O_1": "surfboard"
+    },
+    "000000361551.jpg": {
+        "O_0": "blue ramp",
+        "O_1": "group"
+    },
+    "000000160772.jpg": {
+        "O_0": "lighthouse",
+        "O_1": "boat"
+    },
+    "000000084170.jpg": {
+        "O_0": "bus",
+        "O_1": "car"
+    },
+    "000000105912.jpg": {
+        "O_0": "red fire hydrant",
+        "O_1": "canadian"
+    },
+    "000000153782.jpg": {
+        "O_0": "clock tower",
+        "O_1": "street"
+    },
+    "000000225946.jpg": {
+        "O_0": "train",
+        "O_1": "railroad"
+    },
+    "000000326462.jpg": {
+        "O_0": "donut",
+        "O_1": "napkin"
+    },
+    "000000173057.jpg": {
+        "O_0": "clock tower",
+        "O_1": "fountain"
+    },
+    "000000335177.jpg": {
+        "O_0": "street sign",
+        "O_1": "stop"
+    },
+    "000000405691.jpg": {
+        "O_0": "wine glass",
+        "O_1": "bottle"
+    },
+    "000000140556.jpg": {
+        "O_0": "fire hydrant",
+        "O_1": "man"
+    },
+    "000000375469.jpg": {
+        "O_0": "surfboard",
+        "O_1": "person"
+    },
+    "000000289222.jpg": {
+        "O_0": "traffic light",
+        "O_1": "statue"
+    },
+    "000000235857.jpg": {
+        "O_0": "black cow,",
+        "O_1": "brown"
+    },
+    "000000578500.jpg": {
+        "O_0": "piano",
+        "O_1": "mirror"
+    },
+    "000000370711.jpg": {
+        "O_0": "mannequin",
+        "O_1": "doll"
+    },
+    "000000268729.jpg": {
+        "O_0": "giraffe",
+        "O_1": "zebra"
+    },
+    "000000203389.jpg": {
+        "O_0": "motorcycle",
+        "O_1": "man"
+    },
+    "000000088970.jpg": {
+        "O_0": "tennis player",
+        "O_1": "tennis"
+    },
+    "000000032610.jpg": {
+        "O_0": "laptop",
+        "O_1": "backpack"
+    },
+    "000000237864.jpg": {
+        "O_0": "elephant",
+        "O_1": "dog"
+    },
+    "000000539883.jpg": {
+        "O_0": "tv",
+        "O_1": "bench"
+    },
+    "000000060932.jpg": {
+        "O_0": "groom",
+        "O_1": "chandelier"
+    },
+    "000000107339.jpg": {
+        "O_0": "woman",
+        "O_1": "couch"
+    },
+    "000000410878.jpg": {
+        "O_0": "motorcycle",
+        "O_1": "picnic"
+    },
+    "000000405249.jpg": {
+        "O_0": "cake",
+        "O_1": "tablecloth"
+    },
+    "000000255165.jpg": {
+        "O_0": "laptop",
+        "O_1": "computer"
+    },
+    "000000571943.jpg": {
+        "O_0": "traffic light",
+        "O_1": "tree"
+    },
+    "000000058393.jpg": {
+        "O_0": "bench",
+        "O_1": "couple"
+    },
+    "000000009378.jpg": {
+        "O_0": "man",
+        "O_1": "yellow"
+    },
+    "000000258793.jpg": {
+        "O_0": "parking meter",
+        "O_1": "street"
+    },
+    "000000476119.jpg": {
+        "O_0": "skateboarder",
+        "O_1": "car"
+    },
+    "000000103723.jpg": {
+        "O_0": "elephant",
+        "O_1": "woman"
+    },
+    "000000212800.jpg": {
+        "O_0": "boat",
+        "O_1": "group"
+    },
+    "000000425925.jpg": {
+        "O_0": "clock tower",
+        "O_1": "pepsi"
+    },
+    "000000049759.jpg": {
+        "O_0": "man",
+        "O_1": "volleyball"
+    },
+    "000000287545.jpg": {
+        "O_0": "giraffe",
+        "O_1": "log"
+    },
+    "000000200152.jpg": {
+        "O_0": "flag",
+        "O_1": "sign"
+    },
+    "000000132544.jpg": {
+        "O_0": "baseball player",
+        "O_1": "baseball"
+    },
+    "000000106235.jpg": {
+        "O_0": "couch",
+        "O_1": "lamp"
+    },
+    "000000332318.jpg": {
+        "O_0": "field with cows grazing, and",
+        "O_1": "mountain"
+    },
+    "000000196754.jpg": {
+        "O_0": "stop sign",
+        "O_1": "bus"
+    },
+    "000000208208.jpg": {
+        "O_0": "plane wing",
+        "O_1": "mountain"
+    },
+    "000000276434.jpg": {
+        "O_0": "cake",
+        "O_1": "knife"
+    }
+}

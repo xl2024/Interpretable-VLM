@@ -44,6 +44,7 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100)
     
     for idx, img_path in enumerate(all_image_paths):
         filename = os.path.basename(img_path)
+        print("filename", filename)
         
         try:
             img = Image.open(img_path).convert('RGB')
@@ -153,6 +154,7 @@ def run_cma_coco_unit(
             max_new_tokens = 10
         )
         
+        print(f"target_filename: {target_filenames[i]}")
         print(f"o_0: {o_0} o_1: {o_1} predicted_word: {predicted_word[1]}")
         unit_results.append((o_0, predicted_word[1]))
     

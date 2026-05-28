@@ -73,9 +73,9 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100)
             _o_0 = ''.join(c for c in o_0.lower() if c.isalnum())    # alphanumeric A-Z, a-z, 0-9
             _o_1 = ''.join(c for c in o_1.lower() if c.isalnum())
             
+            print(f"Got _o_0: {_o_0} _o_1: {_o_1}")
             # 4. Filter out duplicates
             if _o_0 and _o_1 and (_o_0 != _o_1):
-                print(f"Got _o_0: {_o_0} _o_1: {_o_1}")
                 print(f"Got O_0: {o_0} O_1: {o_1}")
                 object_mapping[filename] = {"O_0": o_0, "O_1": o_1}
             

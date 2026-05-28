@@ -50,7 +50,7 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100)
             print(f"Warning: Skipping corrupted image {filename}: {e}")
             continue
 
-        prompt_text = get_text_prompt(model, prompt, img, processor, "[OBJECT1] 2. a [OBJECT2]")
+        prompt_text = get_text_prompt(model, prompt, img, processor, "OBJECT1 2. a OBJECT2, replacing OBJECT1 and OBJECT2 with the first and second object in the image, respectively")
         
         
         # We need to let it generate enough tokens to spit out two objects
@@ -113,7 +113,7 @@ def run_cma_coco_unit(
     
     source_prompt = "In this image there is 1. a"
     source_prompt_texts = [
-        get_text_prompt(model, source_prompt, img, processor, "[OBJECT1] 2. a [OBJECT2]") for img in source_images
+        get_text_prompt(model, source_prompt, img, processor, "OBJECT1 2. a OBJECT2, replacing OBJECT1 and OBJECT2 with the first and second object in the image, respectively") for img in source_images
     ]
     top_k_heads={}
     estimated_id_embeddings = get_head_embeddings(
@@ -133,7 +133,7 @@ def run_cma_coco_unit(
         o_0 = object_mapping[target_filenames[i]]['O_0']
         
         intervention_prompt = f"In this image there is 1. a {o_0} 2. a"
-        intervention_prompt_text = get_text_prompt(model, intervention_prompt, img, processor, "OBJECT")
+        intervention_prompt_text = get_text_prompt(model, intervention_prompt, img, processor, "OBJECT, replacing OBJECT with the second object in the image")
         
         predicted_word = cma_head_patching_by_logits(
             model=model,

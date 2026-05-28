@@ -231,13 +231,13 @@ def get_text_prompt(model, text, image, processor, format="color_first"):
             system_prompt += f" using the format: {format}"
         system_prompt += "."
         messages = [
-            # {
-            #     "role": "system",
-            #     "content": [
-            #         # [Note: the second half helps prevent the model from starting a new sentence.]
-            #         {"type": "text", "text": system_prompt}
-            #     ]
-            # },
+            {
+                "role": "system",
+                "content": [
+                    # [Note: the second half helps prevent the model from starting a new sentence.]
+                    {"type": "text", "text": system_prompt}
+                ]
+            },
             {
                 "role": "user",
                 "content": [

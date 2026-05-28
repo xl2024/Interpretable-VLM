@@ -221,7 +221,8 @@ def get_text_prompt(model, text, image, processor, format="color_first"):
     if "qwen" in model_id_lower or "onevision" in model_id_lower or "idefics" in model_id_lower:
         system_prompt = "Complete the sentence describing the scene"
         if format == "color_first":
-            system_prompt += ", starting by the color of the missing object"
+            # system_prompt += ", starting by the color of the missing object"
+            system_prompt += " using the format: [COLOR] [OBJECT]"
         elif format == "object_first":
             # pass
             system_prompt += " using the format: [OBJECT]"

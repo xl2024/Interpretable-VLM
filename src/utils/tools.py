@@ -38,8 +38,8 @@ def predict(
         generated_text1 = processor.tokenizer.decode(new_tokens, skip_special_tokens=True)
     # else:
         generated_text = processor.decode(output[0], skip_special_tokens=True)
-        print("generated_text": generated_text)
-        print("generated_text_new": generated_text1)
+        print("generated_text:", generated_text)
+        print("generated_text_new:", generated_text1)
     # print(f"Model predicted: '{generated_text.strip()}'")
     
     return generated_text

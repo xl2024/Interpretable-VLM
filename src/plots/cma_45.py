@@ -63,13 +63,15 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100)
         # We split by '2. a' to isolate the nouns
         parts = raw_output.split("2. a")
         
-        if len(parts) >= 2:
-            o_0 = parts[0].strip().lower()
-            o_1 = parts[1].split()[0].strip().lower() # Grab just the first word of the second part
+        if len(parts) == 2:
+            o_0 = parts[0]
+            o_1 = parts[1]
+            # o_0 = parts[0].strip().lower()
+            # o_1 = parts[1].split()[0].strip().lower() # Grab just the first word of the second part
             
-            # Remove punctuation (commas, periods)
-            o_0 = ''.join(c for c in o_0 if c.isalnum())    # alphanumeric A-Z, a-z, 0-9
-            o_1 = ''.join(c for c in o_1 if c.isalnum())
+            # # Remove punctuation (commas, periods)
+            # o_0 = ''.join(c for c in o_0 if c.isalnum())    # alphanumeric A-Z, a-z, 0-9
+            # o_1 = ''.join(c for c in o_1 if c.isalnum())
             
             # 4. Filter out duplicates
             if o_0 and o_1 and (o_0 != o_1):

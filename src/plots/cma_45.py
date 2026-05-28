@@ -145,6 +145,7 @@ def run_cma_coco_unit(
             top_k_heads=top_k_heads
         )
         
+        print(f"o_0: {o_0}, predicted_word: {predicted_word}")
         unit_results.append((o_0, predicted_word))
     
     return unit_results

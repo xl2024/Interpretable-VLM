@@ -73,7 +73,7 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=200)
             
             # 4. Filter out duplicates
             if o_0 and o_1 and (o_0 != o_1):
-                print(f"Got O_0: {o_0}, O_1: {o_1}")
+                print(f"Got O_0: {o_0} O_1: {o_1}")
                 object_mapping[filename] = {"O_0": o_0, "O_1": o_1}
             
         if (idx + 1) % 50 == 0:

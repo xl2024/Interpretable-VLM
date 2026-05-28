@@ -191,7 +191,7 @@ def main():
     ]
     for model_id, fig_num in model_id_list:
         model_name = model_id.replace('/', '_')
-        save_path = f"outputs/rsa/pos2/rsa_fig_{fig_num}_{model_name}.png"
+        save_path = f"outputs/rsa/pos/rsa_fig_{fig_num}_{model_name}.png"
         rsa_pos_by_model(model_id, save_path)
 
     

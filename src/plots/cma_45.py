@@ -133,6 +133,7 @@ def run_cma_coco_unit(
     for i in range(len(target_images)):
         img = target_images[i]
         o_0 = object_mapping[target_filenames[i]]['O_0']
+        o_1 = object_mapping[target_filenames[i]]['O_1']
         
         intervention_prompt = f"In this image there is 1. a {o_0} 2. a"
         intervention_system_format = "OBJECT, replacing OBJECT with the second object in the image"
@@ -152,8 +153,8 @@ def run_cma_coco_unit(
             max_new_tokens = 5
         )
         
-        print(f"o_0: {o_0}, predicted_word: {predicted_word}")
-        unit_results.append((o_0, predicted_word))
+        print(f"o_0: {o_0} o_1: {o_1} predicted_word: {predicted_word[1]}")
+        unit_results.append((o_0, predicted_word[1]))
     
     return unit_results
 

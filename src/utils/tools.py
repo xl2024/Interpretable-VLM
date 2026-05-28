@@ -21,7 +21,8 @@ def predict(
     processor: Any,
     image: Any, 
     text_prompt: str,
-    max_new_tokens: int = 2
+    max_new_tokens: int = 2,
+    new_only = False
 ) -> str:
     inputs = processor(text=text_prompt, images=image, return_tensors="pt").to(model.device)
     with torch.no_grad():
@@ -31,7 +32,12 @@ def predict(
         
         gc_collect()
         
-    generated_text = processor.decode(output[0], skip_special_tokens=True)
+    if new_only:
+        input_length = inputs["input_ids"].shape[1]
+        new_tokens = output[0][input_length:]
+        generated_text = processor.tokenizer.decode(new_tokens, skip_special_tokens=True)
+    else:
+        generated_text = processor.decode(output[0], skip_special_tokens=True)
     # print(f"Model predicted: '{generated_text.strip()}'")
     
     return generated_text

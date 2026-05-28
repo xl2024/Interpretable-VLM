@@ -66,17 +66,17 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100)
         parts = raw_output.split("2. a")
         
         if len(parts) == 2 and len(parts[0].strip()) > 0 and len(parts[1].strip()) > 0:
-            o_0 = parts[0].strip().lower()
-            o_1 = parts[1].strip().lower()
+            o_0 = parts[0].split(',')[0].strip()
+            o_1 = parts[1].split(',')[0].strip()
             
             # Remove punctuation (commas, periods)
-            o_0 = ''.join(c for c in o_0 if c.isalnum())    # alphanumeric A-Z, a-z, 0-9
-            o_1 = ''.join(c for c in o_1 if c.isalnum())
+            _o_0 = ''.join(c for c in o_0.lower() if c.isalnum())    # alphanumeric A-Z, a-z, 0-9
+            _o_1 = ''.join(c for c in o_1.lower() if c.isalnum())
             
             # 4. Filter out duplicates
-            if o_0 and o_1 and (o_0 != o_1):
-                print(f"Got O_0: {parts[0].strip()} O_1: {parts[1].strip()}")
-                object_mapping[filename] = {"O_0": parts[0].strip(), "O_1": parts[1].strip()}
+            if _o_0 and _o_1 and (_o_0 != _o_1):
+                print(f"Got O_0: {o_0} O_1: {o_1}")
+                object_mapping[filename] = {"O_0": o_0, "O_1": o_1}
             
         if (idx + 1) % 50 == 0:
             print(f"Processed {idx + 1}/{len(all_image_paths)} images...")
@@ -141,7 +141,7 @@ def run_cma_coco_unit(
         intervention_prompt_text = get_text_prompt(model, intervention_prompt, img, processor, intervention_system_format)
         token_pos = get_token_position(processor, intervention_prompt_text, img, intervention_prompt_text[-1], False)
         
-        predicted_word = cma_head_patching_by_generator(
+        predicted_words = cma_head_patching_by_generator(
             model=model,
             processor=processor,
             num_layers=num_layers,
@@ -154,9 +154,10 @@ def run_cma_coco_unit(
             max_new_tokens = 10
         )
         
+        predicted = predicted_words[1].split(',')[0].strip()
         print(f"target_filename: {target_filenames[i]}")
-        print(f"o_0: {o_0} o_1: {o_1} predicted_word: {predicted_word[1]}")
-        unit_results.append((o_0, predicted_word[1]))
+        print(f"o_0: {o_0} o_1: {o_1} predicted_word: {predicted}")
+        unit_results.append((o_0, predicted))
     
     return unit_results
 

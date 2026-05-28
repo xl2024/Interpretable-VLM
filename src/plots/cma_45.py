@@ -114,7 +114,7 @@ def run_cma_coco_unit(
     source_prompt_texts = [
         get_text_prompt(model, source_prompt, img, processor, "[OBJECT1] 2. a [OBJECT2]") for img in source_images
     ]
-    
+    top_k_heads={}
     estimated_id_embeddings = get_head_embeddings(
         model=model,
         processor=processor,
@@ -131,7 +131,7 @@ def run_cma_coco_unit(
         img = target_images[i]
         o_0 = object_mapping[target_filenames[i]]['O_0']
         
-        intervention_prompt = f"In this image there is 1. a {o_0}. 2. a"
+        intervention_prompt = f"In this image there is 1. a {o_0} 2. a"
         intervention_prompt_text = get_text_prompt(model, intervention_prompt, img, processor, "object_first")
         
         predicted_word = cma_head_patching_by_logits(
@@ -142,10 +142,7 @@ def run_cma_coco_unit(
             prompt_c1=intervention_prompt_text,
             image_c1=img,
             d_t_head_cache=estimated_id_embeddings,
-            top_k_heads=top_k_heads,
-            alpha=1,
-            d_o_head_cache=None,
-            stage=2
+            top_k_heads=top_k_heads
         )
         
         unit_results.append((o_0, predicted_word))

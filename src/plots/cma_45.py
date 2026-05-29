@@ -16,7 +16,7 @@ from src.plots.cma_1d import run_mediation_analysis
 
 
 # def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=None):
-def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=1000):
+def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100):
     """
     Loads or generates the O_0 and O_1 objects for the COCO dataset, 
     filtering out cases where the model describes the same object twice.
@@ -264,10 +264,10 @@ def main():
         print("No coco_directory.")
         return
     
-    model_id = "Qwen/Qwen2.5-VL-3B-Instruct"
-    # model_id = "Qwen/Qwen2.5-VL-7B-Instruct"
+    # model_id = "Qwen/Qwen2.5-VL-3B-Instruct"
+    # model_id = "Qwen/Qwen2.5-VL-7B-Instruct"    # 658/1000 -> 329 source + 329 target
     # model_id = "Qwen/Qwen2.5-VL-32B-Instruct"
-    # model_id = "llava-hf/llava-1.5-7b-hf"
+    model_id = "llava-hf/llava-1.5-7b-hf"    # 843/1000 -> 421 source + 422 target
     # model_id = "llava-hf/llava-1.5-13b-hf"
     k_list = [50,100,200]
     cache_dir = "src/data/cma/coco"

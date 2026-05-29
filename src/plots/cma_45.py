@@ -164,11 +164,13 @@ def run_cma_coco_unit(
 def run_cma_coco(model_id, k_list, coco_val_dir, cache_dir, num_splits=3):
     model_name = model_id.replace('/', '_')
     cache_name = os.path.join(cache_dir, f"coco_results_{model_name}.json")
+    coco_results = {}
     if os.path.exists(cache_name):
         print(f"Found existing cache at {cache_name}. Loading...")
         with open(cache_name, 'r') as f:
             coco_results = json.load(f)
-        return coco_results
+        if list(coco_results.keys()) == [str(k) for k in k_list]:
+            return coco_results
     
     config = load_config()
     tier = config['pipeline']['tier']
@@ -181,9 +183,10 @@ def run_cma_coco(model_id, k_list, coco_val_dir, cache_dir, num_splits=3):
     mapping_cache_name = os.path.join(cache_dir, f"coco_objects_{model_name}.json")
     object_mapping = get_coco_objects(model, processor, coco_val_dir, mapping_cache_name)
 
-    coco_results = {}
-
     for k in k_list:
+        if str(k) in coco_results:
+            continue
+
         top_k_heads = get_top_k_heads(mediation_scores, k)
 
         valid_filenames = list(object_mapping.keys())
@@ -215,9 +218,9 @@ def run_cma_coco(model_id, k_list, coco_val_dir, cache_dir, num_splits=3):
 
         coco_results[str(k)] = coco_results_k
 
-    print(f"Saving coco_results to {cache_name}...")
-    with open(cache_name, 'w') as f:
-        json.dump(coco_results, f, indent=4)
+        print(f"Saving coco_results (k={k}) to {cache_name}...")
+        with open(cache_name, 'w') as f:
+            json.dump(coco_results, f, indent=4)
 
     return coco_results
 

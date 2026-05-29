@@ -15,7 +15,8 @@ from src.mech_interp.cma import cma_head_patching_by_generator, get_head_embeddi
 from src.plots.cma_1d import run_mediation_analysis
 
 
-def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=None):
+# def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=None):
+def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=1000):
     """
     Loads or generates the O_0 and O_1 objects for the COCO dataset, 
     filtering out cases where the model describes the same object twice.

@@ -44,7 +44,7 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=1000
     
     for idx, img_path in enumerate(all_image_paths):
         filename = os.path.basename(img_path)
-        print("filename:", filename)
+        # print("filename:", filename)
         
         try:
             img = Image.open(img_path).convert('RGB')
@@ -58,7 +58,7 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=1000
         # We need to let it generate enough tokens to spit out two objects
         # e.g., " cat 2. a dog" -> approx 10 tokens
         raw_output = predict(model, processor, img, prompt_text, 25, True)
-        print("raw_output:", raw_output)
+        # print("raw_output:", raw_output)
         
         # 3. Parse the response to extract O_0 and O_1
         # Example raw_output: "dog 2. a cat"

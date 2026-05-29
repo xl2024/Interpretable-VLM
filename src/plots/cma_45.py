@@ -267,7 +267,7 @@ def main():
     # model_id = "Qwen/Qwen2.5-VL-3B-Instruct"    # 844/1000 -> 422 source + 422 target
     # model_id = "Qwen/Qwen2.5-VL-7B-Instruct"    # 658/1000 -> 329 source + 329 target
     # model_id = "Qwen/Qwen2.5-VL-32B-Instruct"
-    model_id = "llava-hf/llava-1.5-7b-hf"    # 843/1000 -> 421 source + 422 target
+    model_id = "llava-hf/llava-1.5-7b-hf"    # 825/1000 -> 412 source + 413 target
     # model_id = "llava-hf/llava-1.5-13b-hf"
     k_list = [50,100,200]
     # k_list = [100]

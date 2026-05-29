@@ -157,7 +157,7 @@ def run_cma_coco_unit(
         predicted = predicted_words[1].split(',')[0].split('.')[0].strip()
         print(f"target_filename: {target_filenames[i]}")
         print(f"o_0: {o_0} o_1: {o_1} predicted_word: {predicted}")
-        unit_results.append((o_0, predicted))
+        unit_results.append((target_filenames[i], o_0, o_1, predicted))
     
     return unit_results
 
@@ -233,7 +233,7 @@ def get_coco_stats(coco_results, num_splits=3):
         for split_idx in range(num_splits):
             unit_results = coco_results_k[str(split_idx)]
             successful_repeats = 0
-            for o_0, pred in unit_results:
+            for fn, o_0, o_1, pred in unit_results:
                 clean_prediction = pred.strip().lower()
                 clean_o_0 = o_0.lower()
                 

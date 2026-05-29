@@ -118,13 +118,14 @@ def plot_causal_mediation(
 def main():
     print("=== Execution Suite: Live Mechanistic Head Interventions ===")
 
-    model_id_list = [("Qwen/Qwen2-VL-7B-Instruct", "1d"), 
-                     ("Qwen/Qwen2.5-VL-3B-Instruct", "20"),
-                     ("Qwen/Qwen2.5-VL-7B-Instruct", "21"),
-                     ("llava-hf/llava-1.5-7b-hf", "23"),
-                     ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "25"),
-                     ("HuggingFaceM4/idefics2-8b-chatty", "x"),
-                     ("HuggingFaceM4/idefics2-8b", "x")
+    model_id_list = [
+                    # ("Qwen/Qwen2-VL-7B-Instruct", "1d"), 
+                    # ("Qwen/Qwen2.5-VL-3B-Instruct", "20"),
+                     ("Qwen/Qwen2.5-VL-7B-Instruct", "21")
+                    #  ("llava-hf/llava-1.5-7b-hf", "23"),
+                    #  ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "25"),
+                    #  ("HuggingFaceM4/idefics2-8b-chatty", "x"),
+                    #  ("HuggingFaceM4/idefics2-8b", "x")
                     #  ("llava-hf/llava-1.5-13b-hf", "24"),
                     #  ("Qwen/Qwen2.5-VL-32B-Instruct", "22")
     ]

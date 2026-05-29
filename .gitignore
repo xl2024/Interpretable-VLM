@@ -45,3 +45,4 @@ configs/local_*.yaml
 # Others
 .temp
 runner.ipynb
+dataset/coco

@@ -3,6 +3,11 @@ from nnsight import LanguageModel
 from typing import Dict, Any, List, Tuple
 import gc
 import yaml
+import os
+import glob
+import urllib.request
+import zipfile
+import sys
 
 
 def gc_collect():
@@ -15,17 +20,24 @@ def predict(
     model: LanguageModel, 
     processor: Any,
     image: Any, 
-    text_prompt: str
+    text_prompt: str,
+    max_new_tokens: int = 2,
+    new_only = False
 ) -> str:
     inputs = processor(text=text_prompt, images=image, return_tensors="pt").to(model.device)
     with torch.no_grad():
-        with model.generate(max_new_tokens=2, pad_token_id=processor.tokenizer.eos_token_id) as tracer:
+        with model.generate(max_new_tokens=max_new_tokens, pad_token_id=processor.tokenizer.eos_token_id) as tracer:
             with tracer.invoke(**inputs):
                 output = tracer.result.save()
         
         gc_collect()
         
-    generated_text = processor.decode(output[0], skip_special_tokens=True)
+    if new_only:
+        input_length = inputs["input_ids"].shape[1]
+        new_tokens = output[0][input_length:]
+        generated_text = processor.tokenizer.decode(new_tokens, skip_special_tokens=True)
+    else:
+        generated_text = processor.decode(output[0], skip_special_tokens=True)
     # print(f"Model predicted: '{generated_text.strip()}'")
     
     return generated_text
@@ -204,29 +216,50 @@ def get_permutations(objects):
 def get_model_id(model) -> str:
     return model.repo_id
 
-def get_text_prompt(model, text, image, processor, color_first=True):   
+def get_text_prompt(model, text, image, processor, format="color_first", use_system_prompt=True, system_prompt=None):   
     model_id_lower = get_model_id(model).lower()
     if "qwen" in model_id_lower or "onevision" in model_id_lower or "idefics" in model_id_lower:
-        system_prompt = "Complete the sentence describing the scene"
-        if color_first:
-            system_prompt += ", starting by the color of the missing object"
-        system_prompt += "."
-        messages = [
-            {
-                "role": "system",
-                "content": [
-                    # [Note: the second half helps prevent the model from starting a new sentence.]
-                    {"type": "text", "text": system_prompt}
-                ]
-            },
-            {
-                "role": "user",
-                "content": [
-                    {"type": "image", "image": image},
-                    {"type": "text", "text": text}
-                ]
-            }
-        ]
+        if use_system_prompt:
+            if system_prompt is None:
+                _system_prompt = "Complete the sentence describing the scene"
+                if format == "color_first":
+                    _system_prompt += ", starting by the color of the missing object"
+                    # _system_prompt += " using the format: [COLOR] [OBJECT]"
+                elif format == "object_first":
+                    pass
+                    # _system_prompt += " using the format: [OBJECT]"
+                else:
+                    # [Note: it might be better to also use format for color_first and object_first]
+                    _system_prompt += f" using the format: {format}"
+                _system_prompt += "."
+            else:
+                _system_prompt = system_prompt
+            messages = [
+                {
+                    "role": "system",
+                    "content": [
+                        # [Note: the second half helps prevent the model from starting a new sentence.]
+                        {"type": "text", "text": _system_prompt}
+                    ]
+                },
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "image", "image": image},
+                        {"type": "text", "text": text}
+                    ]
+                }
+            ]
+        else:
+            messages = [
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "image", "image": image},
+                        {"type": "text", "text": text}
+                    ]
+                }
+            ]
 
         # Apply the chat template to generate the correct Qwen text string
         # This handles all the <|vision_start|> and <|image_pad|> tokens automatically
@@ -256,7 +289,9 @@ def get_token_position(processor, text_prompt, image, word, for_comma):
     # find the index of comma after the word
     token_inputs = processor(text=text_prompt, images=image, return_tensors="pt")
     input_ids = token_inputs["input_ids"][0].tolist()
-    if for_comma:
+    if len(word.strip()) == 0:
+        return len(input_ids)-1
+    elif for_comma:
         for index in range(1, len(input_ids)):
             token_ids = input_ids[index-1:index+1]
             token_str = processor.tokenizer.decode(token_ids).strip().lower()
@@ -268,3 +303,60 @@ def get_token_position(processor, text_prompt, image, word, for_comma):
                 return index
         
     raise ValueError(f"Could not find '{word}' in prompt: {text_prompt}")
+
+def _download_progress(count, block_size, total_size):
+    """
+    displays a progress bar in the terminal.
+    """
+    if total_size > 0:
+        percent = min(int(count * block_size * 100 / total_size), 100)
+        downloaded_mb = (count * block_size) / (1024 * 1024)
+        total_mb = total_size / (1024 * 1024)
+        # \r forces the terminal to overwrite the current line
+        sys.stdout.write(f"\rDownloading: {percent}%  ({downloaded_mb:.1f} MB / {total_mb:.1f} MB)")
+        sys.stdout.flush()    # clear the output buffer immediately
+
+def setup_dataset_from_zip(dataset_name, data_url, target_dir):
+    # 1. Define paths
+    file_name = data_url.split('/')[-1]
+    zip_path = os.path.join(target_dir, file_name)
+    extract_dir = os.path.join(target_dir, file_name.split('.')[0])
+
+    # Create the target directory if it doesn't exist
+    os.makedirs(target_dir, exist_ok=True)
+
+    # 2. Check if it's already downloaded and extracted
+    if os.path.exists(extract_dir):
+        num_images = len(glob.glob(os.path.join(extract_dir, "*.jpg")))
+        if num_images == 5000:
+            print(f"COCO Val2017 already exists in {extract_dir} ({num_images} images).")
+            return extract_dir
+
+    # 3. Download the ZIP file using urllib
+    print(f"Starting download of {dataset_name} to {zip_path}...")
+    try:
+        urllib.request.urlretrieve(data_url, zip_path, reporthook=_download_progress)
+        print("\nDownload complete!") # Move to a new line after the progress bar finishes
+    except Exception as e:
+        print(f"\nError downloading the file: {e}")
+        return None
+
+    # 4. Extract the ZIP file using zipfile
+    print("Extracting images (this might take a minute or two)...")
+    try:
+        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            zip_ref.extractall(target_dir)
+    except zipfile.BadZipFile:
+        print("Error: The downloaded zip file is corrupted.")
+        return None
+
+    # 5. Cleanup the massive ZIP file to save disk space
+    print("Cleaning up zip file...")
+    if os.path.exists(zip_path):
+        os.remove(zip_path)
+
+    # 6. Verify success
+    num_images = len(glob.glob(os.path.join(extract_dir, "*.jpg")))
+    print(f"Success! Extracted {num_images} images to {extract_dir}.")
+    
+    return extract_dir

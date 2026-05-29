@@ -96,7 +96,7 @@ def get_dynamic_token_indices(model: Any, processor: Any, colors: List[str], sha
             prefix = f"{prefix} a {colors[i]} {shapes[i]},"
     prefix = f"{prefix} and a {colors[last_pos]}"
 
-    text_prompt = get_text_prompt(model, prefix, image, processor, False)
+    text_prompt = get_text_prompt(model, prefix, image, processor, "object_first")
     inputs = processor(text=text_prompt, images=image, return_tensors="pt")
     input_ids = inputs["input_ids"][0].tolist()
 
@@ -181,13 +181,13 @@ def main():
     model_id_list = [
         # ("Qwen/Qwen2-VL-7B-Instruct", "2_27a"),
         # ("Qwen/Qwen2.5-VL-3B-Instruct", "26a"),
-        # ("Qwen/Qwen2.5-VL-7B-Instruct", "26b"),
+        ("Qwen/Qwen2.5-VL-7B-Instruct", "26b"),
         # ("Qwen/Qwen2.5-VL-32B-Instruct", "26c"),
         # ("llava-hf/llava-1.5-7b-hf", "27b"),
         # ("llava-hf/llava-1.5-13b-hf", "27c"),
         # ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "x"),    # scale up
-        ("HuggingFaceM4/idefics2-8b-chatty", "28x"),
-        ("HuggingFaceM4/idefics2-8b", "28a")
+        # ("HuggingFaceM4/idefics2-8b-chatty", "28x"),
+        # ("HuggingFaceM4/idefics2-8b", "28a")
     ]
     for model_id, fig_num in model_id_list:
         model_name = model_id.replace('/', '_')

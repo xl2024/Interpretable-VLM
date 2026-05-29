@@ -299,6 +299,7 @@ def get_token_position(processor, text_prompt, image, word, for_comma):
                 return index
     else:
         for index, token_id in enumerate(input_ids):
+            print(processor.tokenizer.decode(token_id).strip().lower())
             if word in processor.tokenizer.decode(token_id).strip().lower():
                 return index
         

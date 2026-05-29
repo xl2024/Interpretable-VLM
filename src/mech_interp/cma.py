@@ -399,7 +399,9 @@ def get_head_embeddings(
                     for l, heads_in_this_layer in sorted(heads_by_layer.items()):
                         layer_module = _resolve_layer_path(model, layer_template.format(l))
                         # Safely intercept full 3D tensor: [batch, seq_len, hidden_dim]
-                        if stage == 3:    # Feature Retrieval
+                        if stage == 4:    # for section 4.3
+                            attn_out = layer_module.self_attn.k_proj.output[0]
+                        elif stage == 3:    # Feature Retrieval
                             attn_out = layer_module.self_attn.q_proj.output[0]
                         else:
                             attn_out = layer_module.self_attn.o_proj.input[0]
@@ -411,6 +413,8 @@ def get_head_embeddings(
                                 states = hs_heads[token_pos[0]:, h, :].save()
                             elif len(token_pos) == 2:
                                 states = hs_heads[token_pos[0]:token_pos[1]+1, h, :].save()
+                            else:
+                                states = hs_heads[token_pos, h, :].save()
                             c2_head_cache[l, h] = c2_head_cache.get((l, h), 0) + states
 
             gc_collect()
@@ -451,7 +455,9 @@ def get_head_embeddings_and_generation(
                     for l, heads_in_this_layer in sorted(heads_by_layer.items()):
                         layer_module = _resolve_layer_path(model, layer_template.format(l))
                         # Safely intercept full 3D tensor: [batch, seq_len, hidden_dim]
-                        if stage == 3:    # Feature Retrieval
+                        if stage == 4:
+                            attn_out = layer_module.self_attn.k_proj.output[0]
+                        elif stage == 3:    # Feature Retrieval
                             attn_out = layer_module.self_attn.q_proj.output[0]
                         else:
                             attn_out = layer_module.self_attn.o_proj.input[0]
@@ -463,6 +469,8 @@ def get_head_embeddings_and_generation(
                                 states = hs_heads[token_pos[0]:, h, :].save()
                             elif len(token_pos) == 2:
                                 states = hs_heads[token_pos[0]:token_pos[1]+1, h, :].save()
+                            else:
+                                states = hs_heads[token_pos, h, :].save()
                             c2_head_cache[l, h] = c2_head_cache.get((l, h), 0) + states
 
                     patched_output = tracer.result.save()
@@ -505,8 +513,9 @@ def cma_head_patching_by_generator(
             with tracer.invoke(**inputs_c1):
                 for l, h in sorted(top_k_heads):
                     target_layer = _resolve_layer_path(model, layer_template.format(l))
-                    
-                    if stage == 3:    # Feature Retrieval
+                    if stage == 4:
+                        hs_input = target_layer.self_attn.k_proj.output[0]
+                    elif stage == 3:    # Feature Retrieval
                         hs_input = target_layer.self_attn.q_proj.output[0]
                     else:             # Intercept input to o_proj
                         hs_input = target_layer.self_attn.o_proj.input[0]
@@ -520,6 +529,8 @@ def cma_head_patching_by_generator(
                         c1_state = hs_heads[token_pos[0]:, h, :]
                     elif len(token_pos) == 2:
                         c1_state = hs_heads[token_pos[0]:token_pos[1]+1, h, :]
+                    else:
+                        c1_state = hs_heads[token_pos, h, :]
 
                     if d_o_head_cache is None:
                         concept_vector = c2_state - c1_state
@@ -530,6 +541,8 @@ def cma_head_patching_by_generator(
                         hs_heads[token_pos[0]:, h, :] = c1_state + (alpha * concept_vector)
                     elif len(token_pos) == 2:
                         hs_heads[token_pos[0]:token_pos[1]+1, h, :] = c1_state + (alpha * concept_vector)
+                    else:
+                        hs_heads[token_pos, h, :] = c1_state + (alpha * concept_vector)
                     
                     # Repack dimensions safely
                     hs_input[:] = einops.rearrange(hs_heads, 's h d -> s (h d)')
@@ -581,7 +594,9 @@ def cma_head_patching_by_logits(
                 for l, heads_in_this_layer in sorted(heads_by_layer.items()):
                     target_layer = _resolve_layer_path(model, layer_template.format(l))
                     
-                    if stage == 3:    # Feature Retrieval
+                    if stage == 4:    # for section 4.3
+                        hs_input = target_layer.self_attn.k_proj.output[0]
+                    elif stage == 3:    # Feature Retrieval
                         hs_input = target_layer.self_attn.q_proj.output[0]
                     else:             # Intercept input to o_proj
                         hs_input = target_layer.self_attn.o_proj.input[0]
@@ -596,6 +611,8 @@ def cma_head_patching_by_logits(
                             c1_state = hs_heads[token_pos[0]:, h, :]
                         elif len(token_pos) == 2:
                             c1_state = hs_heads[token_pos[0]:token_pos[1]+1, h, :]
+                        else:
+                            c1_state = hs_heads[token_pos, h, :]
 
                         if d_o_head_cache is None:
                             concept_vector = c2_state - c1_state
@@ -606,6 +623,8 @@ def cma_head_patching_by_logits(
                             hs_heads[token_pos[0]:, h, :] = c1_state + (alpha * concept_vector)
                         elif len(token_pos) == 2:
                             hs_heads[token_pos[0]:token_pos[1]+1, h, :] = c1_state + (alpha * concept_vector)
+                        else:
+                            hs_heads[token_pos, h, :] = c1_state + (alpha * concept_vector)
 
                     # Repack dimensions safely
                     hs_input[:] = einops.rearrange(hs_heads, 's h d -> s (h d)')

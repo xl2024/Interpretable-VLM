@@ -64,8 +64,7 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100)
         # Example raw_output: "dog 2. a cat"
         # We split by '2. a' to isolate the nouns
         parts = raw_output.split("2. a")
-        print("parts:", parts)
-        
+
         if len(parts) == 2 and len(parts[0].strip()) > 0 and len(parts[1].strip()) > 0:
             o_0 = parts[0].split(',')[0].split('.')[0].strip()
             o_1 = parts[1].split(',')[0].split('.')[0].strip()

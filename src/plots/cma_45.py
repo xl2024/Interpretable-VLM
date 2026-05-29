@@ -154,7 +154,7 @@ def run_cma_coco_unit(
             max_new_tokens = 10
         )
         
-        predicted = predicted_words[1].split(',')[0].split('.')[0].strip()
+        predicted = predicted_words[1].split(',')[0].split('.')[0].split('3')[0].strip()    # LLaVa likes to continue with 3. 4. ...
         print(f"target_filename: {target_filenames[i]}")
         print(f"o_0: {o_0} o_1: {o_1} predicted_word: {predicted}")
         unit_results.append((target_filenames[i], o_0, o_1, predicted))
@@ -264,7 +264,7 @@ def main():
         print("No coco_directory.")
         return
     
-    # model_id = "Qwen/Qwen2.5-VL-3B-Instruct"
+    # model_id = "Qwen/Qwen2.5-VL-3B-Instruct"    # 844/1000 -> 422 source + 422 target
     # model_id = "Qwen/Qwen2.5-VL-7B-Instruct"    # 658/1000 -> 329 source + 329 target
     # model_id = "Qwen/Qwen2.5-VL-32B-Instruct"
     model_id = "llava-hf/llava-1.5-7b-hf"    # 843/1000 -> 421 source + 422 target

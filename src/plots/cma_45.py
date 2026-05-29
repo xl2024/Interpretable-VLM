@@ -44,7 +44,7 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100)
     
     for idx, img_path in enumerate(all_image_paths):
         filename = os.path.basename(img_path)
-        # print("filename:", filename)
+        print("filename:", filename)
         
         try:
             img = Image.open(img_path).convert('RGB')
@@ -58,7 +58,7 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100)
         # We need to let it generate enough tokens to spit out two objects
         # e.g., " cat 2. a dog" -> approx 10 tokens
         raw_output = predict(model, processor, img, prompt_text, 25, True)
-        # print("raw_output:", raw_output)
+        print("raw_output:", raw_output)
         
         # 3. Parse the response to extract O_0 and O_1
         # Example raw_output: "dog 2. a cat"
@@ -75,7 +75,7 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100)
             
             # 4. Filter out duplicates
             if _o_0 and _o_1 and (_o_0 != _o_1):
-                # print(f"Got O_0: {o_0} O_1: {o_1}")
+                print(f"Got O_0: {o_0} O_1: {o_1}")
                 object_mapping[filename] = {"O_0": o_0, "O_1": o_1}
             
         if (idx + 1) % 50 == 0:
@@ -155,8 +155,8 @@ def run_cma_coco_unit(
         )
         
         predicted = predicted_words[1].split(',')[0].split('.')[0].strip()
-        # print(f"target_filename: {target_filenames[i]}")
-        # print(f"o_0: {o_0} o_1: {o_1} predicted_word: {predicted}")
+        print(f"target_filename: {target_filenames[i]}")
+        print(f"o_0: {o_0} o_1: {o_1} predicted_word: {predicted}")
         unit_results.append((target_filenames[i], o_0, o_1, predicted))
     
     return unit_results

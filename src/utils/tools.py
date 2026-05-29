@@ -216,36 +216,50 @@ def get_permutations(objects):
 def get_model_id(model) -> str:
     return model.repo_id
 
-def get_text_prompt(model, text, image, processor, format="color_first"):   
+def get_text_prompt(model, text, image, processor, format="color_first", use_system_prompt=True, system_prompt=None):   
     model_id_lower = get_model_id(model).lower()
     if "qwen" in model_id_lower or "onevision" in model_id_lower or "idefics" in model_id_lower:
-        system_prompt = "Complete the sentence describing the scene"
-        if format == "color_first":
-            system_prompt += ", starting by the color of the missing object"
-            # system_prompt += " using the format: [COLOR] [OBJECT]"
-        elif format == "object_first":
-            pass
-            # system_prompt += " using the format: [OBJECT]"
+        if use_system_prompt:
+            if system_prompt is None:
+                _system_prompt = "Complete the sentence describing the scene"
+                if format == "color_first":
+                    _system_prompt += ", starting by the color of the missing object"
+                    # _system_prompt += " using the format: [COLOR] [OBJECT]"
+                elif format == "object_first":
+                    pass
+                    # _system_prompt += " using the format: [OBJECT]"
+                else:
+                    # [Note: it might be better to also use format for color_first and object_first]
+                    _system_prompt += f" using the format: {format}"
+                _system_prompt += "."
+            else:
+                _system_prompt = system_prompt
+            messages = [
+                {
+                    "role": "system",
+                    "content": [
+                        # [Note: the second half helps prevent the model from starting a new sentence.]
+                        {"type": "text", "text": _system_prompt}
+                    ]
+                },
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "image", "image": image},
+                        {"type": "text", "text": text}
+                    ]
+                }
+            ]
         else:
-            # [Note: it might be better to also use format for color_first and object_first]
-            system_prompt += f" using the format: {format}"
-        system_prompt += "."
-        messages = [
-            {
-                "role": "system",
-                "content": [
-                    # [Note: the second half helps prevent the model from starting a new sentence.]
-                    {"type": "text", "text": system_prompt}
-                ]
-            },
-            {
-                "role": "user",
-                "content": [
-                    {"type": "image", "image": image},
-                    {"type": "text", "text": text}
-                ]
-            }
-        ]
+            messages = [
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "image", "image": image},
+                        {"type": "text", "text": text}
+                    ]
+                }
+            ]
 
         # Apply the chat template to generate the correct Qwen text string
         # This handles all the <|vision_start|> and <|image_pad|> tokens automatically

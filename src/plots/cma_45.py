@@ -264,7 +264,11 @@ def main():
         print("No coco_directory.")
         return
     
-    model_id = "Qwen/Qwen2.5-VL-7B-Instruct"
+    # model_id = "Qwen/Qwen2.5-VL-3B-Instruct"
+    # model_id = "Qwen/Qwen2.5-VL-7B-Instruct"
+    # model_id = "Qwen/Qwen2.5-VL-32B-Instruct"
+    model_id = "llava-hf/llava-1.5-7b-hf"
+    # model_id = "llava-hf/llava-1.5-13b-hf"
     k_list = [50,100,200]
     cache_dir = "src/data/cma/coco"
     coco_results = run_cma_coco(model_id, k_list, coco_directory, cache_dir)

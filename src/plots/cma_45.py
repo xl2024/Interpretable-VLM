@@ -64,6 +64,7 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100)
         # Example raw_output: "dog 2. a cat"
         # We split by '2. a' to isolate the nouns
         parts = raw_output.split("2. a")
+        print("parts:", parts)
         
         if len(parts) == 2 and len(parts[0].strip()) > 0 and len(parts[1].strip()) > 0:
             o_0 = parts[0].split(',')[0].split('.')[0].strip()
@@ -73,7 +74,6 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100)
             _o_0 = ''.join(c for c in o_0.lower() if c.isalnum())    # alphanumeric A-Z, a-z, 0-9
             _o_1 = ''.join(c for c in o_1.lower() if c.isalnum())
             
-            print(f"Got _o_0: {_o_0} _o_1: {_o_1}")
             # 4. Filter out duplicates
             if _o_0 and _o_1 and (_o_0 != _o_1):
                 print(f"Got O_0: {o_0} O_1: {o_1}")

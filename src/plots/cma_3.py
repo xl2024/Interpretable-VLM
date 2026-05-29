@@ -180,6 +180,12 @@ def cma_binding_embeddings(model, processor, num_heads, top_k_heads, stage, est_
             right_token_pos_2 = get_token_position(processor, right_text_prompt, image_data['image'], image_data['left_animal'], False)
             right_token_pos_list.append([right_token_pos_1, right_token_pos_2])
 
+    if stage == 1:
+        # [Note: the number of tokens across all [color] [animal] could be different]
+        min_diff = min(end - start for start, end in left_token_pos_list+right_token_pos_list)
+        left_token_pos_list = [[end - min_diff, end] for start, end in left_token_pos_list]
+        right_token_pos_list = [[end - min_diff, end] for start, end in right_token_pos_list]
+
     left_binding_embs = get_head_embeddings(
         model=model, 
         processor=processor, 
@@ -212,6 +218,8 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
 
     left_patching_results = {}
     right_patching_results = {}
+    first_tensor = next(iter(left_binding_embs.values()))
+    num_tokens = first_tensor.shape[0] if first_tensor.ndim == 2 else 1
     for alpha in alpha_list:
         left_patching_results[str(alpha)] = []
         right_patching_results[str(alpha)] = []
@@ -221,7 +229,7 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
             if stage == 1:
                 left_token_pos_1 = get_token_position(processor, left_prompt_text, image_data['image'], image_data['right_color'], False)
                 left_token_pos_2 = get_token_position(processor, left_prompt_text, image_data['image'], image_data['right_animal'], False)
-                left_token_pos = [left_token_pos_1, left_token_pos_2]
+                left_token_pos = [left_token_pos_2-num_tokens+1, left_token_pos_2]
             else:
                 left_token_pos = [-1]
             left_d_t = right_binding_embs
@@ -247,7 +255,7 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
             if stage == 1:
                 right_token_pos_1 = get_token_position(processor, right_prompt_text, image_data['image'], image_data['left_color'], False)
                 right_token_pos_2 = get_token_position(processor, right_prompt_text, image_data['image'], image_data['left_animal'], False)
-                right_token_pos = [right_token_pos_1, right_token_pos_2]
+                right_token_pos = [right_token_pos_2-num_tokens+1, right_token_pos_2]
             else:
                 right_token_pos = [-1]
             right_d_t = left_binding_embs
@@ -282,11 +290,11 @@ def main():
                     #  ("llava-hf/llava-1.5-13b-hf", 42),                 # figure 42
                      ("llava-hf/llava-onevision-qwen2-7b-ov-hf", 43)    # figure 43
     ]
-    k_list = [2,3,5,10,12,15,20,30,40,50,60,100,200]
+    k_list = [2,5,10,12,15,20,30,40,50,100,200]
     alpha_lists = [
-        [1,2,5,10,15,20,30,50,100,150,200,300],
-        [1,2,3,4,5,10,15],
-        [1,2,3,10,15,20,50,100]
+        [1,2,5,10,15,20,30,50,100,150,200],
+        [1,2,3,4,5,10,15,20],
+        [1,2,3,4,5,10,15,20]
     ]
 
     print("Loading estimation dataset...")

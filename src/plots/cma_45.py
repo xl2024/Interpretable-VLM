@@ -15,8 +15,7 @@ from src.mech_interp.cma import cma_head_patching_by_generator, get_head_embeddi
 from src.plots.cma_1d import run_mediation_analysis
 
 
-# def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=None):
-def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100):
+def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=None):
     """
     Loads or generates the O_0 and O_1 objects for the COCO dataset, 
     filtering out cases where the model describes the same object twice.
@@ -262,7 +261,7 @@ def main():
         return
     
     model_id = "Qwen/Qwen2.5-VL-3B-Instruct"
-    k_list = [50]
+    k_list = [50,100,200]
     cache_dir = "src/data/cma/coco"
     coco_results = run_cma_coco(model_id, k_list, coco_directory, cache_dir)
     coco_stats = get_coco_stats(coco_results)

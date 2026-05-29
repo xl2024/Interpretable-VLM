@@ -57,7 +57,7 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=100)
         
         # We need to let it generate enough tokens to spit out two objects
         # e.g., " cat 2. a dog" -> approx 10 tokens
-        raw_output = predict(model, processor, img, prompt_text, 25, True)
+        raw_output = predict(model, processor, img, prompt_text, 45, True)
         print("raw_output:", raw_output)
         
         # 3. Parse the response to extract O_0 and O_1
@@ -151,7 +151,7 @@ def run_cma_coco_unit(
             d_t_head_cache=estimated_id_embeddings,
             top_k_heads=top_k_heads,
             token_pos=[token_pos,token_pos],
-            max_new_tokens = 10
+            max_new_tokens = 20
         )
         
         predicted = predicted_words[1].split(',')[0].split('.')[0].split('3')[0].strip()    # LLaVa likes to continue with 3. 4. ...
@@ -269,7 +269,8 @@ def main():
     # model_id = "Qwen/Qwen2.5-VL-32B-Instruct"
     model_id = "llava-hf/llava-1.5-7b-hf"    # 843/1000 -> 421 source + 422 target
     # model_id = "llava-hf/llava-1.5-13b-hf"
-    k_list = [50,100,200]
+    # k_list = [50,100,200]
+    k_list = [100]
     cache_dir = "src/data/cma/coco"
     coco_results = run_cma_coco(model_id, k_list, coco_directory, cache_dir)
     coco_stats = get_coco_stats(coco_results)

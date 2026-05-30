@@ -151,7 +151,7 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
                 top_k_heads=top_k_heads,
                 token_pos=token_pos,
                 stage=4,
-                alpha=1,
+                alpha=0,
                 d_o_head_cache=d_o
             )
             print(f"i={i}, target={color_list[i][1-pos]}, other={color_list[i][pos]}, pred={predicted_word}")

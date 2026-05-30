@@ -171,11 +171,11 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
 
 def main():
     model_id_list = [
-        "Qwen/Qwen2-VL-7B-Instruct",
-        "Qwen/Qwen2.5-VL-3B-Instruct",
-        "Qwen/Qwen2.5-VL-7B-Instruct",
+        "Qwen/Qwen2-VL-7B-Instruct"
+        # "Qwen/Qwen2.5-VL-3B-Instruct",
+        # "Qwen/Qwen2.5-VL-7B-Instruct",
         #  "Qwen/Qwen2.5-VL-32B-Instruct",
-        "llava-hf/llava-1.5-7b-hf"
+        # "llava-hf/llava-1.5-7b-hf"
         #  "llava-hf/llava-1.5-13b-hf"
     ]
 
@@ -198,14 +198,14 @@ def main():
 
     patching_results = {}
     for model_id in model_id_list:
-        model_name = model_id.replace('/', '_')
-        filename = f"src/data/cma/color/{model_name}.json"
-        file_path = Path(filename)
-        if file_path.exists():
-            print(f"Found {filename}! Loading results for keys intervention...")
-            with open(filename, 'r') as f:
-                patching_results[model_id] = json.load(f)
-            continue
+        # model_name = model_id.replace('/', '_')
+        # filename = f"src/data/cma/color/{model_name}.json"
+        # file_path = Path(filename)
+        # if file_path.exists():
+        #     print(f"Found {filename}! Loading results for keys intervention...")
+        #     with open(filename, 'r') as f:
+        #         patching_results[model_id] = json.load(f)
+        #     continue
 
         config = load_config()
         tier = config['pipeline']['tier']
@@ -245,10 +245,10 @@ def main():
         
         patching_results[model_id] = {"left": left_patching_results, "right": right_patching_results}
         
-        with open(filename, 'w') as f:
-            # indent=4 formats it nicely to read it in a text editor
-            json.dump(patching_results[model_id], f, indent=4)
-        print(f"Keys intervention results successfully saved in {filename}.")
+        # with open(filename, 'w') as f:
+        #     # indent=4 formats it nicely to read it in a text editor
+        #     json.dump(patching_results[model_id], f, indent=4)
+        # print(f"Keys intervention results successfully saved in {filename}.")
 
     print("final patching_results: ", patching_results)
 

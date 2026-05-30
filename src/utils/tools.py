@@ -365,9 +365,10 @@ def setup_dataset_from_zip(dataset_name, data_url, target_dir):
 
 def to_kv_heads(top_k_heads, num_heads, num_kv_heads):
     num_groups = num_heads // num_kv_heads
-    print(f"num_heads: {num_heads}, num_kv_heads: {num_kv_heads}, num_groups: {num_groups}")
+    # print(f"num_heads: {num_heads}, num_kv_heads: {num_kv_heads}, num_groups: {num_groups}")
     kv_heads = []
     for l, h in top_k_heads:
         kv_heads.append((l, h // num_groups))
-        print(f"l,h={l},{h}, kvl,h={l},{h // num_groups}")
-    return list(set(kv_heads))
+        # print(f"l,h={l},{h}, kvl,h={l},{h // num_groups}")
+    # return list(set(kv_heads))
+    return kv_heads

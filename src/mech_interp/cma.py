@@ -400,7 +400,7 @@ def get_head_embeddings(
                         layer_module = _resolve_layer_path(model, layer_template.format(l))
                         # Safely intercept full 3D tensor: [batch, seq_len, hidden_dim]
                         if stage == 4:    # for section 4.3
-                            attn_out = layer_module.self_attn.k_proj.input[0]
+                            attn_out = layer_module.self_attn.k_proj.output[0]
                         elif stage == 3:    # Feature Retrieval
                             attn_out = layer_module.self_attn.q_proj.output[0]
                         else:
@@ -595,7 +595,7 @@ def cma_head_patching_by_logits(
                     target_layer = _resolve_layer_path(model, layer_template.format(l))
                     
                     if stage == 4:    # for section 4.3
-                        hs_input = target_layer.self_attn.k_proj.input[0]
+                        hs_input = target_layer.self_attn.k_proj.output[0]
                     elif stage == 3:    # Feature Retrieval
                         hs_input = target_layer.self_attn.q_proj.output[0]
                     else:             # Intercept input to o_proj

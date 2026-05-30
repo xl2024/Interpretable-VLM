@@ -192,7 +192,7 @@ def main():
     image_dataset = {"est": [], "eval": []}
     color_dataset = {"est": [], "eval": []}
     shape_dataset = {"est": [], "eval": []}
-    random.seed(42)
+    # random.seed(42)
     for i in range(len(image_list)):
         if random.random() < 0.5:
             image_dataset["est"].append(image_list[i])

@@ -107,7 +107,7 @@ def cma_position_keys(model, processor, num_heads, top_k_heads, image_list, shap
             inputs = processor(text=text_prompt, images=image_list[i], return_tensors="pt")
             token_pos_list.append(get_token_pos_for_object(get_model_id(model), inputs, processor, (0,pos)))
             
-        print("token_pos_list:", token_pos_list)
+        # print("token_pos_list:", token_pos_list)
         position_keys[key] = get_head_embeddings(
             model=model, 
             processor=processor, 
@@ -211,7 +211,7 @@ def main():
         mediation_scores = mediation_scores_list[2]
         top_k_heads = get_top_k_heads(mediation_scores, 20)
         top_k_kv_heads = to_kv_heads(top_k_heads, num_heads, num_kv_heads)
-        print("top_k_kv_heads:", top_k_kv_heads)
+        # print("top_k_kv_heads:", top_k_kv_heads)
 
         print(f"Calculating binding embeddings...")
         left_binding_embs, right_binding_embs = cma_position_keys(

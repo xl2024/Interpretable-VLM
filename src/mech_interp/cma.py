@@ -397,8 +397,6 @@ def get_head_embeddings(
             with model.trace() as tracer:
                 with tracer.invoke(**inputs_c2):
                     for l, heads_in_this_layer in sorted(heads_by_layer.items()):
-                        if l > -1:
-                            continue
                         layer_module = _resolve_layer_path(model, layer_template.format(l))
                         # Safely intercept full 3D tensor: [batch, seq_len, hidden_dim]
                         if stage == 4:    # for section 4.3
@@ -594,8 +592,6 @@ def cma_head_patching_by_logits(
         with model.trace() as tracer:
             with tracer.invoke(**inputs_c1):
                 for l, heads_in_this_layer in sorted(heads_by_layer.items()):
-                    if l > -1:
-                        continue
                     target_layer = _resolve_layer_path(model, layer_template.format(l))
                     
                     if stage == 4:    # for section 4.3

@@ -28,6 +28,7 @@ def get_token_pos_for_object(
     if "qwen" in model_id_lower:
         # image_grid_thw shape is [1, 3] -> [Time, Height, Width]
         grid_t, grid_h, grid_w = inputs["image_grid_thw"][0].tolist()
+        grid_h, grid_w = grid_h // 2, grid_w // 2
         vision_start_token = processor.tokenizer.convert_tokens_to_ids("<|vision_start|>")
         # Qwen image tokens start exactly ONE token after <|vision_start|>
         sequence_offset = (inputs["input_ids"][0] == vision_start_token).nonzero(as_tuple=True)[0].item() + 1

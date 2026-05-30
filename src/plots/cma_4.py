@@ -9,7 +9,7 @@ import random
 from typing import Tuple, Any
 
 from src.model.loader import load_vlm
-from src.utils.tools import load_config, _resolve_text_model_dims, get_text_prompt, get_num_hidden_layers, get_model_id
+from src.utils.tools import load_config, _resolve_text_model_dims, get_text_prompt, get_num_hidden_layers, get_model_id, to_kv_heads
 from src.plots.cma_1d import run_mediation_analysis
 from src.mech_interp.cma import cma_head_patching_by_logits, get_head_embeddings, get_top_k_heads
 from src.data.synthetic_generator import generate_custom_image
@@ -201,16 +201,18 @@ def main():
         model, processor = load_vlm(model_id, tier)    
         num_layers = get_num_hidden_layers(model)
         _, num_heads = _resolve_text_model_dims(model)
+        _, num_kv_heads = _resolve_text_model_dims(model, kv_heads=True)
         mediation_scores_list = run_mediation_analysis(model_id)
         mediation_scores = mediation_scores_list[2]
         top_k_heads = get_top_k_heads(mediation_scores, 20)
+        top_k_kv_heads = to_kv_heads(top_k_heads, num_heads, num_kv_heads)
 
         print(f"Calculating binding embeddings...")
         left_binding_embs, right_binding_embs = cma_position_keys(
             model=model, 
             processor=processor, 
-            num_heads=num_heads, 
-            top_k_heads=top_k_heads,
+            num_heads=num_kv_heads, 
+            top_k_heads=top_k_kv_heads,
             image_list=image_dataset["est"],
             shape_list=shape_dataset["est"]
         )
@@ -220,8 +222,8 @@ def main():
             model=model, 
             processor=processor, 
             num_layers=num_layers, 
-            num_heads=num_heads, 
-            top_k_heads=top_k_heads, 
+            num_heads=num_kv_heads, 
+            top_k_heads=top_k_kv_heads, 
             left_binding_embs=left_binding_embs, 
             right_binding_embs=right_binding_embs,
             image_list=image_dataset["eval"],

@@ -82,6 +82,8 @@ def generate_dataset():
                 continue
             for s1 in shape_set:
                 for s2 in shape_set:
+                    if s1 == s2:
+                        continue
                     colors = [c1,c2]
                     shapes = [s1,s2]
                     color_list.append(colors)

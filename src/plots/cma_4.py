@@ -208,6 +208,7 @@ def main():
         mediation_scores = mediation_scores_list[2]
         top_k_heads = get_top_k_heads(mediation_scores, 20)
         top_k_kv_heads = to_kv_heads(top_k_heads, num_heads, num_kv_heads)
+        print("top_k_kv_heads:", top_k_kv_heads)
 
         print(f"Calculating binding embeddings...")
         left_binding_embs, right_binding_embs = cma_position_keys(

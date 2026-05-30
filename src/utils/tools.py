@@ -367,6 +367,6 @@ def to_kv_heads(top_k_heads, num_heads, num_kv_heads):
     num_groups = num_heads // num_kv_heads
     kv_heads = []
     for l, h in top_k_heads:
-        kv_heads.append(l, h // num_groups)
+        kv_heads.append((l, h // num_groups))
 
     return kv_heads

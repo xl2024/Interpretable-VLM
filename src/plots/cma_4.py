@@ -135,6 +135,7 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
         for i in range(len(image_list)):
             prompt = f"In this image what is the color of the {shape_list[i][pos]}. Answer with the correct color only."
             text_prompt = get_text_prompt(model, prompt, image_list[i], processor)
+            print("text_prompt:", text_prompt)
             inputs = processor(text=text_prompt, images=image_list[i], return_tensors="pt")
             token_pos = get_token_pos_for_object(get_model_id(model), inputs, processor, (0,pos))
             d_t = right_binding_embs if key == "left" else left_binding_embs

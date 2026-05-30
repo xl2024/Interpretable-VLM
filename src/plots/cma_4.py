@@ -154,7 +154,8 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
                 alpha=2,
                 d_o_head_cache=d_o
             )
-            all_patching_results[key].append([color_list[i][1-pos], predicted_word])
+            print(f"i={i}, target={color_list[i][1-pos]}, other={color_list[i][pos]}, pred={predicted_word}")
+            all_patching_results[key].append([color_list[i][1-pos], predicted_word.lower()])
         
 
         print_results(all_patching_results[key], key)

@@ -181,7 +181,7 @@ def main():
     shape_dataset = {"est": [], "eval": []}
     random.seed(42)
     for i in range(len(image_list)):
-        if random.random() < 0.05:
+        if random.random() < 0.5:
             image_dataset["est"].append(image_list[i])
             color_dataset["est"].append(color_list[i])
             shape_dataset["est"].append(shape_list[i])

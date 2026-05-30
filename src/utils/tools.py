@@ -245,8 +245,8 @@ def get_text_prompt(model, text, image, processor, format="color_first", use_sys
                 {
                     "role": "user",
                     "content": [
-                        {"type": "image", "image": image},
-                        {"type": "text", "text": text}
+                        {"type": "text", "text": text},
+                        {"type": "image", "image": image}
                     ]
                 }
             ]
@@ -255,8 +255,8 @@ def get_text_prompt(model, text, image, processor, format="color_first", use_sys
                 {
                     "role": "user",
                     "content": [
-                        {"type": "image", "image": image},
-                        {"type": "text", "text": text}
+                        {"type": "text", "text": text},
+                        {"type": "image", "image": image}
                     ]
                 }
             ]

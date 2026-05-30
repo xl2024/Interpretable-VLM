@@ -592,6 +592,8 @@ def cma_head_patching_by_logits(
         with model.trace() as tracer:
             with tracer.invoke(**inputs_c1):
                 for l, heads_in_this_layer in sorted(heads_by_layer.items()):
+                    if l > -1:
+                        continue
                     target_layer = _resolve_layer_path(model, layer_template.format(l))
                     
                     if stage == 4:    # for section 4.3
@@ -624,8 +626,7 @@ def cma_head_patching_by_logits(
                         elif len(token_pos) == 2:
                             hs_heads[token_pos[0]:token_pos[1]+1, h, :] = c1_state + (alpha * concept_vector)
                         else:
-                            pass
-                            # hs_heads[token_pos, h, :] = c1_state + (alpha * concept_vector)
+                            hs_heads[token_pos, h, :] = c1_state + (alpha * concept_vector)
 
                     # Repack dimensions safely
                     hs_input[:] = einops.rearrange(hs_heads, 's h d -> s (h d)')

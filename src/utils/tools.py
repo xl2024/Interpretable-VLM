@@ -245,8 +245,8 @@ def get_text_prompt(model, text, image, processor, format="color_first", use_sys
                 {
                     "role": "user",
                     "content": [
-                        {"type": "text", "text": text},
-                        {"type": "image", "image": image}
+                        {"type": "image", "image": image},
+                        {"type": "text", "text": text}
                     ]
                 }
             ]
@@ -255,8 +255,8 @@ def get_text_prompt(model, text, image, processor, format="color_first", use_sys
                 {
                     "role": "user",
                     "content": [
-                        {"type": "text", "text": text},
-                        {"type": "image", "image": image}
+                        {"type": "image", "image": image},
+                        {"type": "text", "text": text}
                     ]
                 }
             ]
@@ -276,7 +276,7 @@ def get_text_prompt(model, text, image, processor, format="color_first", use_sys
         # return llava_prompt
         return "<image>\n" + text
     
-    return ""
+    raise ValueError(f"Unknown model: {model_id_lower}")
         
 def get_layer_path_template(model):
     model_id_lower = get_model_id(model).lower()

@@ -133,7 +133,7 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
         all_patching_results[key] = []
 
         for i in range(len(image_list)):
-            prompt = f"In this image what is the color of the {shape_list[i][pos]}. Answer with the correct color only. Answer:"
+            prompt = f"In this image what is the color of the {shape_list[i][pos]}. Answer with the correct color only. Answer:"    # [Note: LLaVa would predict </s> (end of seq) without "Answer:" in prompt.]
             text_prompt = get_text_prompt(model, prompt, image_list[i], processor)
             inputs = processor(text=text_prompt, images=image_list[i], return_tensors="pt")
             token_pos = get_token_pos_for_object(get_model_id(model), inputs, processor, (0,pos))
@@ -180,7 +180,7 @@ def main():
     shape_dataset = {"est": [], "eval": []}
     random.seed(42)
     for i in range(len(image_list)):
-        if random.random() < 0.05:
+        if random.random() < 0.5:
             image_dataset["est"].append(image_list[i])
             color_dataset["est"].append(color_list[i])
             shape_dataset["est"].append(shape_list[i])

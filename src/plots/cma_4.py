@@ -100,7 +100,7 @@ def cma_position_keys(model, processor, num_heads, top_k_heads, image_list, shap
         token_pos_list = []
 
         for i in range(len(image_list)):
-            prompt = f"In this image what is the color of the {shape_list[i][pos]}. Answer with the correct color only."
+            prompt = f"In this image what is the color of the {shape_list[i][pos]}. Answer with the correct color only. Answer:"
             text_prompt = get_text_prompt(model, prompt, image_list[i], processor)
             text_prompts.append(text_prompt)
 

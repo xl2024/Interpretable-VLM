@@ -2,6 +2,8 @@
 # https://github.com/huggingface/transformers/blob/main/src/transformers/models/qwen2_vl/modeling_qwen2_vl.py
 # https://github.com/huggingface/transformers/blob/main/src/transformers/models/llama/modeling_llama.py
 
+import gc
+import torch
 import json
 from pathlib import Path
 import matplotlib.pyplot as plt
@@ -60,6 +62,7 @@ def get_token_pos_for_object(
     # row_min = max(0, int(y0 * grid_h / height))
     # row_max = min(grid_h - 1, int(y1 * grid_h / height))
     
+    # simplify to left/right objects only
     col_min = grid_w * col_idx // 2
     col_max = grid_w * (col_idx + 1) // 2 - 1
     row_min = 0
@@ -171,9 +174,9 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
 
 def main():
     model_id_list = [
-        # "Qwen/Qwen2-VL-7B-Instruct"
-        # "Qwen/Qwen2.5-VL-3B-Instruct"
-        # "Qwen/Qwen2.5-VL-7B-Instruct"
+        "Qwen/Qwen2-VL-7B-Instruct",
+        "Qwen/Qwen2.5-VL-3B-Instruct",
+        "Qwen/Qwen2.5-VL-7B-Instruct",
         #  "Qwen/Qwen2.5-VL-32B-Instruct",
         "llava-hf/llava-1.5-7b-hf"
         #  "llava-hf/llava-1.5-13b-hf"
@@ -249,6 +252,11 @@ def main():
         #     # indent=4 formats it nicely to read it in a text editor
         #     json.dump(patching_results[model_id], f, indent=4)
         # print(f"Keys intervention results successfully saved in {filename}.")
+
+        del model
+        del processor
+        gc.collect()
+        torch.cuda.empty_cache()
 
     print("final patching_results: ", patching_results)
 

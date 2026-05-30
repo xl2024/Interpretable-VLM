@@ -35,7 +35,7 @@ def get_token_pos_for_object(
     elif "llava" in model_id_lower:
         grid_h, grid_w = 24, 24
         image_token_id = processor.tokenizer.convert_tokens_to_ids("<image>")
-        sequence_offset = (inputs["input_ids"][0] == image_token_id).nonzero(as_tuple=True)[0].item()
+        sequence_offset = (inputs["input_ids"][0] == image_token_id).nonzero(as_tuple=True)[0][0].item()
     else:
         raise ValueError(f"Unknown model_id: {model_id}")
 

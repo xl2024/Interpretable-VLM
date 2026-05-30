@@ -130,7 +130,7 @@ def cma_position_keys(model, processor, num_heads, top_k_heads, image_list, shap
             image_list=image_list, 
             top_k_heads=top_k_heads,
             # token_pos_list=token_pos_list,
-            stage=2
+            stage=4
         )
 
     return position_keys["left_target"], position_keys["right_target"]
@@ -164,7 +164,7 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
                 d_t_head_cache=d_t,
                 top_k_heads=top_k_heads,
                 # token_pos=token_pos,
-                stage=2,
+                stage=4,
                 alpha=2,
                 d_o_head_cache=d_o
             )
@@ -222,7 +222,7 @@ def main():
         _, num_heads = _resolve_text_model_dims(model)
         _, num_kv_heads = _resolve_text_model_dims(model, kv_heads=True)
         mediation_scores_list = run_mediation_analysis(model_id)
-        mediation_scores = mediation_scores_list[1]
+        mediation_scores = mediation_scores_list[2]
         top_k_heads = get_top_k_heads(mediation_scores, 20)
         top_k_kv_heads = to_kv_heads(top_k_heads, num_heads, num_kv_heads)
         # print("top_k_kv_heads:", top_k_kv_heads)
@@ -231,8 +231,8 @@ def main():
         left_binding_embs, right_binding_embs = cma_position_keys(
             model=model, 
             processor=processor, 
-            num_heads=num_heads, 
-            top_k_heads=top_k_heads,
+            num_heads=num_kv_heads, 
+            top_k_heads=top_k_kv_heads,
             image_list=image_dataset["est"],
             shape_list=shape_dataset["est"]
         )
@@ -242,8 +242,8 @@ def main():
             model=model, 
             processor=processor, 
             num_layers=num_layers, 
-            num_heads=num_heads, 
-            top_k_heads=top_k_heads, 
+            num_heads=num_kv_heads, 
+            top_k_heads=top_k_kv_heads, 
             left_binding_embs=left_binding_embs, 
             right_binding_embs=right_binding_embs,
             image_list=image_dataset["eval"],

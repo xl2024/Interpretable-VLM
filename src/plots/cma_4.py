@@ -106,6 +106,7 @@ def cma_position_keys(model, processor, num_heads, top_k_heads, image_list, shap
             inputs = processor(text=text_prompt, images=image_list[i], return_tensors="pt")
             token_pos_list.append(get_token_pos_for_object(get_model_id(model), inputs, processor, (0,pos)))
             
+        print("token_pos_list:", token_pos_list)
         position_keys[key] = get_head_embeddings(
             model=model, 
             processor=processor, 

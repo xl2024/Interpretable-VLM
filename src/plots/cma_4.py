@@ -115,7 +115,7 @@ def cma_position_keys(model, processor, num_heads, top_k_heads, image_list, shap
             prompt_list=text_prompts,
             image_list=image_list, 
             top_k_heads=top_k_heads,
-            token_pos_list=token_pos_list,
+            # token_pos_list=token_pos_list,
             stage=4
         )
 
@@ -149,7 +149,7 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
                 image_c1=image_list[i],
                 d_t_head_cache=d_t,
                 top_k_heads=top_k_heads,
-                token_pos=token_pos,
+                # token_pos=token_pos,
                 stage=4,
                 alpha=0,
                 d_o_head_cache=d_o

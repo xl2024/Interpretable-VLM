@@ -45,28 +45,28 @@ def get_token_pos_for_object(
     row_idx, col_idx = coord
     
     # 1. Recreate the exact bounding box
-    # cell_width = width / cols
-    # cell_height = height / rows
-    # box_size = min(cell_width, cell_height) * 0.6
-    # half_size = int(box_size / 2)
+    cell_width = width / cols
+    cell_height = height / rows
+    box_size = min(cell_width, cell_height) * 0.6
+    half_size = int(box_size / 2)
     
-    # cx = int((col_idx + 0.5) * cell_width)
-    # cy = int((row_idx + 0.5) * cell_height)
+    cx = int((col_idx + 0.5) * cell_width)
+    cy = int((row_idx + 0.5) * cell_height)
     
-    # x0, y0 = cx - half_size, cy - half_size
-    # x1, y1 = cx + half_size, cy + half_size
+    x0, y0 = cx - half_size, cy - half_size
+    x1, y1 = cx + half_size, cy + half_size
     # bbox = [x0, y0, x1, y1]
     
-    # col_min = max(0, int(x0 * grid_w / width))
-    # col_max = min(grid_w - 1, int(x1 * grid_w / width))
-    # row_min = max(0, int(y0 * grid_h / height))
-    # row_max = min(grid_h - 1, int(y1 * grid_h / height))
+    col_min = max(0, int(x0 * grid_w / width))
+    col_max = min(grid_w - 1, int(x1 * grid_w / width))
+    row_min = max(0, int(y0 * grid_h / height))
+    row_max = min(grid_h - 1, int(y1 * grid_h / height))
     
     # simplify to left/right objects only
-    col_min = grid_w * col_idx // 2
-    col_max = grid_w * (col_idx + 1) // 2 - 1
-    row_min = 0
-    row_max = grid_h - 1
+    # col_min = grid_w * col_idx // 2
+    # col_max = grid_w * (col_idx + 1) // 2 - 1
+    # row_min = 0
+    # row_max = grid_h - 1
 
     # 3. Flatten the 2D grid box into 1D sequence indices
     local_image_indices = []

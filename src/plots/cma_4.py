@@ -34,10 +34,15 @@ def get_token_pos_for_object(
         vision_start_token = processor.tokenizer.convert_tokens_to_ids("<|vision_start|>")
         # Qwen image tokens start exactly ONE token after <|vision_start|>
         sequence_offset = (inputs["input_ids"][0] == vision_start_token).nonzero(as_tuple=True)[0].item() + 1
+        vision_end_token = processor.tokenizer.convert_tokens_to_ids("<|vision_end|>")
+        sequence_end = (inputs["input_ids"][0] == vision_end_token).nonzero(as_tuple=True)[0].item()
+        print(f"model_id: {model_id}, h: {grid_h}, w: {grid_w}, hxw: {grid_h*grid_w} start: {sequence_offset-1}, end: {sequence_end}, end-start: {sequence_end-sequence_offset+1}")
     elif "llava" in model_id_lower:
         grid_h, grid_w = 24, 24
         image_token_id = processor.tokenizer.convert_tokens_to_ids("<image>")
         sequence_offset = (inputs["input_ids"][0] == image_token_id).nonzero(as_tuple=True)[0][0].item()
+        sequence_end = (inputs["input_ids"][0] == image_token_id).nonzero(as_tuple=True)[0][-1].item()
+        print(f"model_id: {model_id}, h: {grid_h}, w: {grid_w}, hxw: {grid_h*grid_w} start: {sequence_offset}, end: {sequence_end}, end-start: {sequence_end-sequence_offset}")
     else:
         raise ValueError(f"Unknown model_id: {model_id}")
 
@@ -63,10 +68,8 @@ def get_token_pos_for_object(
     # row_max = min(grid_h - 1, int(y1 * grid_h / height))
     
     # simplify to left/right objects only and perform slightly better
-    # col_min = grid_w * col_idx // 2
-    # col_max = grid_w * (col_idx + 1) // 2 - 1
-    col_min = 0
-    col_max = grid_w - 1
+    col_min = grid_w * col_idx // 2
+    col_max = grid_w * (col_idx + 1) // 2 - 1
     row_min = 0
     row_max = grid_h - 1
 

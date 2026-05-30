@@ -624,7 +624,8 @@ def cma_head_patching_by_logits(
                         elif len(token_pos) == 2:
                             hs_heads[token_pos[0]:token_pos[1]+1, h, :] = c1_state + (alpha * concept_vector)
                         else:
-                            hs_heads[token_pos, h, :] = c1_state + (alpha * concept_vector)
+                            pass
+                            # hs_heads[token_pos, h, :] = c1_state + (alpha * concept_vector)
 
                     # Repack dimensions safely
                     hs_input[:] = einops.rearrange(hs_heads, 's h d -> s (h d)')

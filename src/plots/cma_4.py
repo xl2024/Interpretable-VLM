@@ -116,7 +116,7 @@ def cma_position_keys(model, processor, num_heads, top_k_heads, image_list, shap
             image_list=image_list, 
             top_k_heads=top_k_heads,
             # token_pos_list=token_pos_list,
-            stage=4
+            stage=3
         )
 
     return position_keys["left_target"], position_keys["right_target"]
@@ -150,7 +150,7 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
                 d_t_head_cache=d_t,
                 top_k_heads=top_k_heads,
                 # token_pos=token_pos,
-                stage=4,
+                stage=3,
                 alpha=0,
                 d_o_head_cache=d_o
             )
@@ -217,8 +217,8 @@ def main():
         left_binding_embs, right_binding_embs = cma_position_keys(
             model=model, 
             processor=processor, 
-            num_heads=num_kv_heads, 
-            top_k_heads=top_k_kv_heads,
+            num_heads=num_heads, 
+            top_k_heads=top_k_heads,
             image_list=image_dataset["est"],
             shape_list=shape_dataset["est"]
         )
@@ -228,8 +228,8 @@ def main():
             model=model, 
             processor=processor, 
             num_layers=num_layers, 
-            num_heads=num_kv_heads, 
-            top_k_heads=top_k_kv_heads, 
+            num_heads=num_heads, 
+            top_k_heads=top_k_heads, 
             left_binding_embs=left_binding_embs, 
             right_binding_embs=right_binding_embs,
             image_list=image_dataset["eval"],

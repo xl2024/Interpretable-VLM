@@ -103,7 +103,7 @@ def cma_position_keys(model, processor, num_heads, top_k_heads, image_list, shap
             prompt = f"In this image what is the color of the {shape_list[i][pos]}. Answer with the correct color only."
             text_prompt = get_text_prompt(model, prompt, image_list[i], processor)
             text_prompts.append(text_prompt)
-            
+
             inputs = processor(text=text_prompt, images=image_list[i], return_tensors="pt")
             token_pos_list.append(get_token_pos_for_object(get_model_id(model), inputs, processor, (0,pos)))
             
@@ -115,8 +115,8 @@ def cma_position_keys(model, processor, num_heads, top_k_heads, image_list, shap
             prompt_list=text_prompts,
             image_list=image_list, 
             top_k_heads=top_k_heads,
-            # token_pos_list=token_pos_list,
-            stage=3
+            token_pos_list=token_pos_list,
+            stage=4
         )
 
     return position_keys["left_target"], position_keys["right_target"]
@@ -149,9 +149,9 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
                 image_c1=image_list[i],
                 d_t_head_cache=d_t,
                 top_k_heads=top_k_heads,
-                # token_pos=token_pos,
-                stage=3,
-                alpha=0,
+                token_pos=token_pos,
+                stage=4,
+                alpha=2,
                 d_o_head_cache=d_o
             )
             print(f"i={i}, target={color_list[i][1-pos]}, other={color_list[i][pos]}, pred={predicted_word}")
@@ -217,8 +217,8 @@ def main():
         left_binding_embs, right_binding_embs = cma_position_keys(
             model=model, 
             processor=processor, 
-            num_heads=num_heads, 
-            top_k_heads=top_k_heads,
+            num_heads=num_kv_heads, 
+            top_k_heads=top_k_kv_heads,
             image_list=image_dataset["est"],
             shape_list=shape_dataset["est"]
         )
@@ -228,8 +228,8 @@ def main():
             model=model, 
             processor=processor, 
             num_layers=num_layers, 
-            num_heads=num_heads, 
-            top_k_heads=top_k_heads, 
+            num_heads=num_kv_heads, 
+            top_k_heads=top_k_kv_heads, 
             left_binding_embs=left_binding_embs, 
             right_binding_embs=right_binding_embs,
             image_list=image_dataset["eval"],

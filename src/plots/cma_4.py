@@ -73,7 +73,8 @@ def get_token_pos_for_object(
 
 def generate_dataset():
     color_set = ["red", "blue", "green"]
-    shape_set = ["circle", "square", "triangle", "cross", "star", "heart", "sun", "umbrella", "plane"]
+    # shape_set = ["circle", "square", "triangle", "cross", "star", "heart", "sun", "umbrella", "plane"]
+    shape_set = ["circle", "square", "triangle"]
     color_list = []
     shape_list = []
     image_list = []
@@ -180,7 +181,7 @@ def main():
     shape_dataset = {"est": [], "eval": []}
     random.seed(42)
     for i in range(len(image_list)):
-        if random.random() < 0.5:
+        if random.random() < 0.05:
             image_dataset["est"].append(image_list[i])
             color_dataset["est"].append(color_list[i])
             shape_dataset["est"].append(shape_list[i])

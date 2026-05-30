@@ -223,7 +223,7 @@ def main():
         _, num_kv_heads = _resolve_text_model_dims(model, kv_heads=True)
         mediation_scores_list = run_mediation_analysis(model_id)
         mediation_scores = mediation_scores_list[2]
-        top_k_heads = get_top_k_heads(mediation_scores, 20)
+        top_k_heads = get_top_k_heads(mediation_scores, 200)
         top_k_kv_heads = to_kv_heads(top_k_heads, num_heads, num_kv_heads)
         # print("top_k_kv_heads:", top_k_kv_heads)
 

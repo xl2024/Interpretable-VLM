@@ -90,10 +90,12 @@ def get_rel_ref(colors, shapes, coords, pos):
 
 def get_intervention_results(model, processor, num_layers, num_heads, top_k_heads, ids_in_desc, color_list, shape_list):
     def get_equiv_color(color):
-        equiv_colors = [
-        ]
-        for c1, c2 in equiv_colors:
-            color = color.replace(c2, c1)
+        equiv_colors = {
+            "yellow": {"orange", "yellow"}
+        }
+        for c1, c2 in equiv_colors.items():
+            if color in c2:
+                color = c1
         return color
 
     all_patching_results = {}
@@ -181,14 +183,14 @@ def main():
     
     patching_results = {}
     for model_id in model_id_list:
-        # model_name = model_id.replace('/', '_')
-        # filename = f"src/data/cma/color/{model_name}.json"
-        # file_path = Path(filename)
-        # if file_path.exists():
-        #     print(f"Found {filename}! Loading results for keys intervention...")
-        #     with open(filename, 'r') as f:
-        #         patching_results[model_id] = json.load(f)
-        #     continue
+        model_name = model_id.replace('/', '_')
+        filename = f"src/data/cma/reuse/{model_name}.json"
+        file_path = Path(filename)
+        if file_path.exists():
+            print(f"Found {filename}! Loading results for spatial reasoning intervention...")
+            with open(filename, 'r') as f:
+                patching_results[model_id] = json.load(f)
+            continue
 
         config = load_config()
         tier = config['pipeline']['tier']
@@ -223,10 +225,10 @@ def main():
         
         patching_results[model_id] = all_patching_results
         
-        # with open(filename, 'w') as f:
-        #     # indent=4 formats it nicely to read it in a text editor
-        #     json.dump(patching_results[model_id], f, indent=4)
-        # print(f"Keys intervention results successfully saved in {filename}.")
+        with open(filename, 'w') as f:
+            # indent=4 formats it nicely to read it in a text editor
+            json.dump(patching_results[model_id], f, indent=4)
+        print(f"Spatial reasoning intervention results successfully saved in {filename}.")
 
         del model
         del processor

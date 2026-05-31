@@ -108,6 +108,7 @@ def get_intervention_results(model, processor, num_layers, num_heads, top_k_head
                 shapes.append(shape_list[obj])
                 coords.append(get_coord_from_index(pos))
 
+            print(f"pos: {pos}, obj: {obj}, coords: {coords}")
             RELATION, REF = get_rel_ref(colors, shapes, coords, pos)
             prompt = f"In this image, what is the color of the object that is directly {RELATION} of {REF}. Answer with the relevant color only."
             image = generate_custom_image(cols=3, rows=3, shapes=shapes, colors=colors, coords=coords)
@@ -133,7 +134,7 @@ def get_intervention_results(model, processor, num_layers, num_heads, top_k_head
                 d_o_head_cache=d_o_head_cache
             )
 
-            print(f"pos={pos}, i={i}, target={color_list[obj]}, before={pred_before}, after={predicted_word}")
+            print(f"pos={pos}, obj={obj}, target={color_list[obj]}, before={pred_before}, after={predicted_word}")
             all_patching_results[pos].append([color_list[obj], pred_before.lower(), predicted_word.lower()])
 
             all_count += 1

@@ -90,9 +90,9 @@ def get_rel_ref(colors, shapes, coords, pos):
 
 def get_intervention_results(model, processor, num_layers, num_heads, top_k_heads, ids_in_desc, color_list, shape_list):
     def is_equiv_color(color, target):
-        equiv_colors = {
-            {"orange", "yellow"}
-        }
+        equiv_colors = [
+            ["orange", "yellow"]
+        ]
         for color_set in equiv_colors:
             if color in color_set and target in color_set:
                 return True

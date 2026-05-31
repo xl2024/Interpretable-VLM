@@ -44,7 +44,7 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=1000
     
     for idx, img_path in enumerate(all_image_paths):
         filename = os.path.basename(img_path)
-        print("filename:", filename)
+        # print("filename:", filename)
         
         try:
             img = Image.open(img_path).convert('RGB')
@@ -57,8 +57,8 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=1000
         
         # We need to let it generate enough tokens to spit out two objects
         # e.g., " cat 2. a dog" -> approx 10 tokens
-        raw_output = predict(model, processor, img, prompt_text, 25, True)
-        print("raw_output:", raw_output)
+        raw_output = predict(model, processor, img, prompt_text, 45, True)
+        # print("raw_output:", raw_output)
         
         # 3. Parse the response to extract O_0 and O_1
         # Example raw_output: "dog 2. a cat"
@@ -75,7 +75,7 @@ def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=1000
             
             # 4. Filter out duplicates
             if _o_0 and _o_1 and (_o_0 != _o_1):
-                print(f"Got O_0: {o_0} O_1: {o_1}")
+                # print(f"Got O_0: {o_0} O_1: {o_1}")
                 object_mapping[filename] = {"O_0": o_0, "O_1": o_1}
             
         if (idx + 1) % 50 == 0:
@@ -139,7 +139,7 @@ def run_cma_coco_unit(
         intervention_prompt = f"In this image there is 1. a {o_0} 2. a"
         intervention_system_format = "OBJECT, replacing OBJECT with the second object in the image. Do not repeat the prompt words, just append with the requested format"
         intervention_prompt_text = get_text_prompt(model, intervention_prompt, img, processor, intervention_system_format)
-        token_pos = get_token_position(processor, intervention_prompt_text, img, intervention_prompt_text[-1], False)
+        token_pos = get_token_position(processor, intervention_prompt_text, img, "", False)
         
         predicted_words = cma_head_patching_by_generator(
             model=model,
@@ -151,24 +151,26 @@ def run_cma_coco_unit(
             d_t_head_cache=estimated_id_embeddings,
             top_k_heads=top_k_heads,
             token_pos=[token_pos,token_pos],
-            max_new_tokens = 10
+            max_new_tokens = 20
         )
         
-        predicted = predicted_words[1].split(',')[0].split('.')[0].strip()
-        print(f"target_filename: {target_filenames[i]}")
-        print(f"o_0: {o_0} o_1: {o_1} predicted_word: {predicted}")
-        unit_results.append((o_0, predicted))
+        predicted = predicted_words[1].split(',')[0].split('.')[0].split('3')[0].strip()    # LLaVa likes to continue with 3. 4. ...
+        # print(f"target_filename: {target_filenames[i]}")
+        # print(f"o_0: {o_0} o_1: {o_1} predicted_word: {predicted}")
+        unit_results.append((target_filenames[i], o_0, o_1, predicted))
     
     return unit_results
 
 def run_cma_coco(model_id, k_list, coco_val_dir, cache_dir, num_splits=3):
     model_name = model_id.replace('/', '_')
     cache_name = os.path.join(cache_dir, f"coco_results_{model_name}.json")
+    coco_results = {}
     if os.path.exists(cache_name):
         print(f"Found existing cache at {cache_name}. Loading...")
         with open(cache_name, 'r') as f:
             coco_results = json.load(f)
-        return coco_results
+        if list(coco_results.keys()) == [str(k) for k in k_list]:
+            return coco_results
     
     config = load_config()
     tier = config['pipeline']['tier']
@@ -181,9 +183,10 @@ def run_cma_coco(model_id, k_list, coco_val_dir, cache_dir, num_splits=3):
     mapping_cache_name = os.path.join(cache_dir, f"coco_objects_{model_name}.json")
     object_mapping = get_coco_objects(model, processor, coco_val_dir, mapping_cache_name)
 
-    coco_results = {}
-
     for k in k_list:
+        if str(k) in coco_results:
+            continue
+
         top_k_heads = get_top_k_heads(mediation_scores, k)
 
         valid_filenames = list(object_mapping.keys())
@@ -215,9 +218,9 @@ def run_cma_coco(model_id, k_list, coco_val_dir, cache_dir, num_splits=3):
 
         coco_results[str(k)] = coco_results_k
 
-    print(f"Saving coco_results to {cache_name}...")
-    with open(cache_name, 'w') as f:
-        json.dump(coco_results, f, indent=4)
+        print(f"Saving coco_results (k={k}) to {cache_name}...")
+        with open(cache_name, 'w') as f:
+            json.dump(coco_results, f, indent=4)
 
     return coco_results
 
@@ -230,7 +233,7 @@ def get_coco_stats(coco_results, num_splits=3):
         for split_idx in range(num_splits):
             unit_results = coco_results_k[str(split_idx)]
             successful_repeats = 0
-            for o_0, pred in unit_results:
+            for fn, o_0, o_1, pred in unit_results:
                 clean_prediction = pred.strip().lower()
                 clean_o_0 = o_0.lower()
                 
@@ -261,8 +264,13 @@ def main():
         print("No coco_directory.")
         return
     
-    model_id = "Qwen/Qwen2.5-VL-3B-Instruct"
+    # model_id = "Qwen/Qwen2.5-VL-3B-Instruct"    # 844/1000 -> 422 source + 422 target
+    # model_id = "Qwen/Qwen2.5-VL-7B-Instruct"    # 658/1000 -> 329 source + 329 target
+    # model_id = "Qwen/Qwen2.5-VL-32B-Instruct"
+    model_id = "llava-hf/llava-1.5-7b-hf"    # 825/1000 -> 412 source + 413 target
+    # model_id = "llava-hf/llava-1.5-13b-hf"
     k_list = [50,100,200]
+    # k_list = [100]
     cache_dir = "src/data/cma/coco"
     coco_results = run_cma_coco(model_id, k_list, coco_directory, cache_dir)
     coco_stats = get_coco_stats(coco_results)

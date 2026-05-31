@@ -120,7 +120,7 @@ def _resolve_layer_path(model: LanguageModel, path_string: str):
             
     return current_module
 
-def _resolve_text_model_dims(model: Any) -> Tuple[int, int]:
+def _resolve_text_model_dims(model: Any, kv_heads: bool = False) -> Tuple[int, int]:
     """
     Resolve (hidden_size, num_attention_heads) across wrapped/unwrapped VLM models.
     Works when `model.config` is missing/None (common with wrappers).
@@ -154,7 +154,7 @@ def _resolve_text_model_dims(model: Any) -> Tuple[int, int]:
 
     for cfg in expanded_configs:
         hidden_size = getattr(cfg, "hidden_size", None)
-        num_heads = getattr(cfg, "num_attention_heads", None)
+        num_heads = getattr(cfg, "num_attention_heads", None) if not kv_heads else getattr(cfg, "num_key_value_heads", None)
         if isinstance(hidden_size, int) and isinstance(num_heads, int) and num_heads > 0:
             return hidden_size, num_heads
 
@@ -276,7 +276,7 @@ def get_text_prompt(model, text, image, processor, format="color_first", use_sys
         # return llava_prompt
         return "<image>\n" + text
     
-    return ""
+    raise ValueError(f"Unknown model: {model_id_lower}")
         
 def get_layer_path_template(model):
     model_id_lower = get_model_id(model).lower()
@@ -294,14 +294,14 @@ def get_token_position(processor, text_prompt, image, word, for_comma):
     elif for_comma:
         for index in range(1, len(input_ids)):
             token_ids = input_ids[index-1:index+1]
-            token_str = processor.tokenizer.decode(token_ids).strip().lower()
+            token_str = processor.tokenizer.decode(token_ids).strip()
             if ',' in token_str and word in token_str:
                 return index
     else:
         for partitions in range(5):    # dolphin -> 'dol','ph','in'
             for index in range(partitions, len(input_ids)):
                 token_id = input_ids[index-partitions:index+1]
-                if word in processor.tokenizer.decode(token_id).strip().lower():
+                if word in processor.tokenizer.decode(token_id).strip():
                     return index
         
     raise ValueError(f"Could not find '{word}' in prompt: {text_prompt}")
@@ -362,3 +362,12 @@ def setup_dataset_from_zip(dataset_name, data_url, target_dir):
     print(f"Success! Extracted {num_images} images to {extract_dir}.")
     
     return extract_dir
+
+def to_kv_heads(top_k_heads, num_heads, num_kv_heads):
+    num_groups = num_heads // num_kv_heads
+    # print(f"num_heads: {num_heads}, num_kv_heads: {num_kv_heads}, num_groups: {num_groups}")
+    kv_heads = []
+    for l, h in top_k_heads:
+        kv_heads.append((l, h // num_groups))
+        # print(f"l,h={l},{h}, kvl,h={l},{h // num_groups}")
+    return list(set(kv_heads))

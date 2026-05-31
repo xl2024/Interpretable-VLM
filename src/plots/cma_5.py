@@ -112,8 +112,9 @@ def get_intervention_results(model, processor, num_layers, num_heads, top_k_head
             prompt = f"In this image, what is the color of the object that is directly {RELATION} of {REF}. Answer with the relevant color only."
             image = generate_custom_image(cols=3, rows=3, shapes=shapes, colors=colors, coords=coords)
             text_prompt = get_text_prompt(model, prompt, image, processor)
-            d_t = ids_in_desc[pos]
-            d_o = torch.zeros_like(d_t)
+            d_t_head_cache = ids_in_desc[pos]
+            first_tensor = next(iter(d_t_head_cache.values()))
+            d_o_head_cache = torch.zeros_like(first_tensor)
 
             prediction = predict(model, processor, image, text_prompt, new_only=True)
             pred_before = prediction.split()[0]
@@ -125,10 +126,10 @@ def get_intervention_results(model, processor, num_layers, num_heads, top_k_head
                 num_heads=num_heads,
                 prompt_c1=text_prompt,
                 image_c1=image,
-                d_t_head_cache=d_t,
+                d_t_head_cache=d_t_head_cache,
                 top_k_heads=top_k_heads,
                 alpha=2,
-                d_o_head_cache=d_o
+                d_o_head_cache=d_o_head_cache
             )
 
             print(f"pos={pos}, i={i}, target={color_list[obj]}, before={pred_before}, after={predicted_word}")

@@ -506,12 +506,8 @@ def cma_head_patching_by_generator(
     Executes Causal Mediation Analysis (Activation Patching) across top k ID selection heads.
     """
     if token_pos is None:
-        last_token_pos = get_token_position(processor, prompt_c1, image_c1, prompt_c1.split()[-1], False)
-        print("last_token_pos with split: ",last_token_pos)
         last_token_pos = get_token_position(processor, prompt_c1, image_c1, "", False)
-        print("last_token_pos:",last_token_pos)
         token_pos = [last_token_pos, last_token_pos]
-        token_pos = [-1]
 
     layer_template = get_layer_path_template(model)        
     inputs_c1 = processor(text=prompt_c1, images=image_c1, return_tensors="pt").to(model.device)

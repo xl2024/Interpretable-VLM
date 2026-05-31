@@ -139,7 +139,7 @@ def run_cma_coco_unit(
         intervention_prompt = f"In this image there is 1. a {o_0} 2. a"
         intervention_system_format = "OBJECT, replacing OBJECT with the second object in the image. Do not repeat the prompt words, just append with the requested format"
         intervention_prompt_text = get_text_prompt(model, intervention_prompt, img, processor, intervention_system_format)
-        token_pos = get_token_position(processor, intervention_prompt_text, img, intervention_prompt_text.split()[-1], False)
+        token_pos = get_token_position(processor, intervention_prompt_text, img, "", False)
         
         predicted_words = cma_head_patching_by_generator(
             model=model,

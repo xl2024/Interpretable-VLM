@@ -114,7 +114,9 @@ def get_intervention_results(model, processor, num_layers, num_heads, top_k_head
             text_prompt = get_text_prompt(model, prompt, image, processor)
             d_t_head_cache = ids_in_desc[pos]
             first_tensor = next(iter(d_t_head_cache.values()))
+            print(first_tensor.shape)
             d_o_head_cache = torch.zeros_like(first_tensor)
+            print(d_o_head_cache.shape)
 
             prediction = predict(model, processor, image, text_prompt, new_only=True)
             pred_before = prediction.split()[0]

@@ -89,14 +89,14 @@ def get_rel_ref(colors, shapes, coords, pos):
     return rel_ref
 
 def get_intervention_results(model, processor, num_layers, num_heads, top_k_heads, ids_in_desc, color_list, shape_list):
-    def get_equiv_color(color):
+    def is_equiv_color(color, target):
         equiv_colors = {
-            "yellow": {"orange", "yellow"}
+            {"orange", "yellow"}
         }
-        for c1, c2 in equiv_colors.items():
-            if color in c2:
-                color = c1
-        return color
+        for color_set in equiv_colors:
+            if color in color_set and target in color_set:
+                return True
+        return False
 
     all_patching_results = {}
     
@@ -151,12 +151,12 @@ def get_intervention_results(model, processor, num_layers, num_heads, top_k_head
                 all_patching_results[pos][RELATION].append([color_list[obj], pred_before, predicted_word])
 
                 all_count[RELATION] += 1
-                if get_equiv_color(pred_before.lower()) == color_list[obj]:
+                if is_equiv_color(pred_before.lower(), color_list[obj]):
                     before_correct[RELATION] += 1
                 else:
                     print(f"pos={pos}, obj={obj}, RELATION={RELATION}, target={color_list[obj]}, before={pred_before}")
 
-                if get_equiv_color(predicted_word.lower()) == color_list[obj]:
+                if is_equiv_color(predicted_word.lower(), color_list[obj]):
                     after_correct[RELATION] += 1
                 else:
                     print(f"pos={pos}, obj={obj}, RELATION={RELATION}, target={color_list[obj]}, after={predicted_word}")

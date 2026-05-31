@@ -10,7 +10,7 @@ from typing import Tuple, Any
 from src.model.loader import load_vlm
 from src.utils.tools import load_config, _resolve_text_model_dims, get_text_prompt, get_num_hidden_layers, predict
 from src.plots.cma_1d import run_mediation_analysis
-from src.mech_interp.cma import cma_head_patching_by_logits, get_head_embeddings, get_top_k_heads
+from src.mech_interp.cma import cma_head_patching_by_generator, get_head_embeddings, get_top_k_heads
 from src.data.synthetic_generator import generate_custom_image
 
 
@@ -124,9 +124,9 @@ def get_intervention_results(model, processor, num_layers, num_heads, top_k_head
                 d_o_head_cache[l,h] = torch.zeros_like(d_t_head_cache[l,h])
 
             prediction = predict(model, processor, image, text_prompt, new_only=True)
-            pred_before = prediction.split()[0]
+            pred_before = prediction
 
-            predicted_word = cma_head_patching_by_logits(
+            predicted_word = cma_head_patching_by_generator(
                 model=model,
                 processor=processor,
                 num_layers=num_layers,
@@ -136,8 +136,10 @@ def get_intervention_results(model, processor, num_layers, num_heads, top_k_head
                 d_t_head_cache=d_t_head_cache,
                 top_k_heads=top_k_heads,
                 alpha=2,
-                d_o_head_cache=d_o_head_cache
+                d_o_head_cache=d_o_head_cache,
+                max_new_tokens=5
             )
+            predicted_word = predicted_word
 
             all_patching_results[pos].append([color_list[obj], pred_before, predicted_word])
 
@@ -145,12 +147,12 @@ def get_intervention_results(model, processor, num_layers, num_heads, top_k_head
             if get_equiv_color(pred_before.lower()) == color_list[obj]:
                 before_correct += 1
             else:
-                print(f"pos={pos}, obj={obj}, target={color_list[obj]}, before={pred_before}, after={predicted_word}")
+                print(f"pos={pos}, obj={obj}, target={color_list[obj]}, before={pred_before}")
 
             if get_equiv_color(predicted_word.lower()) == color_list[obj]:
                 after_correct += 1
             else:
-                print(f"pos={pos}, obj={obj}, target={color_list[obj]}, before={pred_before}, after={predicted_word}")
+                print(f"pos={pos}, obj={obj}, target={color_list[obj]}, after={predicted_word}")
 
     print(f"Before: {before_correct}/{all_count}. After: {after_correct}/{all_count}")
 

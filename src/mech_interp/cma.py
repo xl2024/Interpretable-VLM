@@ -496,7 +496,7 @@ def cma_head_patching_by_generator(
     image_c1: Any,
     d_t_head_cache: Dict[Tuple[int, int], torch.Tensor],
     top_k_heads: List[Tuple[int, int]],
-    token_pos: List[int] = [-1],
+    token_pos: List[int] = None,
     stage: int = 2,
     alpha: float = 1.0,
     d_o_head_cache: Dict[Tuple[int, int], torch.Tensor] = None,
@@ -505,6 +505,10 @@ def cma_head_patching_by_generator(
     """
     Executes Causal Mediation Analysis (Activation Patching) across top k ID selection heads.
     """
+    if token_pos is None:
+        last_token_pos = get_token_position(processor, prompt_c1, image_c1, prompt_c1.split()[-1], False)
+        token_pos = [last_token_pos, last_token_pos]
+
     layer_template = get_layer_path_template(model)        
     inputs_c1 = processor(text=prompt_c1, images=image_c1, return_tensors="pt").to(model.device)
 

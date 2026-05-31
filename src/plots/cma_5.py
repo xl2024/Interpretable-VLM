@@ -8,20 +8,11 @@ import random
 from typing import Tuple, Any
 
 from src.model.loader import load_vlm
-from src.utils.tools import load_config, _resolve_text_model_dims, get_text_prompt, get_num_hidden_layers, get_model_id, to_kv_heads
+from src.utils.tools import load_config, _resolve_text_model_dims, get_text_prompt, get_num_hidden_layers, predict
 from src.plots.cma_1d import run_mediation_analysis
 from src.mech_interp.cma import cma_head_patching_by_logits, get_head_embeddings, get_top_k_heads
 from src.data.synthetic_generator import generate_custom_image
 
-# test_img = generate_custom_image(
-#     image_size=(336, 336),
-#     cols=3,
-#     rows=3,
-#     shapes=['circle', 'star', 'plane', 'square', 'umbrella', 'triangle', 'sun', 'heart', 'cross'],
-#     colors=['red', 'gold', 'grey', 'blue', 'hotpink', 'lime', 'black', 'purple', 'darkorange'],
-#     coords=[(0,0), (0,1), (0,2), (1,0), (1,1), (1,2), (2,0), (2,1), (2,2)],
-#     save_path="src/data/test_9_shapes.png"
-# )
 
 def get_coord_from_index(index):
     return (index // 3, index % 3)
@@ -94,9 +85,13 @@ def get_rel_ref(colors, shapes, coords, pos):
     
     return rel, f"{colors[index]} {shapes[index]}"
 
-def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, ids_in_desc, color_list, shape_list):
+def get_intervention_results(model, processor, num_layers, num_heads, top_k_heads, ids_in_desc, color_list, shape_list):
     all_patching_results = {}
     
+    before_correct = 0
+    after_correct = 0
+    all_count = 0
+
     for pos in range(9):
         all_patching_results[pos] = []
 
@@ -120,6 +115,9 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, i
             d_t = ids_in_desc[pos]
             d_o = torch.zeros_like(d_t)
 
+            prediction = predict(model, processor, image, text_prompt, new_only=True)
+            pred_before = prediction.split()[0]
+
             predicted_word = cma_head_patching_by_logits(
                 model=model,
                 processor=processor,
@@ -133,13 +131,18 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, i
                 d_o_head_cache=d_o
             )
 
-            print(f"pos={pos}, i={i}, target={color_list[shuffle[pos]]}, before={color_list[i][pos]}, after={predicted_word}")
-            all_patching_results[key].append([color_list[i][1-pos], predicted_word.lower()])
-        
+            print(f"pos={pos}, i={i}, target={color_list[obj]}, before={pred_before}, after={predicted_word}")
+            all_patching_results[pos].append([color_list[obj], pred_before.lower(), predicted_word.lower()])
 
-        print_results(all_patching_results[key], key)
+            all_count += 1
+            if pred_before.lower() == color_list[obj]:
+                before_correct += 1
+            if predicted_word.lower() == color_list[obj]:
+                after_correct += 1
 
-    return all_patching_results["left"], all_patching_results["right"]
+    print(f"Before: {before_correct}/{all_count}. After: {after_correct}/{all_count}")
+
+    return all_patching_results
 
 
 def main():
@@ -152,76 +155,57 @@ def main():
         #  "llava-hf/llava-1.5-13b-hf"
     ]
 
-    image_list, color_list, shape_list = generate_dataset()
-    print(f"Generated {len(image_list)} images.")
-    image_dataset = {"est": [], "eval": []}
-    color_dataset = {"est": [], "eval": []}
-    shape_dataset = {"est": [], "eval": []}
-    # random.seed(42)
-    for i in range(len(image_list)):
-        if random.random() < 0.5:
-            image_dataset["est"].append(image_list[i])
-            color_dataset["est"].append(color_list[i])
-            shape_dataset["est"].append(shape_list[i])
-        else:
-            image_dataset["eval"].append(image_list[i])
-            color_dataset["eval"].append(color_list[i])
-            shape_dataset["eval"].append(shape_list[i])
-    print(f"Split: {len(image_dataset['est'])} in estimation set, {len(image_dataset['eval'])} in evaluation set.")
+    shape_list=['circle', 'star', 'plane', 'square', 'umbrella', 'triangle', 'sun', 'heart', 'cross']
+    color_list=['red', 'gold', 'grey', 'blue', 'hotpink', 'lime', 'black', 'purple', 'darkorange']
 
     patching_results = {}
     for model_id in model_id_list:
-        model_name = model_id.replace('/', '_')
-        filename = f"src/data/cma/color/{model_name}.json"
-        file_path = Path(filename)
-        if file_path.exists():
-            print(f"Found {filename}! Loading results for keys intervention...")
-            with open(filename, 'r') as f:
-                patching_results[model_id] = json.load(f)
-            continue
+        # model_name = model_id.replace('/', '_')
+        # filename = f"src/data/cma/color/{model_name}.json"
+        # file_path = Path(filename)
+        # if file_path.exists():
+        #     print(f"Found {filename}! Loading results for keys intervention...")
+        #     with open(filename, 'r') as f:
+        #         patching_results[model_id] = json.load(f)
+        #     continue
 
         config = load_config()
         tier = config['pipeline']['tier']
         model, processor = load_vlm(model_id, tier)    
         num_layers = get_num_hidden_layers(model)
         _, num_heads = _resolve_text_model_dims(model)
-        _, num_kv_heads = _resolve_text_model_dims(model, kv_heads=True)
         mediation_scores_list = run_mediation_analysis(model_id)
-        mediation_scores = mediation_scores_list[2]
-        top_k_heads = get_top_k_heads(mediation_scores, 20)
-        top_k_kv_heads = to_kv_heads(top_k_heads, num_heads, num_kv_heads)
-        # print("top_k_kv_heads:", top_k_kv_heads)
+        mediation_scores = mediation_scores_list[1]
+        top_k_heads = get_top_k_heads(mediation_scores, 100)
 
-        print(f"Calculating binding embeddings...")
-        left_binding_embs, right_binding_embs = cma_position_keys(
+        print(f"Calculating position IDs in scene description task...")
+        ids_in_desc = cma_position_IDs_in_desc(
             model=model, 
             processor=processor, 
-            num_heads=num_kv_heads, 
-            top_k_heads=top_k_kv_heads,
-            image_list=image_dataset["est"],
-            shape_list=shape_dataset["est"]
+            num_heads=num_heads, 
+            top_k_heads=top_k_heads,
+            color_list=color_list,
+            shape_list=shape_list
         )
 
-        print(f"Patching embeddings...")
-        left_patching_results, right_patching_results = get_patching_results(
+        print(f"Intervening with position IDs...")
+        all_patching_results = get_intervention_results(
             model=model, 
             processor=processor, 
             num_layers=num_layers, 
-            num_heads=num_kv_heads, 
-            top_k_heads=top_k_kv_heads, 
-            left_binding_embs=left_binding_embs, 
-            right_binding_embs=right_binding_embs,
-            image_list=image_dataset["eval"],
-            shape_list=shape_dataset["eval"],
-            color_list=color_dataset["eval"]
+            num_heads=num_heads, 
+            top_k_heads=top_k_heads, 
+            ids_in_desc=ids_in_desc, 
+            color_list=color_list,
+            shape_list=shape_list
         )
         
-        patching_results[model_id] = {"left": left_patching_results, "right": right_patching_results}
+        patching_results[model_id] = all_patching_results
         
-        with open(filename, 'w') as f:
-            # indent=4 formats it nicely to read it in a text editor
-            json.dump(patching_results[model_id], f, indent=4)
-        print(f"Keys intervention results successfully saved in {filename}.")
+        # with open(filename, 'w') as f:
+        #     # indent=4 formats it nicely to read it in a text editor
+        #     json.dump(patching_results[model_id], f, indent=4)
+        # print(f"Keys intervention results successfully saved in {filename}.")
 
         del model
         del processor

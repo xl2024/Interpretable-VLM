@@ -88,16 +88,20 @@ def get_rel_ref(colors, shapes, coords, pos):
     
     return rel_ref
 
+def is_equiv_color(color, target):
+    if color == target:
+        return True
+    
+    equiv_colors = [
+        ["orange", "yellow"]
+    ]
+    for color_set in equiv_colors:
+        if color in color_set and target in color_set:
+            return True
+        
+    return False
+    
 def get_intervention_results(model, processor, num_layers, num_heads, top_k_heads, ids_in_desc, color_list, shape_list):
-    def is_equiv_color(color, target):
-        equiv_colors = [
-            ["orange", "yellow"]
-        ]
-        for color_set in equiv_colors:
-            if color in color_set and target in color_set:
-                return True
-        return False
-
     all_patching_results = {}
     
     before_correct = {"above": 0, "below": 0, "left": 0, "right": 0}

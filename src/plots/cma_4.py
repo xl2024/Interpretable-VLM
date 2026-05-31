@@ -189,21 +189,7 @@ def main():
 
     image_list, color_list, shape_list = generate_dataset()
     print(f"Generated {len(image_list)} images.")
-    image_dataset = {"est": [], "eval": []}
-    color_dataset = {"est": [], "eval": []}
-    shape_dataset = {"est": [], "eval": []}
-    # random.seed(42)
-    for i in range(len(image_list)):
-        if random.random() < 0.5:
-            image_dataset["est"].append(image_list[i])
-            color_dataset["est"].append(color_list[i])
-            shape_dataset["est"].append(shape_list[i])
-        else:
-            image_dataset["eval"].append(image_list[i])
-            color_dataset["eval"].append(color_list[i])
-            shape_dataset["eval"].append(shape_list[i])
-    print(f"Split: {len(image_dataset['est'])} in estimation set, {len(image_dataset['eval'])} in evaluation set.")
-
+    
     patching_results = {}
     for model_id in model_id_list:
         model_name = model_id.replace('/', '_')
@@ -215,44 +201,61 @@ def main():
                 patching_results[model_id] = json.load(f)
             continue
 
-        config = load_config()
-        tier = config['pipeline']['tier']
-        model, processor = load_vlm(model_id, tier)    
-        num_layers = get_num_hidden_layers(model)
-        _, num_heads = _resolve_text_model_dims(model)
-        _, num_kv_heads = _resolve_text_model_dims(model, kv_heads=True)
-        mediation_scores_list = run_mediation_analysis(model_id)
-        mediation_scores = mediation_scores_list[2]
-        top_k_heads = get_top_k_heads(mediation_scores, 20)
-        top_k_kv_heads = to_kv_heads(top_k_heads, num_heads, num_kv_heads)
-        # print("top_k_kv_heads:", top_k_kv_heads)
+        patching_results[model_id] = {}
+        for split in range(3):
+            image_dataset = {"est": [], "eval": []}
+            color_dataset = {"est": [], "eval": []}
+            shape_dataset = {"est": [], "eval": []}
+            # random.seed(42)
+            for i in range(len(image_list)):
+                if random.random() < 0.5:
+                    image_dataset["est"].append(image_list[i])
+                    color_dataset["est"].append(color_list[i])
+                    shape_dataset["est"].append(shape_list[i])
+                else:
+                    image_dataset["eval"].append(image_list[i])
+                    color_dataset["eval"].append(color_list[i])
+                    shape_dataset["eval"].append(shape_list[i])
+            print(f"Split {split}: {len(image_dataset['est'])} in estimation set, {len(image_dataset['eval'])} in evaluation set.")
 
-        print(f"Calculating binding embeddings...")
-        left_binding_embs, right_binding_embs = cma_position_keys(
-            model=model, 
-            processor=processor, 
-            num_heads=num_kv_heads, 
-            top_k_heads=top_k_kv_heads,
-            image_list=image_dataset["est"],
-            shape_list=shape_dataset["est"]
-        )
+            config = load_config()
+            tier = config['pipeline']['tier']
+            model, processor = load_vlm(model_id, tier)    
+            num_layers = get_num_hidden_layers(model)
+            _, num_heads = _resolve_text_model_dims(model)
+            _, num_kv_heads = _resolve_text_model_dims(model, kv_heads=True)
+            mediation_scores_list = run_mediation_analysis(model_id)
+            mediation_scores = mediation_scores_list[2]
+            top_k_heads = get_top_k_heads(mediation_scores, 20)
+            top_k_kv_heads = to_kv_heads(top_k_heads, num_heads, num_kv_heads)
+            # print("top_k_kv_heads:", top_k_kv_heads)
 
-        print(f"Patching embeddings...")
-        left_patching_results, right_patching_results = get_patching_results(
-            model=model, 
-            processor=processor, 
-            num_layers=num_layers, 
-            num_heads=num_kv_heads, 
-            top_k_heads=top_k_kv_heads, 
-            left_binding_embs=left_binding_embs, 
-            right_binding_embs=right_binding_embs,
-            image_list=image_dataset["eval"],
-            shape_list=shape_dataset["eval"],
-            color_list=color_dataset["eval"]
-        )
+            print(f"Calculating binding embeddings...")
+            left_binding_embs, right_binding_embs = cma_position_keys(
+                model=model, 
+                processor=processor, 
+                num_heads=num_kv_heads, 
+                top_k_heads=top_k_kv_heads,
+                image_list=image_dataset["est"],
+                shape_list=shape_dataset["est"]
+            )
+
+            print(f"Patching embeddings...")
+            left_patching_results, right_patching_results = get_patching_results(
+                model=model, 
+                processor=processor, 
+                num_layers=num_layers, 
+                num_heads=num_kv_heads, 
+                top_k_heads=top_k_kv_heads, 
+                left_binding_embs=left_binding_embs, 
+                right_binding_embs=right_binding_embs,
+                image_list=image_dataset["eval"],
+                shape_list=shape_dataset["eval"],
+                color_list=color_dataset["eval"]
+            )
         
-        patching_results[model_id] = {"left": left_patching_results, "right": right_patching_results}
-        
+            patching_results[model_id][split] = {"left": left_patching_results, "right": right_patching_results}
+            
         with open(filename, 'w') as f:
             # indent=4 formats it nicely to read it in a text editor
             json.dump(patching_results[model_id], f, indent=4)

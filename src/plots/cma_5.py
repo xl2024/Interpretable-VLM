@@ -104,9 +104,9 @@ def get_intervention_results(model, processor, num_layers, num_heads, top_k_head
                 if i != pos:
                     coords.append(get_coord_from_index(i))
 
-                colors.append(color_list[obj])
-                shapes.append(shape_list[obj])
-                coords.append(get_coord_from_index(pos))
+            colors.append(color_list[obj])
+            shapes.append(shape_list[obj])
+            coords.append(get_coord_from_index(pos))
 
             print(f"pos: {pos}, obj: {obj}, coords: {coords}")
             RELATION, REF = get_rel_ref(colors, shapes, coords, pos)

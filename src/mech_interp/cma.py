@@ -507,6 +507,9 @@ def cma_head_patching_by_generator(
     """
     if token_pos is None:
         last_token_pos = get_token_position(processor, prompt_c1, image_c1, prompt_c1.split()[-1], False)
+        print("last_token_pos with split: ",last_token_pos)
+        last_token_pos = get_token_position(processor, prompt_c1, image_c1, "", False)
+        print("last_token_pos:",last_token_pos)
         token_pos = [last_token_pos, last_token_pos]
         token_pos = [-1]
 

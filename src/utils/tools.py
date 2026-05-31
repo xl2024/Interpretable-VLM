@@ -294,14 +294,14 @@ def get_token_position(processor, text_prompt, image, word, for_comma):
     elif for_comma:
         for index in range(1, len(input_ids)):
             token_ids = input_ids[index-1:index+1]
-            token_str = processor.tokenizer.decode(token_ids).strip().lower()
+            token_str = processor.tokenizer.decode(token_ids).strip()
             if ',' in token_str and word in token_str:
                 return index
     else:
-        for partitions in range(10):    # dolphin -> 'dol','ph','in'
+        for partitions in range(5):    # dolphin -> 'dol','ph','in'
             for index in range(partitions, len(input_ids)):
                 token_id = input_ids[index-partitions:index+1]
-                if word in processor.tokenizer.decode(token_id).strip().lower():
+                if word in processor.tokenizer.decode(token_id).strip():
                     return index
         
     raise ValueError(f"Could not find '{word}' in prompt: {text_prompt}")

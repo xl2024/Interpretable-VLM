@@ -90,7 +90,8 @@ def get_rel_ref(colors, shapes, coords, pos):
 
 def get_intervention_results(model, processor, num_layers, num_heads, top_k_heads, ids_in_desc, color_list, shape_list):
     def get_equiv_color(color):
-        equiv_colors = [["gold", "yellow"], ["grey", "gray"], ["hotpink", "pink"], ["lime", "green"], ["darkorange", "orange"]]
+        equiv_colors = [
+        ]
         for c1, c2 in equiv_colors:
             color = color.replace(c2, c1)
         return color
@@ -170,13 +171,14 @@ def main():
         "Qwen/Qwen2.5-VL-3B-Instruct",
         "Qwen/Qwen2.5-VL-7B-Instruct",
         #  "Qwen/Qwen2.5-VL-32B-Instruct",
-        "llava-hf/llava-1.5-7b-hf"
-        #  "llava-hf/llava-1.5-13b-hf"
+        "llava-hf/llava-1.5-7b-hf",
+        #  "llava-hf/llava-1.5-13b-hf",
+        "llava-hf/llava-onevision-qwen2-7b-ov-hf"
     ]
 
     shape_list=['circle', 'star', 'plane', 'square', 'umbrella', 'triangle', 'sun', 'heart', 'cross']
-    color_list=['red', 'gold', 'grey', 'blue', 'hotpink', 'lime', 'black', 'purple', 'darkorange']
-
+    color_list=['red', 'yellow', 'gray', 'blue', 'pink', 'green', 'black', 'purple', 'orange']
+    
     patching_results = {}
     for model_id in model_id_list:
         # model_name = model_id.replace('/', '_')

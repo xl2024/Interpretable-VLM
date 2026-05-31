@@ -108,9 +108,8 @@ def get_intervention_results(model, processor, num_layers, num_heads, top_k_head
             shapes.append(shape_list[obj])
             coords.append(get_coord_from_index(pos))
 
-            print(f"pos: {pos}, obj: {obj}, coords: {coords}")
             RELATION, REF = get_rel_ref(colors, shapes, coords, pos)
-            prompt = f"In this image, what is the color of the object that is directly {RELATION} of {REF}. Answer with the relevant color only."
+            prompt = f"In this image, what is the color of the object that is directly {RELATION} of {REF}. Answer with the relevant color only. Answer:"    # adding "Answer:" for LLaVa 1.5 models
             image = generate_custom_image(cols=3, rows=3, shapes=shapes, colors=colors, coords=coords)
             text_prompt = get_text_prompt(model, prompt, image, processor)
             d_t_head_cache = ids_in_desc[pos]

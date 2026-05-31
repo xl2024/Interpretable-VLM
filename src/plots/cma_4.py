@@ -86,8 +86,8 @@ def get_token_pos_for_object(
 
 def generate_dataset():
     color_set = ["red", "blue", "green"]
-    # shape_set = ["circle", "square", "triangle", "cross", "star", "heart", "sun", "umbrella", "plane"]
-    shape_set = ["circle", "square", "triangle"]
+    shape_set = ["circle", "square", "triangle", "cross", "star", "heart", "sun", "umbrella", "plane"]
+    # shape_set = ["circle", "square", "triangle"]
     color_list = []
     shape_list = []
     image_list = []

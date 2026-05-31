@@ -86,6 +86,12 @@ def get_rel_ref(colors, shapes, coords, pos):
     return rel, f"{colors[index]} {shapes[index]}"
 
 def get_intervention_results(model, processor, num_layers, num_heads, top_k_heads, ids_in_desc, color_list, shape_list):
+    def get_equiv_color(color):
+        equiv_colors = [["gold", "yellow"], ["grey", "gray"], ["hotpink", "pink"], ["lime", "green"], ["darkorange", "orange"]]
+        for c1, c2 in equiv_colors:
+            color = color.replace(c2, c1)
+        return color
+
     all_patching_results = {}
     
     before_correct = 0
@@ -109,9 +115,9 @@ def get_intervention_results(model, processor, num_layers, num_heads, top_k_head
             coords.append(get_coord_from_index(pos))
 
             RELATION, REF = get_rel_ref(colors, shapes, coords, pos)
-            prompt = f"In this image, what is the color of the object that is directly {RELATION} of {REF}. Answer with the relevant color only. Answer:"    # adding "Answer:" for LLaVa 1.5 models
+            prompt = f"In this image, what is the color of the object that is directly {RELATION} of {REF}. Answer with the relevant color only."    # adding "Answer:" for LLaVa 1.5 models
             image = generate_custom_image(cols=3, rows=3, shapes=shapes, colors=colors, coords=coords)
-            text_prompt = get_text_prompt(model, prompt, image, processor)
+            text_prompt = get_text_prompt(model, prompt, image, processor, use_system_prompt=False)
             d_t_head_cache = ids_in_desc[pos]
             d_o_head_cache = {}
             for l,h in d_t_head_cache.keys():
@@ -137,9 +143,9 @@ def get_intervention_results(model, processor, num_layers, num_heads, top_k_head
             all_patching_results[pos].append([color_list[obj], pred_before.lower(), predicted_word.lower()])
 
             all_count += 1
-            if pred_before.lower() == color_list[obj]:
+            if get_equiv_color(pred_before.lower()) == color_list[obj]:
                 before_correct += 1
-            if predicted_word.lower() == color_list[obj]:
+            if get_equiv_color(predicted_word.lower()) == color_list[obj]:
                 after_correct += 1
 
     print(f"Before: {before_correct}/{all_count}. After: {after_correct}/{all_count}")

@@ -73,17 +73,20 @@ def get_rel_ref(colors, shapes, coords, pos):
     elif col == 2:
         relations.remove("left")
 
-    rel = random.choice(list(relations))
-    if rel == "above":
-        index = get_index_from_coord(coords, pos+3)
-    elif rel == "below":
-        index = get_index_from_coord(coords, pos-3)
-    elif rel == "left":
-        index = get_index_from_coord(coords, pos+1)
-    else:    # "right"
-        index = get_index_from_coord(coords, pos-1)
+    rel_ref = {}
+    for rel in relations:
+        if rel == "above":
+            index = get_index_from_coord(coords, pos+3)
+        elif rel == "below":
+            index = get_index_from_coord(coords, pos-3)
+        elif rel == "left":
+            index = get_index_from_coord(coords, pos+1)
+        else:    # "right"
+            index = get_index_from_coord(coords, pos-1)
+        
+        rel_ref[rel] = f"{colors[index]} {shapes[index]}"
     
-    return rel, f"{colors[index]} {shapes[index]}"
+    return rel_ref
 
 def get_intervention_results(model, processor, num_layers, num_heads, top_k_heads, ids_in_desc, color_list, shape_list):
     def get_equiv_color(color):
@@ -94,12 +97,12 @@ def get_intervention_results(model, processor, num_layers, num_heads, top_k_head
 
     all_patching_results = {}
     
-    before_correct = 0
-    after_correct = 0
-    all_count = 0
+    before_correct = {"above": 0, "below": 0, "left": 0, "right": 0}
+    after_correct = {"above": 0, "below": 0, "left": 0, "right": 0}
+    all_count = {"above": 0, "below": 0, "left": 0, "right": 0}
 
     for pos in range(9):
-        all_patching_results[pos] = []
+        all_patching_results[pos] = {"above": [], "below": [], "left": [], "right": []}
 
         for obj in range(9):
             colors, shapes, coords = [], [], []
@@ -114,47 +117,49 @@ def get_intervention_results(model, processor, num_layers, num_heads, top_k_head
             shapes.append(shape_list[obj])
             coords.append(get_coord_from_index(pos))
 
-            RELATION, REF = get_rel_ref(colors, shapes, coords, pos)
-            prompt = f"In this image, what is the color of the object that is directly {RELATION} of {REF}. Answer with the relevant color only. Answer:"    # adding "Answer:" for LLaVa 1.5 models
-            image = generate_custom_image(cols=3, rows=3, shapes=shapes, colors=colors, coords=coords)
-            text_prompt = get_text_prompt(model, prompt, image, processor, use_system_prompt=False)
-            d_t_head_cache = ids_in_desc[pos]
-            d_o_head_cache = {}
-            for l,h in d_t_head_cache.keys():
-                d_o_head_cache[l,h] = torch.zeros_like(d_t_head_cache[l,h])
+            rel_ref = get_rel_ref(colors, shapes, coords, pos)
+            for RELATION, REF in rel_ref.items():
+                prompt = f"In this image, what is the color of the object that is directly {RELATION} of {REF}. Answer with the relevant color only. Answer:"    # adding "Answer:" for LLaVa 1.5 models
+                image = generate_custom_image(cols=3, rows=3, shapes=shapes, colors=colors, coords=coords)
+                text_prompt = get_text_prompt(model, prompt, image, processor, use_system_prompt=False)
+                d_t_head_cache = ids_in_desc[pos]
+                d_o_head_cache = {}
+                for l,h in d_t_head_cache.keys():
+                    d_o_head_cache[l,h] = torch.zeros_like(d_t_head_cache[l,h])
 
-            prediction = predict(model, processor, image, text_prompt, new_only=True)
-            pred_before = prediction
+                prediction = predict(model, processor, image, text_prompt, new_only=True)
+                pred_before = prediction
 
-            predicted_word = cma_head_patching_by_generator(
-                model=model,
-                processor=processor,
-                num_layers=num_layers,
-                num_heads=num_heads,
-                prompt_c1=text_prompt,
-                image_c1=image,
-                d_t_head_cache=d_t_head_cache,
-                top_k_heads=top_k_heads,
-                alpha=2,
-                d_o_head_cache=d_o_head_cache,
-                max_new_tokens=5
-            )
-            predicted_word = predicted_word[1]
+                predicted_word = cma_head_patching_by_generator(
+                    model=model,
+                    processor=processor,
+                    num_layers=num_layers,
+                    num_heads=num_heads,
+                    prompt_c1=text_prompt,
+                    image_c1=image,
+                    d_t_head_cache=d_t_head_cache,
+                    top_k_heads=top_k_heads,
+                    alpha=2,
+                    d_o_head_cache=d_o_head_cache,
+                    max_new_tokens=5
+                )
+                predicted_word = predicted_word[1]
 
-            all_patching_results[pos].append([color_list[obj], pred_before, predicted_word])
+                all_patching_results[pos][RELATION].append([color_list[obj], pred_before, predicted_word])
 
-            all_count += 1
-            if get_equiv_color(pred_before.lower()) == color_list[obj]:
-                before_correct += 1
-            else:
-                print(f"pos={pos}, obj={obj}, target={color_list[obj]}, before={pred_before}")
+                all_count[RELATION] += 1
+                if get_equiv_color(pred_before.lower()) == color_list[obj]:
+                    before_correct[RELATION] += 1
+                else:
+                    print(f"pos={pos}, obj={obj}, RELATION={RELATION}, target={color_list[obj]}, before={pred_before}")
 
-            if get_equiv_color(predicted_word.lower()) == color_list[obj]:
-                after_correct += 1
-            else:
-                print(f"pos={pos}, obj={obj}, target={color_list[obj]}, after={predicted_word}")
+                if get_equiv_color(predicted_word.lower()) == color_list[obj]:
+                    after_correct[RELATION] += 1
+                else:
+                    print(f"pos={pos}, obj={obj}, RELATION={RELATION}, target={color_list[obj]}, after={predicted_word}")
 
-    print(f"Before: {before_correct}/{all_count}. After: {after_correct}/{all_count}")
+    for rel in {"above", "below", "left", "right"}:
+        print(f"{rel}: Before: {before_correct[rel]}/{all_count[rel]}. After: {after_correct[rel]}/{all_count[rel]}")
 
     return all_patching_results
 

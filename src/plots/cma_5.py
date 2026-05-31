@@ -115,7 +115,7 @@ def get_intervention_results(model, processor, num_layers, num_heads, top_k_head
             coords.append(get_coord_from_index(pos))
 
             RELATION, REF = get_rel_ref(colors, shapes, coords, pos)
-            prompt = f"In this image, what is the color of the object that is directly {RELATION} of {REF}. Answer with the relevant color only."    # adding "Answer:" for LLaVa 1.5 models
+            prompt = f"In this image, what is the color of the object that is directly {RELATION} of {REF}. Answer with the relevant color only. Answer:"    # adding "Answer:" for LLaVa 1.5 models
             image = generate_custom_image(cols=3, rows=3, shapes=shapes, colors=colors, coords=coords)
             text_prompt = get_text_prompt(model, prompt, image, processor, use_system_prompt=False)
             d_t_head_cache = ids_in_desc[pos]
@@ -139,14 +139,18 @@ def get_intervention_results(model, processor, num_layers, num_heads, top_k_head
                 d_o_head_cache=d_o_head_cache
             )
 
-            print(f"pos={pos}, obj={obj}, target={color_list[obj]}, before={pred_before}, after={predicted_word}")
-            all_patching_results[pos].append([color_list[obj], pred_before.lower(), predicted_word.lower()])
+            all_patching_results[pos].append([color_list[obj], pred_before, predicted_word])
 
             all_count += 1
             if get_equiv_color(pred_before.lower()) == color_list[obj]:
                 before_correct += 1
+            else:
+                print(f"pos={pos}, obj={obj}, target={color_list[obj]}, before={pred_before}, after={predicted_word}")
+
             if get_equiv_color(predicted_word.lower()) == color_list[obj]:
                 after_correct += 1
+            else:
+                print(f"pos={pos}, obj={obj}, target={color_list[obj]}, before={pred_before}, after={predicted_word}")
 
     print(f"Before: {before_correct}/{all_count}. After: {after_correct}/{all_count}")
 

@@ -139,7 +139,7 @@ def get_intervention_results(model, processor, num_layers, num_heads, top_k_head
                 d_o_head_cache=d_o_head_cache,
                 max_new_tokens=5
             )
-            predicted_word = predicted_word
+            predicted_word = predicted_word[1]
 
             all_patching_results[pos].append([color_list[obj], pred_before, predicted_word])
 

@@ -8,7 +8,7 @@ import random
 from typing import Tuple, Any
 
 from src.model.loader import load_vlm
-from src.utils.tools import load_config, _resolve_text_model_dims, get_text_prompt, get_num_hidden_layers, predict, get_coord_from_index
+from src.utils.tools import load_config, _resolve_text_model_dims, get_text_prompt, get_num_hidden_layers, predict, get_coord_from_index, is_equiv
 from src.plots.cma_1d import run_mediation_analysis
 from src.mech_interp.cma import cma_head_patching_by_generator, get_head_embeddings, get_top_k_heads
 from src.data.synthetic_generator import generate_custom_image
@@ -86,17 +86,10 @@ def get_rel_ref(colors, shapes, coords, pos):
     return rel_ref
 
 def is_equiv_color(color, target):
-    if color == target:
-        return True
-    
     equiv_colors = [
         ["orange", "yellow"]
     ]
-    for color_set in equiv_colors:
-        if color in color_set and target in color_set:
-            return True
-        
-    return False
+    return is_equiv(color, target, equiv_colors)
     
 def get_intervention_results(model, processor, num_layers, num_heads, top_k_heads, ids_in_desc, color_list, shape_list):
     all_patching_results = {}

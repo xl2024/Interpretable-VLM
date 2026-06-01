@@ -9,7 +9,7 @@ from src.math_core.rsa import compute_rsa_scores
 from src.mech_interp.tracer import rsa_tracer
 from src.model.loader import load_vlm
 from src.data.synthetic_generator import generate_custom_image
-from src.utils.tools import predict, get_num_hidden_layers, load_config, get_coord_from_index
+from src.utils.tools import predict, get_num_hidden_layers, load_config, get_coord_from_index, is_equiv
 from src.plots.rsa_1c import get_dynamic_token_indices
 
 # Reproduces Figure 6 and 30-36
@@ -81,9 +81,14 @@ def get_trial_data(model, processor, color_list, shape_list):
         trials.append({'inputs': inputs, 'trial': obj_indices})
 
         pred = predict(model, processor, img, text_prompt, max_new_tokens=10, new_only=True).split('.')[0].split()
-        print(f"pred={pred}, target_color={obj_indices[-1]['color']}, target_shape={obj_indices[-1]['shape']}")
-        if len(pred) >= 2 and pred[0].strip().lower() == obj_indices[-1]['color'] and pred[1].strip().lower() == obj_indices[-1]['shape']:
+
+        equiv_shapes = [
+            ['airplane', 'plane']
+        ]
+        if len(pred) >= 2 and pred[0].strip().lower() == obj_indices[-1]['color'] and is_equiv(pred[1].strip().lower(), obj_indices[-1]['shape'], equiv_shapes):
             corr_trials += 1
+        else:
+            print(f"pred={pred}, target_color={obj_indices[-1]['color']}, target_shape={obj_indices[-1]['shape']}")
         
     return trials, corr_trials / num_trials
 

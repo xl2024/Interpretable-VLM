@@ -374,3 +374,13 @@ def to_kv_heads(top_k_heads, num_heads, num_kv_heads):
 
 def get_coord_from_index(index):
     return (index // 3, index % 3)
+
+def is_equiv(sample, target, equiv_set_list):
+    if sample == target:
+        return True
+    
+    for equiv_set in equiv_set_list:
+        if sample in equiv_set and target in equiv_set:
+            return True
+        
+    return False

@@ -106,7 +106,7 @@ def rsa_entr_by_model(model_id, save_path):
 
     rsa_results = {}
     for i, entr in enumerate(['High', 'Low']):
-        trials = get_rsa_scores(colors_list[i], shapes_list[i])
+        trials = get_rsa_scores(model, processor, colors_list[i], shapes_list[i])
         
         print(f"\nExecuting 3D RSA across {len(trials)} trials and {num_layers} layers...")
         hidden_states_by_trial = rsa_tracer(model, config, num_layers, trials)

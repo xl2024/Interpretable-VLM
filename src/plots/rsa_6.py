@@ -80,7 +80,7 @@ def get_trial_data(model, processor, color_list, shape_list):
         inputs = processor(text=text_prompt, images=img, return_tensors="pt")
         trials.append({'inputs': inputs, 'trial': obj_indices})
 
-        pred = predict(model, processor, img, text_prompt).split('.')[0].split()
+        pred = predict(model, processor, img, text_prompt, max_new_tokens=10, new_only=True).split('.')[0].split()
         print(f"pred={pred}, target_color={obj_indices[-1]['color']}, target_shape={obj_indices[-1]['shape']}")
         if len(pred) >= 2 and pred[0].strip().lower() == obj_indices[-1]['color'] and pred[1].strip().lower() == obj_indices[-1]['shape']:
             corr_trials += 1

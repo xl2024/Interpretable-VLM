@@ -60,8 +60,9 @@ def plot_rsa_figures(
 
 def get_trial_data(model, processor, color_list, shape_list):
     trials = []
-    
-    for i in range(100):
+    num_trials = 100
+    corr_trials = 0
+    for i in range(num_trials):
         shuffle = np.random.permutation(len(color_list))
         shapes, colors = [], []
         for j in range(len(color_list)):
@@ -79,7 +80,12 @@ def get_trial_data(model, processor, color_list, shape_list):
         inputs = processor(text=text_prompt, images=img, return_tensors="pt")
         trials.append({'inputs': inputs, 'trial': obj_indices})
 
-    return trials
+        pred = predict(model, processor, img, text_prompt).split('.')[0].split()
+        print(f"pred={pred}, target_color={obj_indices[-1]['color']}, target_shape={obj_indices[-1]['shape']}")
+        if len(pred) >= 2 and pred[0].strip().lower() == obj_indices[-1]['color'] and pred[1].strip().lower() == obj_indices[-1]['shape']:
+            corr_trials += 1
+        
+    return trials, corr_trials / num_trials
 
 def rsa_entr_by_model(model_id, save_path):
     print("=== Starting Figure 6 RSA Reproduction ===")
@@ -98,26 +104,26 @@ def rsa_entr_by_model(model_id, save_path):
     ]
 
     rsa_results = {}
-    for i, entr in enumerate(['High', 'Low']):
-        trials = get_trial_data(model, processor, colors_list[i], shapes_list[i])
-        
-        print(f"\nExecuting RSA across {len(trials)} trials and {num_layers} layers...")
-        hidden_states_by_trial = rsa_tracer(model, config, num_layers, trials)
+    for j in range(3):
+        rsa_results[j] = {}
+        for i, entr in enumerate(['High', 'Low']):
+            trials, acc = get_trial_data(model, processor, colors_list[i], shapes_list[i])
+            
+            print(f"\nExecuting RSA across {len(trials)} trials and {num_layers} layers...")
+            hidden_states_by_trial = rsa_tracer(model, config, num_layers, trials)
 
-        print("Calculating RSA for Prompt Tokens...")
-        rsa_scores_prompt, rsa_scores_last_token = compute_rsa_scores(hidden_states_by_trial, trials, num_layers)
-        rsa_results[entr] = {"Prompt": rsa_scores_prompt['pos'], "Last": rsa_scores_last_token['pos']}
+            print("Calculating RSA for Prompt Tokens...")
+            rsa_scores_prompt, rsa_scores_last_token = compute_rsa_scores(hidden_states_by_trial, trials, num_layers)
+            rsa_results[j][entr] = {"Prompt": rsa_scores_prompt['pos'], "Last": rsa_scores_last_token['pos'], "Acc": acc}
 
-    plot_rsa_figures(
-        rsa_results=rsa_results,
-        num_layers=num_layers,
-        save_path=save_path
-    )
+    plot_rsa_figures(rsa_results=rsa_results[0], num_layers=num_layers, save_path=save_path)
 
     del model
     del processor
     gc.collect()
     torch.cuda.empty_cache()
+
+    return rsa_results
 
 def main():
     model_id_list = [
@@ -129,11 +135,13 @@ def main():
         # ("llava-hf/llava-1.5-13b-hf", "35"),
         # ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "36")    # scale up
     ]
+    all_rsa_results = {}
     for model_id, fig_num in model_id_list:
         model_name = model_id.replace('/', '_')
         save_path = f"outputs/rsa/entr/rsa_fig_{fig_num}_{model_name}"
-        rsa_entr_by_model(model_id, save_path)
+        all_rsa_results[model_name] = rsa_entr_by_model(model_id, save_path)
 
+    print(all_rsa_results)
 
 if __name__ == "__main__":
     main()

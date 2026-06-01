@@ -99,10 +99,11 @@ def get_dynamic_token_indices(model: Any, processor: Any, colors: List[str], sha
         prefix = f"{prefix} a {colors[shuffle[i]]} {shapes[shuffle[i]]},"
     if last_color:
         prefix = f"{prefix} and a {colors[shuffle[-1]]}"
+        text_prompt = get_text_prompt(model, prefix, image, processor, format="object_first")
     else:
         prefix = f"{prefix} and a"
+        text_prompt = get_text_prompt(model, prefix, image, processor, format="color_first")
 
-    text_prompt = get_text_prompt(model, prefix, image, processor, "object_first")
     inputs = processor(text=text_prompt, images=image, return_tensors="pt")
     input_ids = inputs["input_ids"][0].tolist()
 

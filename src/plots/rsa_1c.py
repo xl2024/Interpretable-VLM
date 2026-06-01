@@ -111,7 +111,7 @@ def get_dynamic_token_indices(model: Any, processor: Any, colors: List[str], sha
         if ',' in token_str and shapes[shuffle[obj_idx]] in token_str:
             indices.append({'coords': coords[shuffle[obj_idx]], 'color': colors[shuffle[obj_idx]], 'shape': shapes[shuffle[obj_idx]], 'index': token_index})
             obj_idx += 1
-            print("Token index:", token_index, token_str)
+            # print("Token index:", token_index, token_str)
 
     indices.append({'coords': coords[shuffle[-1]], 'color': colors[shuffle[-1]], 'shape': shapes[shuffle[-1]], 'index': len(input_ids)-1})
     return indices, text_prompt

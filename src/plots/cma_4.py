@@ -201,6 +201,18 @@ def main():
                 patching_results[model_id] = json.load(f)
             continue
 
+        config = load_config()
+        tier = config['pipeline']['tier']
+        model, processor = load_vlm(model_id, tier)    
+        num_layers = get_num_hidden_layers(model)
+        _, num_heads = _resolve_text_model_dims(model)
+        _, num_kv_heads = _resolve_text_model_dims(model, kv_heads=True)
+        mediation_scores_list = run_mediation_analysis(model_id)
+        mediation_scores = mediation_scores_list[2]
+        top_k_heads = get_top_k_heads(mediation_scores, 20)
+        top_k_kv_heads = to_kv_heads(top_k_heads, num_heads, num_kv_heads)
+        # print("top_k_kv_heads:", top_k_kv_heads)
+
         patching_results[model_id] = {}
         for split in range(3):
             image_dataset = {"est": [], "eval": []}
@@ -217,18 +229,6 @@ def main():
                     color_dataset["eval"].append(color_list[i])
                     shape_dataset["eval"].append(shape_list[i])
             print(f"Split {split}: {len(image_dataset['est'])} in estimation set, {len(image_dataset['eval'])} in evaluation set.")
-
-            config = load_config()
-            tier = config['pipeline']['tier']
-            model, processor = load_vlm(model_id, tier)    
-            num_layers = get_num_hidden_layers(model)
-            _, num_heads = _resolve_text_model_dims(model)
-            _, num_kv_heads = _resolve_text_model_dims(model, kv_heads=True)
-            mediation_scores_list = run_mediation_analysis(model_id)
-            mediation_scores = mediation_scores_list[2]
-            top_k_heads = get_top_k_heads(mediation_scores, 20)
-            top_k_kv_heads = to_kv_heads(top_k_heads, num_heads, num_kv_heads)
-            # print("top_k_kv_heads:", top_k_kv_heads)
 
             print(f"Calculating binding embeddings...")
             left_binding_embs, right_binding_embs = cma_position_keys(

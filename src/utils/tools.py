@@ -371,3 +371,6 @@ def to_kv_heads(top_k_heads, num_heads, num_kv_heads):
         kv_heads.append((l, h // num_groups))
         # print(f"l,h={l},{h}, kvl,h={l},{h // num_groups}")
     return list(set(kv_heads))
+
+def get_coord_from_index(index):
+    return (index // 3, index % 3)

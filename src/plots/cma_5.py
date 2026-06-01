@@ -8,14 +8,11 @@ import random
 from typing import Tuple, Any
 
 from src.model.loader import load_vlm
-from src.utils.tools import load_config, _resolve_text_model_dims, get_text_prompt, get_num_hidden_layers, predict
+from src.utils.tools import load_config, _resolve_text_model_dims, get_text_prompt, get_num_hidden_layers, predict, get_coord_from_index
 from src.plots.cma_1d import run_mediation_analysis
 from src.mech_interp.cma import cma_head_patching_by_generator, get_head_embeddings, get_top_k_heads
 from src.data.synthetic_generator import generate_custom_image
 
-
-def get_coord_from_index(index):
-    return (index // 3, index % 3)
 
 def cma_position_IDs_in_desc(model, processor, num_heads, top_k_heads, color_list, shape_list):
     ids_in_desc = {}

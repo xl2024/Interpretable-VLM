@@ -134,7 +134,7 @@ def main():
         # ("Qwen/Qwen2.5-VL-3B-Instruct", "31"),
         # ("Qwen/Qwen2.5-VL-7B-Instruct", "32"),
         # ("Qwen/Qwen2.5-VL-32B-Instruct", "33"),
-        ("llava-hf/llava-1.5-7b-hf", "34"),
+        # ("llava-hf/llava-1.5-7b-hf", "34"),
         # ("llava-hf/llava-1.5-13b-hf", "35"),
         ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "36")    # scale up
     ]

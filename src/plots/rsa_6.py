@@ -58,7 +58,7 @@ def plot_rsa_figures(
         # Display the graph
         plt.show()
 
-def get_rsa_scores(model, processor, color_list, shape_list):
+def get_trial_data(model, processor, color_list, shape_list):
     trials = []
     
     for i in range(100):
@@ -70,23 +70,14 @@ def get_rsa_scores(model, processor, color_list, shape_list):
 
         coords = [get_coord_from_index(j) for j in range(len(color_list))]
 
-        img = generate_custom_image(
-            cols=3, 
-            rows=3, 
-            shapes=shapes,
-            colors=colors,
-            coords=coords
-        )
+        img = generate_custom_image(cols=3, rows=3, shapes=shapes, colors=colors, coords=coords)
         
         obj_indices, text_prompt = get_dynamic_token_indices(
-            model, processor, colors=colors, shapes=shapes, coords=coords, image=img
+            model, processor, colors=colors, shapes=shapes, coords=coords, image=img, last_color=False
         )
 
         inputs = processor(text=text_prompt, images=img, return_tensors="pt")
-        trials.append({
-            'inputs': inputs,
-            'trial': obj_indices
-        })
+        trials.append({'inputs': inputs, 'trial': obj_indices})
 
     return trials
 
@@ -108,7 +99,7 @@ def rsa_entr_by_model(model_id, save_path):
 
     rsa_results = {}
     for i, entr in enumerate(['High', 'Low']):
-        trials = get_rsa_scores(model, processor, colors_list[i], shapes_list[i])
+        trials = get_trial_data(model, processor, colors_list[i], shapes_list[i])
         
         print(f"\nExecuting RSA across {len(trials)} trials and {num_layers} layers...")
         hidden_states_by_trial = rsa_tracer(model, config, num_layers, trials)
@@ -130,13 +121,13 @@ def rsa_entr_by_model(model_id, save_path):
 
 def main():
     model_id_list = [
-        # ("Qwen/Qwen2-VL-7B-Instruct", "6_30"),
+        ("Qwen/Qwen2-VL-7B-Instruct", "6_30")
         # ("Qwen/Qwen2.5-VL-3B-Instruct", "31"),
         # ("Qwen/Qwen2.5-VL-7B-Instruct", "32"),
         # ("Qwen/Qwen2.5-VL-32B-Instruct", "33"),
         # ("llava-hf/llava-1.5-7b-hf", "34"),
         # ("llava-hf/llava-1.5-13b-hf", "35"),
-        ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "36")    # scale up
+        # ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "36")    # scale up
     ]
     for model_id, fig_num in model_id_list:
         model_name = model_id.replace('/', '_')

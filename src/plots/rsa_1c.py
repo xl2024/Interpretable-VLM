@@ -87,7 +87,7 @@ def run_rsa_pipeline(
         save_path=save_path
     )
     
-def get_dynamic_token_indices(model: Any, processor: Any, colors: List[str], shapes: List[str], coords: List[tuple[int, int]], image: Image.Image):
+def get_dynamic_token_indices(model: Any, processor: Any, colors: List[str], shapes: List[str], coords: List[tuple[int, int]], image: Image.Image, last_color: bool = True):
     """
     Dynamically calculates the exact sequence indices of the target objects
     by measuring token lengths, bypassing sub-word tokenization quirks.
@@ -97,7 +97,10 @@ def get_dynamic_token_indices(model: Any, processor: Any, colors: List[str], sha
     # last_object = {'color': 'red', 'shape': 'circle'}
     for i in range(len(coords)-1):
         prefix = f"{prefix} a {colors[shuffle[i]]} {shapes[shuffle[i]]},"
-    prefix = f"{prefix} and a {colors[shuffle[-1]]}"
+    if last_color:
+        prefix = f"{prefix} and a {colors[shuffle[-1]]}"
+    else:
+        prefix = f"{prefix} and a"
 
     text_prompt = get_text_prompt(model, prefix, image, processor, "object_first")
     inputs = processor(text=text_prompt, images=image, return_tensors="pt")

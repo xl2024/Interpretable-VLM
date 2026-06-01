@@ -2,6 +2,8 @@ from typing import Dict, List, Any
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
+import gc
+import torch
 
 from src.math_core.rsa import compute_rsa_scores
 from src.mech_interp.tracer import rsa_tracer
@@ -120,6 +122,11 @@ def rsa_entr_by_model(model_id, save_path):
         num_layers=num_layers,
         save_path=save_path
     )
+
+    del model
+    del processor
+    gc.collect()
+    torch.cuda.empty_cache()
 
 def main():
     model_id_list = [

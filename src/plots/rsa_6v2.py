@@ -61,7 +61,7 @@ def plot_rsa_figures(
 
 def get_trial_data(model, processor, color_list, shape_list):
     trials = []
-    num_trials = 20
+    num_trials = 100
     corr_trials = 0
     for i in range(num_trials):
         shuffle = np.random.permutation(len(color_list))

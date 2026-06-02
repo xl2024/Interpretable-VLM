@@ -245,10 +245,11 @@ def plot_bar_chart(config, save_path):
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     
+    save_name = f"{save_path}.png"
     plt.tight_layout()
-    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.savefig(save_name, dpi=300, bbox_inches='tight')
     plt.close(fig) 
-    print(f"Bar Chart Saved at: {save_path}")
+    print(f"Bar Chart Saved at: {save_name}")
 
 def main():
     model_id_list = [

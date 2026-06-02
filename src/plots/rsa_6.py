@@ -58,9 +58,8 @@ def plot_rsa_figures(
         # Display the graph
         plt.show()
 
-def get_trial_data(model, processor, color_list, shape_list):
+def get_trial_data(model, processor, color_list, shape_list, num_trials):
     trials = []
-    num_trials = 100
     corr_trials = 0
     for i in range(num_trials):
         shuffle = np.random.permutation(len(color_list))
@@ -98,7 +97,7 @@ def get_trial_data(model, processor, color_list, shape_list):
         
     return trials, corr_trials / num_trials
 
-def rsa_entr_by_model(model_id, save_path):
+def rsa_entr_by_model(model_id, num_trials, save_path):
     print("=== Starting Figure 6 RSA Reproduction ===")
     config = load_config()
     tier = config['pipeline']['tier']
@@ -118,7 +117,7 @@ def rsa_entr_by_model(model_id, save_path):
     for j in range(3):
         rsa_results[j] = {}
         for i, entr in enumerate(['High', 'Low']):
-            trials, acc = get_trial_data(model, processor, colors_list[i], shapes_list[i])
+            trials, acc = get_trial_data(model, processor, colors_list[i], shapes_list[i], num_trials)
             
             print(f"\nExecuting RSA across {len(trials)} trials and {num_layers} layers...")
             hidden_states_by_trial = rsa_tracer(model, config, num_layers, trials)
@@ -261,11 +260,12 @@ def main():
         # ("llava-hf/llava-1.5-13b-hf", "LLaVA 1.5\n13B", "35"),
         # ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "LLaVA One\n7B", "36")    # scale up
     ]
+    num_trials = 100
     all_rsa_results = {}
     for model_id, model_label, fig_num in model_id_list:
         model_name = model_id.replace('/', '_')
         save_path = f"outputs/rsa/entr/rsa_fig_{fig_num}_{model_name}"
-        all_rsa_results[model_label] = rsa_entr_by_model(model_id, save_path)
+        all_rsa_results[model_label] = rsa_entr_by_model(model_id, num_trials, save_path)
 
     plot_configs = process_rsa_data(all_rsa_results)
     save_paths = [f"outputs/rsa/entr/rsa_fig_7_{x}" for x in ['a','b','c']]

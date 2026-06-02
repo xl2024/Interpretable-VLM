@@ -449,6 +449,12 @@ def get_head_embeddings_and_generation(
         prompt_c2, image_c2 = prompt_list[i], image_list[i]
         inputs_c2 = processor(text=prompt_c2, images=image_c2, return_tensors="pt").to(model.device)
         
+        if token_pos_list is None:
+            last_token_pos = get_token_position(processor, prompt_c2, image_c2, "", False)
+            token_pos = [last_token_pos, last_token_pos]
+        else:
+            token_pos = token_pos_list[i]
+
         with torch.no_grad():
             with model.generate(max_new_tokens=max_new_tokens, pad_token_id=processor.tokenizer.eos_token_id) as tracer:
                 with tracer.invoke(**inputs_c2):
@@ -464,7 +470,6 @@ def get_head_embeddings_and_generation(
 
                         hs_heads = einops.rearrange(attn_out, 's (h d) -> s h d', h=num_heads)
                         for h in sorted(heads_in_this_layer):
-                            token_pos = token_pos_list[i] if token_pos_list is not None else [-1]
                             if len(token_pos) == 1:
                                 states = hs_heads[token_pos[0]:, h, :].save()
                             elif len(token_pos) == 2:

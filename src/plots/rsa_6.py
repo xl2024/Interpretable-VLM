@@ -12,7 +12,7 @@ from src.data.synthetic_generator import generate_custom_image
 from src.utils.tools import predict, get_num_hidden_layers, load_config, get_coord_from_index, is_equiv
 from src.plots.rsa_1c import get_dynamic_token_indices
 
-# Reproduces Figure 6 and 30-36
+# Reproduces Figure 6, 7 and 30-36
 
 # model_id = "Qwen/Qwen2-VL-7B-Instruct"                      # Figure 6 and 30
 # model_id = "Qwen/Qwen2.5-VL-3B-Instruct"                    # Figure 31
@@ -83,7 +83,8 @@ def get_trial_data(model, processor, color_list, shape_list):
         pred = predict(model, processor, img, text_prompt, max_new_tokens=10, new_only=True).split('.')[0].split()
 
         equiv_shapes = [
-            ['airplane', 'plane']
+            ['airplane', 'plane'],
+            ['X', 'cross']
         ]
         if len(pred) >= 2 and pred[0].strip().lower() == obj_indices[-1]['color'] and is_equiv(pred[1].strip().lower(), obj_indices[-1]['shape'], equiv_shapes):
             corr_trials += 1
@@ -130,23 +131,141 @@ def rsa_entr_by_model(model_id, save_path):
 
     return rsa_results
 
+def process_rsa_data(all_rsa_results):
+    # Helper function: Calculates Mean and Standard Error of the Mean (SEM)
+    def get_mean_err(arr):
+        mean_val = np.mean(arr)
+        # ddof: int, optional
+        # Means Delta Degrees of Freedom. The divisor used in calculations is N - ddof, where N represents the number of elements. By default ddof is zero.
+        err_val = np.std(arr, ddof=1) / np.sqrt(len(arr)) if len(arr) > 1 else 0.0
+        return mean_val, err_val
+
+    models = list(all_rsa_results.keys())
+    
+    data_acc = {'high_means': [], 'high_errs': [], 'low_means': [], 'low_errs': []}
+    data_prompt = {'high_means': [], 'high_errs': [], 'low_means': [], 'low_errs': []}
+    data_last = {'high_means': [], 'high_errs': [], 'low_means': [], 'low_errs': []}
+    
+    for model in models:
+        repeats_data = all_rsa_results[model]
+        
+        acc_h, acc_l = [], []
+        prompt_h, prompt_l = [], []
+        last_h, last_l = [], []
+        
+        for rep_id, rep_data in repeats_data.items():
+            acc_h.append(rep_data['High']['Acc'])
+            acc_l.append(rep_data['Low']['Acc'])
+            
+            prompt_h.append(np.mean(rep_data['High']['Prompt']))
+            prompt_l.append(np.mean(rep_data['Low']['Prompt']))
+            
+            last_h.append(np.mean(rep_data['High']['Last']))
+            last_l.append(np.mean(rep_data['Low']['Last']))
+            
+        m, e = get_mean_err(acc_h)
+        data_acc['high_means'].append(m)
+        data_acc['high_errs'].append(e)
+
+        m, e = get_mean_err(acc_l)
+        data_acc['low_means'].append(m)
+        data_acc['low_errs'].append(e)
+        
+        m, e = get_mean_err(prompt_h)
+        data_prompt['high_means'].append(m)
+        data_prompt['high_errs'].append(e)
+
+        m, e = get_mean_err(prompt_l)
+        data_prompt['low_means'].append(m)
+        data_prompt['low_errs'].append(e)
+        
+        m, e = get_mean_err(last_h)
+        data_last['high_means'].append(m)
+        data_last['high_errs'].append(e)
+
+        m, e = get_mean_err(last_l)
+        data_last['low_means'].append(m)
+        data_last['low_errs'].append(e)
+
+    plot_configs = [
+        {
+            'title': 'Model Performance (3x3 Grid)',
+            'ylabel': 'Accuracy',
+            'models': models,
+            **data_acc
+        },
+        {
+            'title': 'Prompt Tokens - Position RSA (3x3)',
+            'ylabel': 'RSA Correlation (r)',
+            'models': models,
+            **data_prompt
+        },
+        {
+            'title': 'Last Token - Position RSA (3x3)',
+            'ylabel': 'RSA Correlation (r)',
+            'models': models,
+            **data_last
+        }
+    ]
+    return plot_configs
+
+def plot_bar_chart(config, save_path):
+    fig, ax = plt.subplots(figsize=(7, 5))
+    
+    models = config['models']
+    x = np.arange(len(models))
+    width = 0.35  
+    
+    color_high = '#666666'  # Dark Gray
+    color_low = '#cccccc'   # Light Gray
+    edge_color = '#333333'
+    
+    # Plot High Entropy bars
+    ax.bar(x - width/2, config['high_means'], width, yerr=config['high_errs'],
+           label='High Entropy', color=color_high, edgecolor=edge_color,
+           capsize=3, error_kw={'elinewidth': 1.5, 'ecolor': edge_color})
+           
+    # Plot Low Entropy bars
+    ax.bar(x + width/2, config['low_means'], width, yerr=config['low_errs'],
+           label='Low Entropy', color=color_low, edgecolor=edge_color,
+           capsize=3, error_kw={'elinewidth': 1.5, 'ecolor': edge_color})
+           
+    # Apply text and styling
+    ax.set_ylabel(config['ylabel'], fontsize=11)
+    ax.set_title(config['title'], fontweight='bold', fontsize=12, pad=15)
+    ax.set_xticks(x)
+    ax.set_xticklabels(models)
+    ax.legend(loc='best')
+    
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    
+    plt.tight_layout()
+    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.close(fig) 
+    print(f"Bar Chart Saved at: {save_path}")
+
 def main():
     model_id_list = [
-        ("Qwen/Qwen2-VL-7B-Instruct", "6_30")
-        # ("Qwen/Qwen2.5-VL-3B-Instruct", "31"),
-        # ("Qwen/Qwen2.5-VL-7B-Instruct", "32"),
-        # ("Qwen/Qwen2.5-VL-32B-Instruct", "33"),
-        # ("llava-hf/llava-1.5-7b-hf", "34"),
-        # ("llava-hf/llava-1.5-13b-hf", "35"),
-        # ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "36")    # scale up
+        ("Qwen/Qwen2-VL-7B-Instruct", "Qwen 2\n7B" "6_30")
+        # ("Qwen/Qwen2.5-VL-3B-Instruct", "Qwen 2.5\n3B", "31"),
+        # ("Qwen/Qwen2.5-VL-7B-Instruct", "Qwen 2.5\n7B", "32"),
+        # ("Qwen/Qwen2.5-VL-32B-Instruct", "Qwen 2.5\n32B", "33"),
+        # ("llava-hf/llava-1.5-7b-hf", "LLaVA 1.5\n7B", "34"),
+        # ("llava-hf/llava-1.5-13b-hf", "LLaVA 1.5\n13B", "35"),
+        # ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "LLaVA One\n7B", "36")    # scale up
     ]
     all_rsa_results = {}
-    for model_id, fig_num in model_id_list:
+    for model_id, model_label, fig_num in model_id_list:
         model_name = model_id.replace('/', '_')
         save_path = f"outputs/rsa/entr/rsa_fig_{fig_num}_{model_name}"
-        all_rsa_results[model_name] = rsa_entr_by_model(model_id, save_path)
+        all_rsa_results[model_label] = rsa_entr_by_model(model_id, save_path)
 
-    print(all_rsa_results)
+    plot_configs = process_rsa_data(all_rsa_results)
+    save_paths = [f"outputs/rsa/entr/rsa_fig_7_{x}" for x in ['a','b','c']]
+    for config, save_path in zip(plot_configs, save_paths):
+        plot_bar_chart(config, save_path)
+
 
 if __name__ == "__main__":
     main()

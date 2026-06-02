@@ -69,7 +69,7 @@ def cma_entr_trials(model, processor, num_layers, num_heads, color_list, shape_l
             pred_color_interv = pred_interv[0].strip().lower()
             pred_shape_interv = ' '.join(pred_interv[1:]).strip().lower()
             if len(pred_interv) >= 2 and pred_color_interv == obj_indices[-1]['color'] and is_equiv(pred_shape_interv, obj_indices[-1]['shape'], equiv_shapes):
-                corr_trials_intrev += 1
+                corr_trials_interv += 1
             else:
                 print(f"pred_interv={pred_interv}, target_color={obj_indices[-1]['color']}, target_shape={obj_indices[-1]['shape']}")
 
@@ -109,13 +109,13 @@ def cma_entr_by_model(model_id, num_trials, top_k):
         ['circle', 'circle', 'square', 'square', 'triangle', 'triangle', 'circle', 'triangle', 'square']
     ]
 
-    print("Conducting high entropy trails...")
+    print("Conducting high entropy trials...")
     corr_high, embeds = cma_entr_trials(
         model, processor, num_layers, num_heads, colors_list[0], shapes_list[0], num_trials, 
         get_embeds=True, interv=False, top_k_heads=top_k_heads
     )    # high entr
 
-    print("Conducting low entropy trails and interventions...")
+    print("Conducting low entropy trials and interventions...")
     corr_low, corr_low_interv = cma_entr_trials(
         model, processor, num_layers, num_heads, colors_list[1], shapes_list[1], num_trials, 
         get_embeds=False, interv=True, top_k_heads=top_k_heads, embeds=embeds

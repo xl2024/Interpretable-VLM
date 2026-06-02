@@ -85,10 +85,13 @@ def get_trial_data(model, processor, color_list, shape_list):
         equiv_shapes = [
             ['airplane', 'plane'],
             ['x', 'cross'],
-            ['rectangle', 'square']
+            ['rectangle', 'square'],
+            ['light bulb', 'sun']
             # ['dot', 'sun'] happens but shouldn't be equiv
         ]
-        if len(pred) >= 2 and pred[0].strip().lower() == obj_indices[-1]['color'] and is_equiv(pred[1].strip().lower(), obj_indices[-1]['shape'], equiv_shapes):
+        pred_color = pred[0].strip().lower()
+        pred_shape = ' '.join(pred[1:]).strip().lower()
+        if len(pred) >= 2 and pred_color == obj_indices[-1]['color'] and is_equiv(pred_shape, obj_indices[-1]['shape'], equiv_shapes):
             corr_trials += 1
         else:
             print(f"pred={pred}, target_color={obj_indices[-1]['color']}, target_shape={obj_indices[-1]['shape']}")

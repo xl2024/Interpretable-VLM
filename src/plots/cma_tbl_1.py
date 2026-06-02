@@ -1,6 +1,7 @@
 import numpy as np
 import gc
 import torch
+import pandas as pd
 
 from src.model.loader import load_vlm
 from src.data.synthetic_generator import generate_custom_image
@@ -128,6 +129,42 @@ def cma_entr_by_model(model_id, num_trials, top_k):
 
     return corr_high/num_trials, corr_low/num_trials, corr_low_interv/num_trials
 
+def cma_save_table(accs, save_path):
+    processed_data = []
+    for model_id, scores in accs.items():
+        high_acc, low_no_int, low_with_int = scores
+        improvement = low_with_int - low_no_int
+        processed_data.append([model_id, high_acc, low_no_int, low_with_int, improvement])
+
+    columns = pd.MultiIndex.from_tuples([
+        ("Model", ""),
+        ("High Entropy", ""),
+        ("Low Entropy", "No Intervention"),
+        ("Low Entropy", "With Intervention"),
+        ("Improvement", "")
+    ])
+
+    df = pd.DataFrame(processed_data, columns=columns)
+
+    for col in df.columns:
+        if col[0] != "Model":
+            # escape the % sign with a backslash for LaTeX compatibility (\%)
+            df[col] = df[col].apply(lambda x: f"{x:.2f}\\%")
+
+    df_csv = df.copy()
+    df_csv.columns = [
+        "Model", 
+        "High Entropy", 
+        "Low Entropy (No Intervention)", 
+        "Low Entropy (With Intervention)", 
+        "Improvement"
+    ]
+    df_csv.to_csv(f"{save_path}.csv", index=False)
+    print(f"CSV table saved to '{save_path}.csv'")
+
+    df_csv.to_markdown(f"{save_path}.md", index=False)
+    print(f"Markdown table saved to '{save_path}.md'")
+
 def main():
     model_id_list = [
         ("Qwen/Qwen2-VL-7B-Instruct", "Qwen 2-VL 7B"),
@@ -136,15 +173,14 @@ def main():
         # ("llava-hf/llava-1.5-7b-hf", "LLaVA 1.5 7B"),
         # ("llava-hf/llava-1.5-13b-hf", "LLaVA 1.5 13B")
     ]
-    num_trials = 10
-    top_k = 20
+    num_trials = 100
+    top_k = 100
     accs = {}
     for model_id, model_label in model_id_list:
         accs[model_label] = cma_entr_by_model(model_id, num_trials, top_k)
 
-    save_path = f"outputs/cma/entr/cma_tbl_1.csv"
-
-    print("accs:", accs)
+    save_path = f"outputs/cma/entr/cma_tbl_1"
+    cma_save_table(accs, save_path)
 
 
 if __name__ == "__main__":

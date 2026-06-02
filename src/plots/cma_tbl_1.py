@@ -149,7 +149,7 @@ def cma_save_table(accs, save_path):
     for col in df.columns:
         if col[0] != "Model":
             # escape the % sign with a backslash for LaTeX compatibility (\%)
-            df[col] = df[col].apply(lambda x: f"{x:.2f}\\%")
+            df[col] = df[col].apply(lambda x: f"{x*100:.2f}\\%")
 
     df_csv = df.copy()
     df_csv.columns = [
@@ -173,7 +173,7 @@ def main():
         # ("llava-hf/llava-1.5-7b-hf", "LLaVA 1.5 7B"),
         # ("llava-hf/llava-1.5-13b-hf", "LLaVA 1.5 13B")
     ]
-    num_trials = 100
+    num_trials = 10
     top_k = 100
     accs = {}
     for model_id, model_label in model_id_list:

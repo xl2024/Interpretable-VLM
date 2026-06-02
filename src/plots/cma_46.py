@@ -30,11 +30,8 @@ def cma_counting_trials(model, processor, num_layers, num_heads, color_list, sha
         pred = predict(model, processor, img, text_prompt, max_new_tokens=10, new_only=True).split('.')[0].split()
 
         equiv_shapes = [
-            ['airplane', 'plane'],
             ['x', 'cross'],
-            ['rectangle', 'square'],
-            ['light bulb', 'sun']
-            # ['dot', 'sun'] happens but shouldn't be equiv
+            ['rectangle', 'square']
         ]
         pred_color = pred[0].strip().lower()
         pred_shape = ' '.join(pred[1:]).strip().lower()
@@ -60,7 +57,7 @@ def cma_counting_by_model(model_id, num_trials):
     accs = {"Max": {}, "Bottom": {}}
     for cat in accs.keys():
         for k in k_list:
-            top_k_heads = get_top_k_heads(mediation_scores, top_k)
+            top_k_heads = get_top_k_heads(mediation_scores, k)
             
             colors_list = ['red', 'blue', 'green', 'yellow']
             shapes_list = ['triangle', 'square', 'circle', 'cross']

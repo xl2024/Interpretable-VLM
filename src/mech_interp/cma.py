@@ -677,12 +677,15 @@ def cma_head_patching_by_logits(
 
     return predicted_word
 
-def get_top_k_heads(mediation_scores: np.ndarray, k: int) -> List[Tuple[int, int]]:
+def get_top_k_heads(mediation_scores: np.ndarray, k: int, max_k: bool = True) -> List[Tuple[int, int]]:
     """
     Returns the (layer, head) coordinates for the top k highest mediation scores.
     """
+    if max_k:
     # 1. Flatten, sort ascending, reverse to descending, and grab top k
-    top_k_flat_indices = np.argsort(mediation_scores.flatten())[::-1][:k]    # [::-1]=[-1::-1]=[start:stop:step]
+        top_k_flat_indices = np.argsort(mediation_scores.flatten())[::-1][:k]    # [::-1]=[-1::-1]=[start:stop:step]
+    else:
+        top_k_flat_indices = np.argsort(mediation_scores.flatten())[:k]
     
     # 2. Convert flat 1D indices back into 2D (layer, head) coordinates
     layers, heads = np.unravel_index(top_k_flat_indices, mediation_scores.shape)

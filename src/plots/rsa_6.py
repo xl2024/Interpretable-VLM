@@ -97,7 +97,7 @@ def get_trial_data(model, processor, color_list, shape_list, num_trials):
         
     return trials, corr_trials / num_trials
 
-def rsa_entr_by_model(model_id, num_trials, save_path):
+def rsa_entr_by_model(model_id, num_trials, repeat, save_path):
     print("=== Starting Figure 6 RSA Reproduction ===")
     config = load_config()
     tier = config['pipeline']['tier']
@@ -114,7 +114,7 @@ def rsa_entr_by_model(model_id, num_trials, save_path):
     ]
 
     rsa_results = {}
-    for j in range(3):
+    for j in range(repeat):
         rsa_results[j] = {}
         for i, entr in enumerate(['High', 'Low']):
             trials, acc = get_trial_data(model, processor, colors_list[i], shapes_list[i], num_trials)
@@ -261,11 +261,12 @@ def main():
         # ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "LLaVA One\n7B", "36")    # scale up
     ]
     num_trials = 100
+    repeat = 3
     all_rsa_results = {}
     for model_id, model_label, fig_num in model_id_list:
         model_name = model_id.replace('/', '_')
         save_path = f"outputs/rsa/entr/rsa_fig_{fig_num}_{model_name}"
-        all_rsa_results[model_label] = rsa_entr_by_model(model_id, num_trials, save_path)
+        all_rsa_results[model_label] = rsa_entr_by_model(model_id, num_trials, repeat, save_path)
 
     plot_configs = process_rsa_data(all_rsa_results)
     save_paths = [f"outputs/rsa/entr/rsa_fig_7_{x}" for x in ['a','b','c']]

@@ -84,7 +84,7 @@ def get_trial_data(model, processor, color_list, shape_list):
 
         equiv_shapes = [
             ['airplane', 'plane'],
-            ['X', 'cross']
+            ['x', 'cross']
         ]
         if len(pred) >= 2 and pred[0].strip().lower() == obj_indices[-1]['color'] and is_equiv(pred[1].strip().lower(), obj_indices[-1]['shape'], equiv_shapes):
             corr_trials += 1

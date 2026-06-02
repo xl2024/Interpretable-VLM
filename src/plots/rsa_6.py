@@ -215,7 +215,7 @@ def process_rsa_data(all_rsa_results):
     return plot_configs
 
 def plot_bar_chart(config, save_path):
-    fig, ax = plt.subplots(figsize=(7, 5))
+    fig, ax = plt.subplots(figsize=(6, 4))
     
     models = config['models']
     x = np.arange(len(models))

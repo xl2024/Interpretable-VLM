@@ -260,7 +260,7 @@ def main():
         # ("llava-hf/llava-1.5-13b-hf", "LLaVA 1.5\n13B", "35"),
         # ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "LLaVA One\n7B", "36")    # scale up
     ]
-    num_trials = 100
+    num_trials = 10
     repeat = 3
     all_rsa_results = {}
     for model_id, model_label, fig_num in model_id_list:

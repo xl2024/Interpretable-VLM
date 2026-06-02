@@ -109,11 +109,13 @@ def cma_entr_by_model(model_id, num_trials, top_k):
         ['circle', 'circle', 'square', 'square', 'triangle', 'triangle', 'circle', 'triangle', 'square']
     ]
 
+    print("Conducting high entropy trails...")
     corr_high, embeds = cma_entr_trials(
         model, processor, num_layers, num_heads, colors_list[0], shapes_list[0], num_trials, 
         get_embeds=True, interv=False, top_k_heads=top_k_heads
     )    # high entr
 
+    print("Conducting low entropy trails and interventions...")
     corr_low, corr_low_interv = cma_entr_trials(
         model, processor, num_layers, num_heads, colors_list[1], shapes_list[1], num_trials, 
         get_embeds=False, interv=True, top_k_heads=top_k_heads, embeds=embeds
@@ -136,7 +138,7 @@ def main():
         # ("llava-hf/llava-1.5-13b-hf", "LLaVA 1.5\n13B", "35"),
         # ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "LLaVA One\n7B", "36")    # scale up
     ]
-    num_trials = 100
+    num_trials = 10
     top_k = 100
     accs = {}
     for model_id, model_label, fig_num in model_id_list:

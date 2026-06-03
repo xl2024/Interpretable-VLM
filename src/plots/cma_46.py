@@ -1,6 +1,7 @@
 import numpy as np
 import random
 import matplotlib.pyplot as plt
+import os
 
 from src.model.loader import load_vlm
 from src.data.synthetic_generator import generate_custom_image
@@ -11,7 +12,7 @@ from src.plots.cma_1d import run_mediation_analysis
 # Reproduces Figure 46 in Appendix C
 
 
-def get_counting_dataset(num_imgs):
+def get_counting_dataset(num_imgs, save_path):
     dataset = []
     for i in range(num_imgs):
         colors_list = ['red', 'blue', 'green', 'yellow']
@@ -23,8 +24,8 @@ def get_counting_dataset(num_imgs):
         coords = random.sample(pos_coords, n_object)
         colors = [colors_list[j[0]] for j in sampled_feat_coords]
         shapes = [shapes_list[j[1]] for j in sampled_feat_coords]
-        save_path = f"dataset/figure_46/{i}.png"
-        img = generate_custom_image(cols=3, rows=3, shapes=shapes, colors=colors, coords=coords, save_path=save_path)
+        save_name = os.path.join(save_path, f"{i}.png")
+        img = generate_custom_image(cols=3, rows=3, shapes=shapes, colors=colors, coords=coords, save_path=save_name)
         dataset.append({"image": img, "index": i, "count": n_object})
 
     return dataset
@@ -107,13 +108,14 @@ def main():
     # model_id = "Qwen/Qwen2.5-VL-32B-Instruct"
     model_name = model_id.replace('/', '_')
     # k_list = [0,10,20,50,100,150,200,250,300,400,500]
-    k_list = [0,10,100]
+    k_list = [0,10,100,200]
     num_imgs = 20
-    dataset = get_counting_dataset(num_imgs)
+    dataset_path = "dataset/figure_46"
+    dataset = get_counting_dataset(num_imgs, dataset_path)
     accs = cma_counting_by_model(model_id, k_list, dataset)
 
-    save_path = f"outputs/cma/count/cma_fig_46_{model_name}.png"
-    plot_counting_trials(accs, save_path)
+    fig_path = f"outputs/cma/count/cma_fig_46_{model_name}.png"
+    plot_counting_trials(accs, fig_path)
 
 
 if __name__ == "__main__":

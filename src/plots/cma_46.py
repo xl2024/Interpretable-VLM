@@ -87,7 +87,7 @@ def main():
     model_id = "Qwen/Qwen2.5-VL-7B-Instruct"
     # model_id = "Qwen/Qwen2.5-VL-32B-Instruct"
     model_name = model_id.replace('/', '_')
-    num_imgs = 10
+    num_imgs = 20
     dataset = get_counting_dataset(num_imgs)
     accs = cma_counting_by_model(model_id, dataset)
     print(f"accs: {accs}")

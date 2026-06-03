@@ -17,14 +17,14 @@ def get_counting_dataset(num_imgs):
         shapes_list = ['triangle', 'square', 'circle', 'cross']
         feat_coords = [get_coord_from_index(j,n_cols=4) for j in range(16)]
         pos_coords = [get_coord_from_index(j) for j in range(9)]
-        N = random.randint(3, 8)
-        sampled_feat_coords = random.sample(feat_coords, N)
-        coords = random.sample(pos_coords, N)
+        n_object = random.randint(3, 8)
+        sampled_feat_coords = random.sample(feat_coords, n_object)
+        coords = random.sample(pos_coords, n_object)
         colors = [colors_list[j[0]] for j in sampled_feat_coords]
         shapes = [shapes_list[j[1]] for j in sampled_feat_coords]
         save_path = f"dataset/figure_46/{i}.png"
         img = generate_custom_image(cols=3, rows=3, shapes=shapes, colors=colors, coords=coords, save_path=save_path)
-        dataset.append({"image": img, "index": i, "count": N})
+        dataset.append({"image": img, "index": i, "count": n_object})
 
     return dataset
 
@@ -48,7 +48,7 @@ def cma_counting_trials(model, processor, num_heads, dataset, top_k_heads):
             prompt_text=text_prompt,
             image=img,
             top_k_heads=top_k_heads,
-            max_new_tokens=100
+            max_new_tokens=200
         )
         pred = predicted_words.split('Answer: ')
         if len(pred) >= 2 and pred[-1] == str(gt):

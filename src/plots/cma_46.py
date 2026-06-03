@@ -1,9 +1,10 @@
 import numpy as np
 import random
+import matplotlib.pyplot as plt
 
 from src.model.loader import load_vlm
 from src.data.synthetic_generator import generate_custom_image
-from src.utils.tools import predict, get_num_hidden_layers, load_config, get_coord_from_index, is_equiv, _resolve_text_model_dims, get_text_prompt, get_token_position
+from src.utils.tools import predict, get_num_hidden_layers, load_config, get_coord_from_index, _resolve_text_model_dims, get_text_prompt
 from src.mech_interp.cma import cma_head_ablate_and_generate, get_top_k_heads
 from src.plots.cma_1d import run_mediation_analysis
 
@@ -83,6 +84,25 @@ def cma_counting_by_model(model_id, dataset):
 
     return accs
 
+def plot_counting_trials(accs, save_path):
+    fig, ax = plt.subplots(figsize=(6, 4))
+    ax.set_facecolor('white')
+    ax.grid(True, color='lightgray', linestyle='-', linewidth=1, alpha=0.7)
+    for spine in ax.spines.values():
+        spine.set_edgecolor('lightgray')
+
+    ax.plot(accs['Max'].keys(), accs['Max'].values(), 'o-', color='blue', label='Max Top-k')
+    ax.plot(accs['Bottom'].keys(), accs['Bottom'].values(), 'o-', color='red', label='Bottom Top-k')
+
+    ax.set_xlabel('Top k Heads', fontsize=12)
+    ax.set_ylabel('Counting Accuracy', fontsize=12)
+    ax.legend(loc='upper right', frameon=True, edgecolor='lightgray')
+    ax.set_ylim(-0.05, 1.05)
+
+    plt.tight_layout()
+    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    print(f"Graph successfully saved to {save_path}")
+
 def main():
     model_id = "Qwen/Qwen2.5-VL-7B-Instruct"
     # model_id = "Qwen/Qwen2.5-VL-32B-Instruct"
@@ -93,6 +113,7 @@ def main():
     print(f"accs: {accs}")
 
     save_path = f"outputs/cma/count/cma_fig_46_{model_name}.png"
+    plot_counting_trials(accs, save_path)
 
 
 if __name__ == "__main__":

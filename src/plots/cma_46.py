@@ -71,7 +71,7 @@ def cma_counting_by_model(model_id, dataset):
     mediation_scores = {}
     for l,h in mediation_scores_list[0]:
         mediation_scores[l,h] = max(mediation_scores_list[0][l,h], mediation_scores_list[1][l,h], mediation_scores_list[2][l,h])
-    # k_list = [10,20,50,100,150,200,250,300,400,500]
+    # k_list = [0,10,20,50,100,150,200,250,300,400,500]
     k_list = [10,500]
     accs = {"Max": {}, "Bottom": {}}
     for cat in accs.keys():

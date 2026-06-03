@@ -54,7 +54,7 @@ def cma_counting_trials(model, processor, num_heads, dataset, top_k_heads):
         if len(pred) >= 2 and pred[-1] == str(gt):
             corr_trials += 1
         else:
-            print(f"predicted_words={predicted_words}, \npred={pred}, target_count={gt}")
+            print(f"predicted_words={predicted_words}, \nindex={image_data["index"]}, pred={pred}, target_count={gt}")
         
     return corr_trials / len(dataset)
 
@@ -83,7 +83,6 @@ def cma_counting_by_model(model_id, dataset):
 
     return accs
 
-
 def main():
     model_id = "Qwen/Qwen2.5-VL-7B-Instruct"
     # model_id = "Qwen/Qwen2.5-VL-32B-Instruct"
@@ -94,7 +93,6 @@ def main():
     print(f"accs: {accs}")
 
     save_path = f"outputs/cma/count/cma_fig_46_{model_name}.png"
-
 
 
 if __name__ == "__main__":

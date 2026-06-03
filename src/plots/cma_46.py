@@ -59,7 +59,7 @@ def cma_counting_trials(model, processor, num_heads, dataset, top_k_heads):
         
     return corr_trials / len(dataset)
 
-def cma_counting_by_model(model_id, dataset):
+def cma_counting_by_model(model_id, k_list, dataset):
     print("=== Starting Figure 46 Reproduction ===")
     config = load_config()
     tier = config['pipeline']['tier']
@@ -70,8 +70,7 @@ def cma_counting_by_model(model_id, dataset):
     mediation_scores = np.zeros((num_layers, num_heads))
     for l,h in [(a, b) for a in range(num_layers) for b in range(num_heads)]:
         mediation_scores[l,h] = max(mediation_scores_list[0][l,h], mediation_scores_list[1][l,h], mediation_scores_list[2][l,h])
-    # k_list = [0,10,20,50,100,150,200,250,300,400,500]
-    k_list = [0,10,100]
+
     accs = {"Max": {}, "Bottom": {}}
     for cat in accs.keys():
         for k in k_list:
@@ -107,10 +106,11 @@ def main():
     model_id = "Qwen/Qwen2.5-VL-7B-Instruct"
     # model_id = "Qwen/Qwen2.5-VL-32B-Instruct"
     model_name = model_id.replace('/', '_')
+    # k_list = [0,10,20,50,100,150,200,250,300,400,500]
+    k_list = [0,10,100]
     num_imgs = 20
     dataset = get_counting_dataset(num_imgs)
-    accs = cma_counting_by_model(model_id, dataset)
-    print(f"accs: {accs}")
+    accs = cma_counting_by_model(model_id, k_list, dataset)
 
     save_path = f"outputs/cma/count/cma_fig_46_{model_name}.png"
     plot_counting_trials(accs, save_path)

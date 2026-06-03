@@ -50,7 +50,8 @@ def cma_counting_trials(model, processor, num_heads, dataset, top_k_heads):
             top_k_heads=top_k_heads,
             max_new_tokens=100
         )
-        pred = predicted_words.split('.')[0].split('Answer: ')
+        # pred = predicted_words.split('.')[0].split('Answer: ')
+        pred = predicted_words
 
         print(f"index: {image_data["index"]}, gt: {gt}, pred: {pred}")
         if len(pred) == 2 and pred[-1] == str(gt):

@@ -372,8 +372,8 @@ def to_kv_heads(top_k_heads, num_heads, num_kv_heads):
         # print(f"l,h={l},{h}, kvl,h={l},{h // num_groups}")
     return list(set(kv_heads))
 
-def get_coord_from_index(index):
-    return (index // 3, index % 3)
+def get_coord_from_index(index, n_cols=3):
+    return (index // n_cols, index % n_cols)
 
 def is_equiv(sample, target, equiv_set_list):
     if sample == target:

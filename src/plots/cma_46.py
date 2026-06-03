@@ -15,12 +15,11 @@ def get_counting_dataset(num_imgs):
     for i in range(num_imgs):
         colors_list = ['red', 'blue', 'green', 'yellow']
         shapes_list = ['triangle', 'square', 'circle', 'cross']
-        feat_coords = [get_coord_from_index(j) for j in range(16)]
+        feat_coords = [get_coord_from_index(j,n_cols=4) for j in range(16)]
         pos_coords = [get_coord_from_index(j) for j in range(9)]
         N = random.randint(3, 8)
         sampled_feat_coords = random.sample(feat_coords, N)
         coords = random.sample(pos_coords, N)
-        print("sampled_feat_coords:", sampled_feat_coords)
         colors = [colors_list[j[0]] for j in sampled_feat_coords]
         shapes = [shapes_list[j[1]] for j in sampled_feat_coords]
         save_path = f"dataset/figure_46/{i}.png"

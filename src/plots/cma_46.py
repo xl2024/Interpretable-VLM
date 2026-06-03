@@ -69,7 +69,7 @@ def cma_counting_by_model(model_id, dataset):
     _, num_heads = _resolve_text_model_dims(model)
     mediation_scores_list = run_mediation_analysis(model_id)
     mediation_scores = {}
-    for l,h in mediation_scores_list[0]:
+    for l,h in mediation_scores_list[0].keys():
         mediation_scores[l,h] = max(mediation_scores_list[0][l,h], mediation_scores_list[1][l,h], mediation_scores_list[2][l,h])
     # k_list = [0,10,20,50,100,150,200,250,300,400,500]
     k_list = [10,500]

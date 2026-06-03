@@ -110,7 +110,7 @@ def main():
     # k_list = [0,10,20,50,100,150,200,250,300,400,500]
     k_list = [0,10,100,200,300,400]
     num_imgs = 10
-    dataset_path = "dataset/figure_46v2"
+    dataset_path = "dataset/figure_46_v2"
     dataset = get_counting_dataset(num_imgs, dataset_path)
     accs = cma_counting_by_model(model_id, k_list, dataset)
 

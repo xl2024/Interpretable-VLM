@@ -271,5 +271,4 @@ if __name__ == "__main__":
 
 """
 This version patches on the queries and shows it doesn't work as well as patching the keys, for the tokens spanning the objects.
-The following is the log:
 """

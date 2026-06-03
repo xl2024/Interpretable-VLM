@@ -33,10 +33,10 @@ def get_counting_dataset(num_imgs, save_path):
 def cma_counting_trials(model, processor, num_heads, dataset, top_k_heads):
     corr_trials = 0
     prompt = (
-        "You are given an image containing multiple colored objects. "
-        "Your task is to carefully observe the image and identify all the unique colored objects present.\n"
-        "Enumerate all the unique colored objects you find in the image, providing a numbered list for clarity.\n"
-        "After listing the objects, provide the total count of these unique colored objects.\n"
+        "You are given an image containing multiple **colored objects**. "
+        "Your task is to carefully observe the image and identify all the unique **colored objects** present.\n"
+        "Enumerate all the unique **colored objects** you find in the image, providing a numbered list for clarity.\n"
+        "After listing the objects, provide the total count of these unique **colored objects**.\n"
         "Format the total count by writing 'Answer:' followed by the number. "
         "It is crucial to adhere to this format: 'Answer: TOTAL_COUNT'."
     )
@@ -88,8 +88,8 @@ def plot_counting_trials(accs, save_path):
     fig, ax = plt.subplots(figsize=(6, 4))
     ax.set_facecolor('white')
     ax.grid(True, color='lightgray', linestyle='-', linewidth=1, alpha=0.7)
-    for spine in ax.spines.values():
-        spine.set_edgecolor('lightgray')
+    # for spine in ax.spines.values():
+    #     spine.set_edgecolor('lightgray')
 
     ax.plot(accs['Max'].keys(), accs['Max'].values(), 'o-', color='blue', label='Max Top-k')
     ax.plot(accs['Bottom'].keys(), accs['Bottom'].values(), 'o-', color='red', label='Bottom Top-k')

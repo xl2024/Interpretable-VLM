@@ -66,10 +66,11 @@ def cma_counting_by_model(model_id, dataset):
     config = load_config()
     tier = config['pipeline']['tier']
     model, processor = load_vlm(model_id, tier)
+    num_layers = get_num_hidden_layers(model)
     _, num_heads = _resolve_text_model_dims(model)
     mediation_scores_list = run_mediation_analysis(model_id)
     mediation_scores = {}
-    for l,h in mediation_scores_list[0].keys():
+    for l,h in [(a, b) for a in range(num_layers) for b in range(num_heads)]:
         mediation_scores[l,h] = max(mediation_scores_list[0][l,h], mediation_scores_list[1][l,h], mediation_scores_list[2][l,h])
     # k_list = [0,10,20,50,100,150,200,250,300,400,500]
     k_list = [10,500]

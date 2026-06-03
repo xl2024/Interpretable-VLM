@@ -24,7 +24,7 @@ def get_counting_dataset(num_imgs):
         shapes = [shapes_list[j[1]] for j in sampled_feat_coords]
         save_path = f"dataset/figure_46/{i}.png"
         img = generate_custom_image(cols=3, rows=3, shapes=shapes, colors=colors, coords=coords, save_path=save_path)
-        dataset.append({"image": img, "index": i, "count": len(set(colors))})
+        dataset.append({"image": img, "index": i, "count": N})
 
     return dataset
 
@@ -35,8 +35,8 @@ def cma_counting_trials(model, processor, num_heads, dataset, top_k_heads):
         "Your task is to carefully observe the image and identify all the unique colored objects present.\n"
         "Enumerate all the unique colored objects you find in the image, providing a numbered list for clarity.\n"
         "After listing the objects, provide the total count of these unique colored objects.\n"
-        # "Format the total count by writing 'Answer:' followed by the number. "
-        # "It is crucial to adhere to this format: 'Answer: TOTAL_COUNT'."
+        "Format the total count by writing 'Answer:' followed by the number. "
+        "It is crucial to adhere to this format: 'Answer: TOTAL_COUNT'."
     )
     for image_data in dataset:
         img, gt = image_data["image"], image_data["count"]
@@ -50,11 +50,10 @@ def cma_counting_trials(model, processor, num_heads, dataset, top_k_heads):
             top_k_heads=top_k_heads,
             max_new_tokens=100
         )
-        # pred = predicted_words.split('.')[0].split('Answer: ')
-        pred = predicted_words
+        pred = predicted_words.split('.')[0].split('Answer: ')
 
         print(f"index: {image_data["index"]}, gt: {gt}, pred: {pred}")
-        if len(pred) == 2 and eval(pred[-1]) == gt:
+        if len(pred) == 2 and pred[-1] == str(gt):
             corr_trials += 1
         else:
             print(f"pred={pred}, target_count={gt}")

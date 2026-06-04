@@ -55,7 +55,6 @@ def collect_labels(model, processor, dataset):
             images.append(image_data["image"])
             text_prompts.append(text_prompt)
 
-  
     return images, text_prompts, rel_pos_labels, abs_pos_labels, feat_pos_labels, is_central_labels
 
 def collect_pca_results(model, processor, num_layers, images, text_prompts, is_central_labels):
@@ -63,6 +62,7 @@ def collect_pca_results(model, processor, num_layers, images, text_prompts, is_c
     pca_results = []
     pca_results_ctr = []
     for layer in range(num_layers):
+        print(f"Processing layer {layer}...")
         states = []
         for i in range(len(images)):
             inputs = processor(text=text_prompts[i], images=images[i], return_tensors="pt").to(model.device)

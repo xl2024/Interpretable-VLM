@@ -70,8 +70,7 @@ def collect_pca_results(model, processor, num_layers, images, text_prompts, is_c
                 with model.trace() as tracer:
                     with tracer.invoke(**inputs):
                         layer_module = _resolve_layer_path(model, layer_template.format(layer))
-                        states.append(layer_module.output[0][-1, :].save())
-                        print(layer_module.output[0].shape)
+                        states.append(layer_module.output[0][0, -1, :].save())
                         
                 gc_collect()
             

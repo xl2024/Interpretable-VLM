@@ -10,6 +10,7 @@ from src.mech_interp.cma import cma_head_ablate_and_generate, get_top_k_heads
 from src.plots.cma_1d import run_mediation_analysis
 
 # Reproduces Figure 46 in Appendix C
+# Improved prompt for better base accuracy
 
 
 def get_counting_dataset(num_imgs, save_path):

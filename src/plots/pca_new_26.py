@@ -64,7 +64,7 @@ def collect_pca_results(model, processor, num_layers, images, text_prompts, is_c
     pca_results = []
     pca_results_ctr = []
     for layer in range(num_layers):
-        print(f"Processing layer {layer}...")
+        print(f"Processing layer {layer+1}/{num_layers}...")
         states = []
         for i in range(len(images)):
             inputs = processor(text=text_prompts[i], images=images[i], return_tensors="pt").to(model.device)
@@ -175,7 +175,7 @@ def main():
     tier = config['pipeline']['tier']
     model, processor = load_vlm(model_id, tier)
     # num_layers = get_num_hidden_layers(model)
-    num_layers = get_num_hidden_layers(model) // 5
+    num_layers = 6
     dataset = generate_dataset()
     images, text_prompts, rel_pos_labels, abs_pos_labels, feat_pos_labels, is_central_labels = collect_labels(
         model, processor, dataset

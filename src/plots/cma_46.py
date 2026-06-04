@@ -82,7 +82,7 @@ def cma_counting_by_model(model_id, k_list, dataset):
                 top_k_heads = get_top_k_heads(mediation_scores, k)
             else:
                 top_k_heads = get_top_k_heads(mediation_scores, k, max_k=False)
-            print(f"cat({cat}) top-{k}:")
+            print(f"{cat} top-{k}:")
             for l,h in top_k_heads:
                 print(mediation_scores[l,h], end=',')
             print("\n")

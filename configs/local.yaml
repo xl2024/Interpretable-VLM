@@ -4,5 +4,5 @@
 # ==============================================================================
 
 pipeline:
-  tier: "local"              # Instructs src/utils/hardware.py to use CPU/4-bit
-  # tier: "cloud"
+  # tier: "local"              # Instructs src/utils/hardware.py to use CPU/4-bit
+  tier: "cloud"

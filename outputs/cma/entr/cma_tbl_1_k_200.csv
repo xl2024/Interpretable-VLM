@@ -1,5 +1,5 @@
 Model,High Entropy,Low Entropy (No Intervention),Low Entropy (With Intervention),Improvement
 Qwen 2-VL 7B,100.00\%,80.00\%,60.00\%,-20.00\%
-Qwen 2.5-VL 3B,100.00\%,90.00\%,60.00\%,-30.00\%
-Qwen 2.5-VL 7B,100.00\%,80.00\%,80.00\%,0.00\%
-LLaVA 1.5 7B,50.00\%,30.00\%,30.00\%,0.00\%
+Qwen 2.5-VL 3B,90.00\%,90.00\%,40.00\%,-50.00\%
+Qwen 2.5-VL 7B,100.00\%,70.00\%,90.00\%,20.00\%
+LLaVA 1.5 7B,40.00\%,40.00\%,30.00\%,-10.00\%

@@ -54,6 +54,9 @@ def collect_hidden_states_for_pca(
             print(f"Processed {i + 1}/{num_samples} samples...")
 
         for t_pos in range(6):
+            if t_pos > 0:
+                continue
+            
             colors, shapes = [], []
             text = "In this image, there is a"
             pos_labels.append(t_pos)

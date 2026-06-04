@@ -68,7 +68,7 @@ def collect_hidden_states(model, processor, num_layers, dataset):
                 gc_collect()
             
             for layer in range(num_layers):
-                states[layer] = states[layer].cpu().to(torch.float32).numpy()
+                states[layer][-1] = states[layer][-1].cpu().to(torch.float32).numpy()
                 
     return states, rel_pos_labels, abs_pos_labels, feat_pos_labels, is_central_labels
 

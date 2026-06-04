@@ -31,20 +31,15 @@ def generate_dataset():
     
     return dataset
 
-def collect_hidden_states(model, processor, num_layers, dataset):
-    layer_template = get_layer_path_template(model)
-    states = {}
-    for layer in range(num_layers):
-        states[layer] = []
+def collect_labels(model, processor, dataset):
+    images = []
+    text_prompts = []
     rel_pos_labels = []
     abs_pos_labels = []
     feat_pos_labels = []
     is_central_labels = []
-    count = 0
     for image_data in dataset:
         for last in range(4):
-            print("count:",count)
-            count += 1
             text = "In this image, there is a"
             for i in range(4):
                 if i == last:
@@ -56,41 +51,53 @@ def collect_hidden_states(model, processor, num_layers, dataset):
                     text += f" {image_data["colors"][i]} {image_data["shapes"][i]}, a"
             
             text = text[:-3] + " and a"
-            text_prompt = get_text_prompt(model, text, image_data["image"], processor) 
+            text_prompt = get_text_prompt(model, text, image_data["image"], processor)
+            images.append(image_data["image"])
+            text_prompts.append(text_prompt)
 
-            inputs = processor(text=text_prompt, images=image_data["image"], return_tensors="pt").to(model.device)
+  
+    return images, text_prompts, rel_pos_labels, abs_pos_labels, feat_pos_labels, is_central_labels
 
+def collect_pca_results(model, processor, num_layers, images, text_prompts, is_central_labels):
+    layer_template = get_layer_path_template(model)
+    pca_results = []
+    pca_results_ctr = []
+    for layer in range(num_layers):
+        states = []
+        for i in range(len(images)):
+            inputs = processor(text=text_prompts[i], images=images[i], return_tensors="pt").to(model.device)
             with torch.no_grad():
                 with model.trace() as tracer:
                     with tracer.invoke(**inputs):
-                        for layer in range(num_layers):
-                            layer_module = _resolve_layer_path(model, layer_template.format(layer))
-                            states[layer].append(layer_module.output[0][-1, :].save())
+                        layer_module = _resolve_layer_path(model, layer_template.format(layer))
+                        states.append(layer_module.output[0][-1, :].save())
                         
                 gc_collect()
             
-            for layer in range(num_layers):
-                states[layer][-1] = states[layer][-1].cpu().to(torch.float32).numpy()
-                
-    return states, rel_pos_labels, abs_pos_labels, feat_pos_labels, is_central_labels
+            states[-1] = states[-1].cpu().to(torch.float32).numpy()
+        
+        pca = PCA(n_components=2)
+        proj = pca.fit_transform(states)
+        pca_results.append(proj)
 
-def plot_pca_grid(states_dict, labels, num_layers, title, save_path, mask=None):
+        states_ctr = []
+        for i in range(states):
+            if is_central_labels[i]:
+                states_ctr.append(states[i])
+        pca_ctr = PCA(n_components=2)
+        proj_ctr = pca_ctr.fit_transform(states_ctr)
+        pca_results_ctr.append(proj_ctr)
+
+    return pca_results, pca_results_ctr
+
+def plot_pca_grid(pca_results, labels, num_layers, title, save_path):
     """
     Generates a grid of PCA subplots (5 layers per row) with a shared legend.
-    """
-    # 1. Filter data if a mask (like "is_central") is provided
-    if mask is not None:
-        mask_arr = np.array(mask)
-        filtered_labels = [label for m, label in zip(mask_arr, labels) if m]
-    else:
-        filtered_labels = labels
-        
-    # 2. Extract unique labels and assign consistent colors
-    unique_labels = sorted(list(set(filtered_labels)))
+    """ 
+    unique_labels = sorted(list(set(labels)))
     cmap = plt.get_cmap("tab10")    # color map
     color_map = {label: cmap(i) for i, label in enumerate(unique_labels)}
 
-    # 3. Setup Figure Layout (5 columns per row)
     ncols = 5
     nrows = math.ceil(num_layers / ncols)
     fig, axes = plt.subplots(nrows, ncols, figsize=(4 * ncols, 3.5 * nrows))
@@ -98,22 +105,13 @@ def plot_pca_grid(states_dict, labels, num_layers, title, save_path, mask=None):
 
     # 4. Process and Plot Each Layer
     for layer in range(num_layers):
-        ax = axes[layer]
-        
-        # Stack all captured states for this layer into a single matrix
-        layer_states = np.vstack(states_dict[layer])
-        
-        if mask is not None:
-            layer_states = layer_states[mask_arr]
-            
-        # Run PCA to reduce hidden dimension to 2
-        pca = PCA(n_components=2)
-        pca_result = pca.fit_transform(layer_states)
-        
+        ax = axes[layer]    
+        pca_result = pca_results[layer]
+
         # Scatter plot colored by label
         for label in unique_labels:
             # Find indices for this specific label
-            idx = [i for i, l in enumerate(filtered_labels) if l == label]
+            idx = [i for i, l in enumerate(labels) if l == label]
             ax.scatter(pca_result[idx, 0], pca_result[idx, 1], 
                        color=color_map[label], alpha=0.7, s=20)
             
@@ -138,38 +136,36 @@ def plot_pca_grid(states_dict, labels, num_layers, title, save_path, mask=None):
     plt.close()
     print(f"Plots Saved at: {save_path}")
 
-def generate_pca_figures(states, rel_pos, abs_pos, feat_pos, is_central, num_layers, save_path):
+def generate_pca_figures(pca_results, pca_results_ctr, rel_pos, abs_pos, feat_pos, num_layers, save_path):
     """
     Executes the 5 specific PCA analyses
     """
     print("Generating PCA plots...")
 
     # Figure 26a: All objects by Relative Position
-    plot_pca_grid(states, rel_pos, num_layers, 
+    plot_pca_grid(pca_results, rel_pos, num_layers, 
                   title="All Objects: Relative Grid Position", 
                   save_path=os.path.join(save_path, "pca_fig_26a.png"))
 
     # Figure 26b: All objects by Absolute Position
-    plot_pca_grid(states, abs_pos, num_layers, 
+    plot_pca_grid(pca_results, abs_pos, num_layers, 
                   title="All Objects: Absolute Grid Position", 
                   save_path=os.path.join(save_path, "pca_fig_26b.png"))
 
     # Figure 26c: All objects by Semantic Features
-    plot_pca_grid(states, feat_pos, num_layers, 
+    plot_pca_grid(pca_results, feat_pos, num_layers, 
                   title="All Objects: Semantic Features", 
                   save_path=os.path.join(save_path, "pca_fig_26c.png"))
 
     # Figure 26d: Central objects ONLY by Relative Position
-    plot_pca_grid(states, rel_pos, num_layers,
+    plot_pca_grid(pca_results_ctr, rel_pos, num_layers,
                   title="Central Object Only: Relative Grid Position", 
-                  save_path=os.path.join(save_path, "pca_fig_26d.png"),
-                  mask=is_central)
+                  save_path=os.path.join(save_path, "pca_fig_26d.png"))
 
     # Figure 26e: Central objects ONLY by Semantic Identity
-    plot_pca_grid(states, feat_pos, num_layers,
+    plot_pca_grid(pca_results_ctr, feat_pos, num_layers,
                   title="Central Object Only: Semantic Identity", 
-                  save_path=os.path.join(save_path, "pca_fig_26e.png"),
-                  mask=is_central)
+                  save_path=os.path.join(save_path, "pca_fig_26e.png"))
 
 def main():
     model_id = "Qwen/Qwen2-VL-7B-Instruct"
@@ -179,11 +175,12 @@ def main():
     # num_layers = get_num_hidden_layers(model)
     num_layers = get_num_hidden_layers(model) // 5
     dataset = generate_dataset()
-    states, rel_pos_labels, abs_pos_labels, feat_pos_labels, is_central_labels = collect_hidden_states(
-        model, processor, num_layers, dataset
+    images, text_prompts, rel_pos_labels, abs_pos_labels, feat_pos_labels, is_central_labels = collect_labels(
+        model, processor, dataset
     )
+    pca_results, pca_results_ctr = collect_pca_results(model, processor, num_layers, images, text_prompts, is_central_labels)
     save_path = "outputs/pca"
-    generate_pca_figures(states, rel_pos_labels, abs_pos_labels, feat_pos_labels, is_central_labels, num_layers, save_path)
+    generate_pca_figures(pca_results, pca_results_ctr, rel_pos_labels, abs_pos_labels, feat_pos_labels, num_layers, save_path)
 
 
 if __name__ == "__main__":

@@ -61,8 +61,15 @@ def cma_test_by_model(model_id):
 
     shapes, colors, coords_1_list, coords_2_list = get_cma_test_cases()
 
-    prompt_1 = "In this image there is a pink circle, a orange square, a purple heart and a"
-    prompt_2 = "In this image there is a pink circle, a blue triangle, a"
+    prompt_1 = [
+        "In this image there is a pink circle, a orange square, a purple heart and a",
+        "In this image there is a purple heart, a pink circle, a orange square and a",
+        "In this image there is a orange square, a purple heart, a pink circle and a"
+    ]
+    prompt_2 = [
+        "In this image there is a pink circle, a blue triangle, a",
+        "In this image there is a blue triangle, a pink circle, a"
+    ]
 
     cma_by_model = {}
     # [Note: alpha=3, k=0 -> 'purple', k=1,...,21 -> 'orange', k>=22 -> 'blue']
@@ -70,7 +77,7 @@ def cma_test_by_model(model_id):
     for k in range(100):
         top_k_heads = get_top_k_heads(mediation_scores, k)
         cma_by_model[k] = {}
-        for split in range(3):
+        for repeat in range(6):
             predicted_words = {}
             for i in range(len(coords_1_list)):
                 image_c1 = generate_custom_image(
@@ -89,8 +96,8 @@ def cma_test_by_model(model_id):
                     coords=coords_2_list[i],
                     save_path=f'dataset/figure_29/{i+1}_b.png'
                 )
-                text_prompt_c1 = get_text_prompt(model, prompt_1, image_c1, processor)
-                text_prompt_c2 = get_text_prompt(model, prompt_2, image_c2, processor)
+                text_prompt_c1 = get_text_prompt(model, prompt_1[repeat % 3], image_c1, processor)
+                text_prompt_c2 = get_text_prompt(model, prompt_2[repeat % 2], image_c2, processor)
 
                 head_cache = get_head_embeddings(
                     model=model, 
@@ -118,8 +125,8 @@ def cma_test_by_model(model_id):
                     predicted_words[predicted_word] += 1
 
             predicted_words = dict(sorted(predicted_words.items(), key=lambda item: item[1], reverse=True))
-            print(f"k={k}, split={split}: The model predicted: '{predicted_words}'")
-            cma_by_model[k][split] = predicted_words
+            print(f"k={k}, repeat={repeat}: The model predicted: '{predicted_words}'")
+            cma_by_model[k][repeat] = predicted_words
 
     return cma_by_model
 

@@ -57,7 +57,7 @@ def cma_counting_trials(model, processor, num_heads, dataset, top_k_heads):
         if len(pred) >= 2 and pred[-1] == str(gt):
             corr_trials += 1
         else:
-            print(f"predicted_words={predicted_words}, \nindex={image_data["index"]}, pred={pred}, target_count={gt}")
+            print(f"predicted_words={predicted_words}, \nindex={image_data['index']}, pred={pred}, target_count={gt}")
         
     return corr_trials / len(dataset)
 

@@ -84,6 +84,7 @@ def cma_counting_by_model(model_id, k_list, dataset):
             print(f"cat({cat}) top-{k}:")
             for l,h in top_k_heads:
                 print(mediation_scores[l,h], end=',')
+            print("\n")
             accs[cat][k] = cma_counting_trials(model, processor, num_heads, dataset, top_k_heads)
 
     return accs
@@ -112,9 +113,10 @@ def main():
     # model_id = "Qwen/Qwen2.5-VL-32B-Instruct"
     model_name = model_id.replace('/', '_')
     # k_list = [0,10,20,50,100,150,200,250,300,400,500]
-    k_list = [10,100,200,300]
+    k_list = [100]
     num_imgs = 100
     dataset_path = "dataset/figure_46"
+    os.makedirs(dataset_path, exist_ok=True)
     dataset = get_counting_dataset(num_imgs, dataset_path)
     accs = cma_counting_by_model(model_id, k_list, dataset)
 

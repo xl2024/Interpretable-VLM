@@ -5,69 +5,6 @@ from typing import Dict, Any, List, Tuple
 from src.utils.tools import _resolve_layer_path, _build_object_ids, _resolve_text_model_dims, get_layer_path_template, gc_collect
 
 
-def extract_hidden_states(
-    model: LanguageModel, 
-    processor: Any, 
-    config: Dict[str, Any], 
-    image: Any, 
-    text_prompt: str
-) -> Dict[int, torch.Tensor]:
-    """
-    Runs a clean forward pass to extract and save intermediate hidden states
-    for the layers specified in the configuration.
-    
-    Args:
-        model: The nnsight-wrapped Vision-Language Model.
-        processor: The Hugging Face processor for text/image tokenization.
-        config: The parsed YAML configuration dictionary.
-        image: A PIL Image or dummy noise tensor.
-        text_prompt: The prompt string (e.g., "<image>\nIn this image...")
-        
-    Returns:
-        Dict mapping layer indices to their extracted hidden state tensors (on CPU).
-    """
-    print("Preparing inputs for tracing...")
-    
-    # 1. Process inputs into exactly what the specific VLM expects
-    inputs = processor(
-        text=text_prompt, 
-        images=image, 
-        return_tensors="pt"   # lists -> PyTorch Tensors
-    )  # .to(model.device) # Move raw inputs to the active hardware device
-
-    # inputs = {k: v.to('cuda') if hasattr(v, 'to') else v for k, v in inputs.items()}
-    
-    trace_layers: List[int] = config['mechanistic_interp']['trace_layers']
-    layer_template: str = get_layer_path_template(model)
-    
-    extracted_states = {}
-    
-    # 2. Enter the nnsight Intervention Context
-    print(f"Tracing forward pass and intercepting layers: {trace_layers}...")
-    with model.trace() as tracer:
-        with tracer.invoke(**inputs):        
-            for layer_idx in trace_layers:
-                # Build the exact string path (e.g., "model.language_model.model.layers[14]")
-                layer_path = layer_template.format(layer_idx)
-                
-                # Grab the specific nnsight layer module
-                layer_module = _resolve_layer_path(model, layer_path)
-                
-                # 3. The Extraction & CPU Offload
-                # Transformer layers usually return a tuple: (hidden_states, attention_weights, etc.)
-                # We strictly want index [0]. We save it, and immediately push to CPU to prevent OOM.
-                extracted_states[layer_idx] = layer_module.output[0].save().cpu()
-            
-    print("Trace complete. Hidden states successfully offloaded to CPU.")
-    
-    # 4. nnsight unwraps the saved `.value` when the `with` block exits
-    final_states = {
-        layer_idx: proxy_tensor 
-        for layer_idx, proxy_tensor in extracted_states.items()
-    }
-    
-    return final_states
-
 def rsa_tracer(
     model: LanguageModel,
     config: Dict[str, Any],

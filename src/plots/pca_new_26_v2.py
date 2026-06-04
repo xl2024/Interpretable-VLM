@@ -66,7 +66,7 @@ def collect_hidden_states(model, processor, num_layers, dataset):
                     with tracer.invoke(**inputs):
                         for layer in range(num_layers):
                             layer_module = _resolve_layer_path(model, layer_template.format(layer))
-                            states[layer].append(layer_module.output[0][-1, :].save())
+                            states[layer].append(layer_module.output[0][0, -1, :].save())
                         
                 gc_collect()
             

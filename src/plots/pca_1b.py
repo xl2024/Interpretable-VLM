@@ -3,7 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from sklearn.decomposition import PCA
-import random
 from typing import Dict, Any, Tuple
 
 from src.model.loader import load_vlm
@@ -12,6 +11,7 @@ from src.utils.tools import _resolve_layer_path, load_config, get_permutations, 
 from src.mech_interp.tracer import gc_collect
 
 model_id = "Qwen/Qwen2-VL-7B-Instruct"
+
 
 def collect_hidden_states_for_pca(
     model: Any,
@@ -23,6 +23,7 @@ def collect_hidden_states_for_pca(
     Iterates through variations of positions and features to build a dense dataset for PCA.
     """
     # [Note: There are 6 objects with 6 positions, so overall there are 6!=720 different combinations, 
+    # with 6 different objects for last tokens per combination, the total number is 720*6=4320,
     # and no need for 7200 trials as claimed in paper.]
     permutations = get_permutations([i for i in range(6)])
     num_samples = len(permutations)
@@ -54,41 +55,42 @@ def collect_hidden_states_for_pca(
 
         colors, shapes = [], []
         text = "In this image, there is a"
-        t_pos = random.randint(0, 5)
-        pos_labels.append(t_pos)
-        for j in range(len(permutations[i])):
-            color, shape = features[permutations[i][j]]
-            colors.append(color)
-            shapes.append(shape)
-            if j == t_pos:
-                feat_labels.append(permutations[i][j])
-            else:
-                text += f" {color} {shape}, a"
-        text = text[:-3] + " and a"
-        # Generate the specific combination canvas
-        image = generate_custom_image(cols=3, rows=3, shapes=shapes, colors=colors, coords=positions)
-        
-        text_prompt = get_text_prompt(model, text, image, processor)
-        
-        if i < 10:
-            print('text_prompt ', i, text_prompt)
-
-        inputs = processor(text=text_prompt, images=image, return_tensors="pt").to(model.device)
-
-        with torch.no_grad():
-            with model.trace() as tracer:
-                with tracer.invoke(**inputs):
-                    # Resolve modules for extraction
-                    l19_module = _resolve_layer_path(model, layer_template.format(layer_19_idx))
-                    l27_module = _resolve_layer_path(model, layer_template.format(layer_27_idx))
-                    
-                    # Intercept the full output tuple, grab hidden states [0], and slice the last token [-1, :]
-                    hs_19 = l19_module.output[0][-1, :].save()
-                    hs_27 = l27_module.output[0][-1, :].save()
-            gc_collect()
+        for t_pos in range(6):
+            pos_labels.append(t_pos)
+            for j in range(len(permutations[i])):
+                color, shape = features[permutations[i][j]]
+                colors.append(color)
+                shapes.append(shape)
+                if j == t_pos:
+                    feat_labels.append(permutations[i][j])
+                else:
+                    text += f" {color} {shape}, a"
+            text = text[:-3] + " and a"
+            # Generate the specific combination canvas
+            image = generate_custom_image(cols=3, rows=3, shapes=shapes, colors=colors, coords=positions)
             
-        states_19.append(hs_19.cpu().to(torch.float32).numpy())
-        states_27.append(hs_27.cpu().to(torch.float32).numpy())
+            text_prompt = get_text_prompt(model, text, image, processor)
+            
+            if i == 0:
+                print('text_prompt ', i, text_prompt)
+
+            inputs = processor(text=text_prompt, images=image, return_tensors="pt").to(model.device)
+
+            with torch.no_grad():
+                with model.trace() as tracer:
+                    with tracer.invoke(**inputs):
+                        # Resolve modules for extraction
+                        l19_module = _resolve_layer_path(model, layer_template.format(layer_19_idx))
+                        l27_module = _resolve_layer_path(model, layer_template.format(layer_27_idx))
+                        
+                        # Intercept the full output tuple, grab hidden states [0], and slice the last token [-1, :]
+                        hs_19 = l19_module.output[0][-1, :].save()
+                        hs_27 = l27_module.output[0][-1, :].save()
+                gc_collect()
+                
+            states_19.append(hs_19.cpu().to(torch.float32).numpy())
+            states_27.append(hs_27.cpu().to(torch.float32).numpy())
+
     return np.array(states_19), np.array(states_27), np.array(pos_labels), np.array(feat_labels)
 
 def plot_pca_figure_1b(

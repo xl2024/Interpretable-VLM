@@ -226,7 +226,7 @@ if __name__ == "__main__":
     # shapes=['circle', 'square', 'circle','square'],
     # colors=['blue', 'red','red','blue'],
     # coords=[(0,0), (0,1),(1,0),(1,1)],
-    #     save_path="data/test_samples/blue_circle_red_square.png"
+    #     save_path="src/data/test_samples/blue_circle_red_square.png"
     # )
     test_img = generate_custom_image(
         image_size=(336, 336),
@@ -235,5 +235,5 @@ if __name__ == "__main__":
         shapes=['circle', 'star', 'plane', 'square', 'umbrella', 'triangle', 'sun', 'heart', 'cross'],
         colors=['red', 'gold', 'grey', 'blue', 'hotpink', 'lime', 'black', 'purple', 'darkorange'],
         coords=[(0,0), (0,1), (0,2), (1,0), (1,1), (1,2), (2,0), (2,1), (2,2)],
-        save_path="src/data/test_9_shapes.png"
+        save_path="src/data/test_samples/test_9_shapes.png"
     )

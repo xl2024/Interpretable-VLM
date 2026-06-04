@@ -40,8 +40,11 @@ def collect_hidden_states(model, processor, num_layers, dataset):
     abs_pos_labels = []
     feat_pos_labels = []
     is_central_labels = []
+    count = 0
     for image_data in dataset:
         for last in range(4):
+            print("count:",count)
+            count += 1
             text = "In this image, there is a"
             for i in range(4):
                 if i == last:

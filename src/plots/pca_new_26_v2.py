@@ -54,7 +54,7 @@ def collect_hidden_states(model, processor, num_layers, dataset):
                     feat_pos_labels.append(image_data["shapes"][i])
                     is_central_labels.append(image_data["abs_coords"][i] == (1,1))
                 else:
-                    text += f" {image_data["colors"][i]} {image_data["shapes"][i]}, a"
+                    text += f" {image_data['colors'][i]} {image_data['shapes'][i]}, a"
             
             text = text[:-3] + " and a"
             text_prompt = get_text_prompt(model, text, image_data["image"], processor) 

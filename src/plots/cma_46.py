@@ -109,8 +109,8 @@ def main():
     # model_id = "Qwen/Qwen2.5-VL-32B-Instruct"
     model_name = model_id.replace('/', '_')
     # k_list = [0,10,20,50,100,150,200,250,300,400,500]
-    k_list = [0,10,100,200,300]
-    num_imgs = 10
+    k_list = [10,100,200,300]
+    num_imgs = 100
     dataset_path = "dataset/figure_46"
     dataset = get_counting_dataset(num_imgs, dataset_path)
     accs = cma_counting_by_model(model_id, k_list, dataset)

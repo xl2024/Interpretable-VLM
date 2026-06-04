@@ -12,7 +12,7 @@ from src.utils.tools import _resolve_layer_path, load_config, get_permutations, 
 from src.mech_interp.tracer import gc_collect
 
 # Reproduces Figure 26 in the May version of the paper
-# This script requires ~60GB Memory
+# This script requires more Memory
 
 
 def generate_dataset():

@@ -71,7 +71,8 @@ def cma_counting_by_model(model_id, k_list, dataset):
     mediation_scores_list = run_mediation_analysis(model_id)
     mediation_scores = np.zeros((num_layers, num_heads))
     for l,h in [(a, b) for a in range(num_layers) for b in range(num_heads)]:
-        mediation_scores[l,h] = max(mediation_scores_list[0][l,h], mediation_scores_list[1][l,h], mediation_scores_list[2][l,h])
+        # mediation_scores[l,h] = max(mediation_scores_list[0][l,h], mediation_scores_list[1][l,h], mediation_scores_list[2][l,h])
+        mediation_scores[l,h] = mediation_scores_list[1][l,h]
 
     accs = {"Max": {}, "Bottom": {}}
     for cat in accs.keys():
@@ -86,6 +87,7 @@ def cma_counting_by_model(model_id, k_list, dataset):
                 print(mediation_scores[l,h], end=',')
             print("\n")
             accs[cat][k] = cma_counting_trials(model, processor, num_heads, dataset, top_k_heads)
+            print(f"acc={accs[cat][k]}")
 
     return accs
 

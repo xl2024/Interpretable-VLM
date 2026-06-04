@@ -56,7 +56,8 @@ def cma_counting_trials(model, processor, num_heads, dataset, top_k_heads):
         if len(pred) >= 2 and pred[-1] == str(gt):
             corr_trials += 1
         else:
-            print(f"predicted_words={predicted_words}, \nindex={image_data['index']}, pred={pred}, target_count={gt}")
+            # print(f"predicted_words={predicted_words}, \nindex={image_data['index']}, pred={pred}, target_count={gt}")
+            pass
         
     return corr_trials / len(dataset)
 
@@ -80,7 +81,9 @@ def cma_counting_by_model(model_id, k_list, dataset):
                 top_k_heads = get_top_k_heads(mediation_scores, k)
             else:
                 top_k_heads = get_top_k_heads(mediation_scores, k, max_k=False)
-            print(f"cat({cat}) top-{k}: {mediation_scores}")
+            print(f"cat({cat}) top-{k}:")
+            for l,h in top_k_heads:
+                print(f"{mediation_scores[l,h]}", end=',')
             accs[cat][k] = cma_counting_trials(model, processor, num_heads, dataset, top_k_heads)
 
     return accs

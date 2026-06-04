@@ -66,7 +66,12 @@ def collect_hidden_states(model, processor, num_layers, dataset):
                     with tracer.invoke(**inputs):
                         for layer in range(num_layers):
                             layer_module = _resolve_layer_path(model, layer_template.format(layer))
-                            states[layer].append(layer_module.output[0][0, -1, :].save())
+                            if layer_module.output[0].ndim == 2:
+                                states[layer].append(layer_module.output[0][-1, :].save())
+                            elif layer_module.output[0].ndim == 3:
+                                states[layer].append(layer_module.output[0][0, -1, :].save())
+                            else:
+                                raise AttributeError(f"layer_module.output[0].ndim={layer_module.output[0].ndim}")
                         
                 gc_collect()
             

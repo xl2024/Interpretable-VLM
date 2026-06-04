@@ -70,7 +70,12 @@ def collect_pca_results(model, processor, num_layers, images, text_prompts, is_c
                 with model.trace() as tracer:
                     with tracer.invoke(**inputs):
                         layer_module = _resolve_layer_path(model, layer_template.format(layer))
-                        states.append(layer_module.output[0][0, -1, :].save())
+                        if layer_module.output[0].ndim == 2:
+                            states.append(layer_module.output[0][-1, :].save())
+                        elif layer_module.output[0].ndim == 3:
+                            states.append(layer_module.output[0][0, -1, :].save())
+                        else:
+                            raise AttributeError(f"layer_module.output[0].ndim={layer_module.output[0].ndim}")
                         
                 gc_collect()
             

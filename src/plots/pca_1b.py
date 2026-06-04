@@ -53,9 +53,9 @@ def collect_hidden_states_for_pca(
         if (i + 1) % 50 == 0:
             print(f"Processed {i + 1}/{num_samples} samples...")
 
-        colors, shapes = [], []
-        text = "In this image, there is a"
         for t_pos in range(6):
+            colors, shapes = [], []
+            text = "In this image, there is a"
             pos_labels.append(t_pos)
             for j in range(len(permutations[i])):
                 color, shape = features[permutations[i][j]]

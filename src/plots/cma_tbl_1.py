@@ -173,7 +173,7 @@ def main():
         ("llava-hf/llava-1.5-7b-hf", "LLaVA 1.5 7B")
         # ("llava-hf/llava-1.5-13b-hf", "LLaVA 1.5 13B")
     ]
-    num_trials = 10
+    num_trials = 100
     k_list = [1,2,5,10,20,50,100,150,200]
     for top_k in k_list:
         # top_k = 10

@@ -138,7 +138,7 @@ def plot_pca_grid(pca_results, labels, num_layers, title, save_path):
     plt.close()
     print(f"Plots Saved at: {save_path}")
 
-def generate_pca_figures(pca_results, pca_results_ctr, rel_pos, abs_pos, feat_pos, num_layers, save_path):
+def generate_pca_figures(pca_results, pca_results_ctr, rel_pos, abs_pos, feat_pos, is_central_labels, num_layers, save_path):
     """
     Executes the 5 specific PCA analyses
     """
@@ -160,12 +160,14 @@ def generate_pca_figures(pca_results, pca_results_ctr, rel_pos, abs_pos, feat_po
                   save_path=os.path.join(save_path, "pca_fig_26c.png"))
 
     # Figure 26d: Central objects ONLY by Relative Position
-    plot_pca_grid(pca_results_ctr, rel_pos, num_layers,
+    filtered_rel_pos = [label for m, label in zip(is_central_labels, rel_pos) if m]
+    plot_pca_grid(pca_results_ctr, filtered_rel_pos, num_layers,
                   title="Central Object Only: Relative Grid Position", 
                   save_path=os.path.join(save_path, "pca_fig_26d.png"))
 
     # Figure 26e: Central objects ONLY by Semantic Identity
-    plot_pca_grid(pca_results_ctr, feat_pos, num_layers,
+    filtered_feat_pos = [label for m, label in zip(is_central_labels, feat_pos) if m]
+    plot_pca_grid(pca_results_ctr, filtered_feat_pos, num_layers,
                   title="Central Object Only: Semantic Identity", 
                   save_path=os.path.join(save_path, "pca_fig_26e.png"))
 
@@ -182,7 +184,7 @@ def main():
     )
     pca_results, pca_results_ctr = collect_pca_results(model, processor, num_layers, images, text_prompts, is_central_labels)
     save_path = "outputs/pca"
-    generate_pca_figures(pca_results, pca_results_ctr, rel_pos_labels, abs_pos_labels, feat_pos_labels, num_layers, save_path)
+    generate_pca_figures(pca_results, pca_results_ctr, rel_pos_labels, abs_pos_labels, feat_pos_labels, is_central_labels, num_layers, save_path)
 
 
 if __name__ == "__main__":

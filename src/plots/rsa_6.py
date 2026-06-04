@@ -256,9 +256,9 @@ def main():
         ("Qwen/Qwen2.5-VL-3B-Instruct", "Qwen 2.5\n3B", "31"),
         ("Qwen/Qwen2.5-VL-7B-Instruct", "Qwen 2.5\n7B", "32"),
         # ("Qwen/Qwen2.5-VL-32B-Instruct", "Qwen 2.5\n32B", "33"),
-        # ("llava-hf/llava-1.5-7b-hf", "LLaVA 1.5\n7B", "34"),
+        ("llava-hf/llava-1.5-7b-hf", "LLaVA 1.5\n7B", "34"),
         # ("llava-hf/llava-1.5-13b-hf", "LLaVA 1.5\n13B", "35"),
-        # ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "LLaVA One\n7B", "36")    # scale up
+        ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "LLaVA One\n7B", "36")    # scale up
     ]
     num_trials = 100
     repeat = 5

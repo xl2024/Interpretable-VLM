@@ -24,10 +24,12 @@ def generate_dataset():
     for p in permutations:
         colors = [color_list[p[i]] for i in range(4)]
         shapes = [shape_list[p[i]] for i in range(4)]
-        for glb_c in glb_coords:
-            coords = [(rel_coords[i][0]+glb_c[0], rel_coords[i][1]+glb_c[1]) for i in range(4)]
-            image = generate_custom_image(cols=3, rows=3, shapes=shapes, colors=colors, coords=coords)
-            dataset.append({"image": image, "colors": colors, "shapes": shapes, "rel_coords": rel_coords, "abs_coords": coords})
+        # for glb_c in glb_coords:
+        import random
+        glb_c = random.choice(glb_coords)
+        coords = [(rel_coords[i][0]+glb_c[0], rel_coords[i][1]+glb_c[1]) for i in range(4)]
+        image = generate_custom_image(cols=3, rows=3, shapes=shapes, colors=colors, coords=coords)
+        dataset.append({"image": image, "colors": colors, "shapes": shapes, "rel_coords": rel_coords, "abs_coords": coords})
     
     return dataset
 

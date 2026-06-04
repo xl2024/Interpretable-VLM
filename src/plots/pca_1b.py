@@ -50,15 +50,10 @@ def collect_hidden_states_for_pca(
     feat_labels = []
 
     for i in range(num_samples):
-        if i > 100:
-            continue
         if (i + 1) % 50 == 0:
             print(f"Processed {i + 1}/{num_samples} samples...")
 
         for t_pos in range(6):
-            if t_pos > 0:
-                continue
-
             colors, shapes = [], []
             text = "In this image, there is a"
             pos_labels.append(t_pos)

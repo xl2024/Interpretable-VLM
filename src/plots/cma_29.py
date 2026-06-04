@@ -69,55 +69,57 @@ def cma_test_by_model(model_id):
     # top_k = int(0.1*num_layers*num_heads)
     for k in range(100):
         top_k_heads = get_top_k_heads(mediation_scores, k)
-        predicted_words = {}
-        for i in range(len(coords_1_list)):
-            image_c1 = generate_custom_image(
-                cols=3,
-                rows=3,
-                shapes=shapes,
-                colors=colors,
-                coords=coords_1_list[i],
-                save_path=f'dataset/figure_29/{i+1}_a.png'
-            )
-            image_c2 = generate_custom_image(
-                cols=3,
-                rows=3,
-                shapes=shapes,
-                colors=colors,
-                coords=coords_2_list[i],
-                save_path=f'dataset/figure_29/{i+1}_b.png'
-            )
-            text_prompt_c1 = get_text_prompt(model, prompt_1, image_c1, processor)
-            text_prompt_c2 = get_text_prompt(model, prompt_2, image_c2, processor)
+        cma_by_model[k] = {}
+        for split in range(3):
+            predicted_words = {}
+            for i in range(len(coords_1_list)):
+                image_c1 = generate_custom_image(
+                    cols=3,
+                    rows=3,
+                    shapes=shapes,
+                    colors=colors,
+                    coords=coords_1_list[i],
+                    save_path=f'dataset/figure_29/{i+1}_a.png'
+                )
+                image_c2 = generate_custom_image(
+                    cols=3,
+                    rows=3,
+                    shapes=shapes,
+                    colors=colors,
+                    coords=coords_2_list[i],
+                    save_path=f'dataset/figure_29/{i+1}_b.png'
+                )
+                text_prompt_c1 = get_text_prompt(model, prompt_1, image_c1, processor)
+                text_prompt_c2 = get_text_prompt(model, prompt_2, image_c2, processor)
 
-            head_cache = get_head_embeddings(
-                model=model, 
-                processor=processor, 
-                num_heads=num_heads, 
-                prompt_list=[text_prompt_c1], 
-                image_list=[image_c1], 
-                top_k_heads=top_k_heads
-            )
-            
-            predicted_word = cma_head_patching_by_logits(
-                model=model,
-                processor=processor,
-                num_layers=num_layers,
-                num_heads=num_heads,
-                prompt_c1=text_prompt_c2,
-                image_c1=image_c2,
-                d_t_head_cache=head_cache,
-                top_k_heads=top_k_heads
-            )
+                head_cache = get_head_embeddings(
+                    model=model, 
+                    processor=processor, 
+                    num_heads=num_heads, 
+                    prompt_list=[text_prompt_c1], 
+                    image_list=[image_c1], 
+                    top_k_heads=top_k_heads
+                )
+                
+                predicted_word = cma_head_patching_by_logits(
+                    model=model,
+                    processor=processor,
+                    num_layers=num_layers,
+                    num_heads=num_heads,
+                    prompt_c1=text_prompt_c2,
+                    image_c1=image_c2,
+                    d_t_head_cache=head_cache,
+                    top_k_heads=top_k_heads
+                )
 
-            if predicted_word not in predicted_words:
-                predicted_words[predicted_word] = 1
-            else:
-                predicted_words[predicted_word] += 1
+                if predicted_word not in predicted_words:
+                    predicted_words[predicted_word] = 1
+                else:
+                    predicted_words[predicted_word] += 1
 
-        predicted_words = dict(sorted(predicted_words.items(), key=lambda item: item[1], reverse=True))
-        print(f"k={k}: The model predicted: '{predicted_words}'")
-        cma_by_model[k] = predicted_words
+            predicted_words = dict(sorted(predicted_words.items(), key=lambda item: item[1], reverse=True))
+            print(f"k={k}, split={split}: The model predicted: '{predicted_words}'")
+            cma_by_model[k][split] = predicted_words
 
     return cma_by_model
 
@@ -149,6 +151,7 @@ def main():
    
     np.savez(filename, **fig_29_results)
     print(f"Saved in {filename}. fig_29_results: {fig_29_results}")
+
 
 if __name__ == "__main__":
     main()

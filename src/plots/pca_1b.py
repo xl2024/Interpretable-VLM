@@ -84,9 +84,14 @@ def collect_hidden_states_for_pca(
                         l27_module = _resolve_layer_path(model, layer_template.format(layer_27_idx))
                         
                         # Intercept the full output tuple, grab hidden states [0], and slice the last token [-1, :]
-                        print("l19_module.output[0].ndim", l19_module.output[0].ndim)
-                        hs_19 = l19_module.output[0][0, -1, :].save()
-                        hs_27 = l27_module.output[0][0, -1, :].save()
+                        if l19_module.output[0].ndim == 2:
+                            hs_19 = l19_module.output[0][-1, :].save()
+                            hs_27 = l27_module.output[0][-1, :].save()
+                        elif l19_module.output[0].ndim == 3:
+                            hs_19 = l19_module.output[0][0, -1, :].save()
+                            hs_27 = l27_module.output[0][0, -1, :].save()
+                        else:
+                            raise AttributeError(f"l19_module.output[0].ndim={l19_module.output[0].ndim}")
                 gc_collect()
                 
             states_19.append(hs_19.cpu().to(torch.float32).numpy())

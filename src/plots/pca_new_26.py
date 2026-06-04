@@ -54,7 +54,6 @@ def collect_hidden_states(model, processor, num_layers, dataset):
             
             text = text[:-3] + " and a"
             text_prompt = get_text_prompt(model, text, image_data["image"], processor) 
-            print('text_prompt ', text_prompt)
 
             inputs = processor(text=text_prompt, images=image_data["image"], return_tensors="pt").to(model.device)
 

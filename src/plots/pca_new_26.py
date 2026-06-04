@@ -81,7 +81,7 @@ def collect_pca_results(model, processor, num_layers, images, text_prompts, is_c
         pca_results.append(proj)
 
         states_ctr = []
-        for i in range(states):
+        for i in range(len(states)):
             if is_central_labels[i]:
                 states_ctr.append(states[i])
         pca_ctr = PCA(n_components=2)

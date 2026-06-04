@@ -47,3 +47,4 @@ configs/local_*.yaml
 runner.ipynb
 dataset/coco
 dataset/figure_46
+dataset/figure_46_v2

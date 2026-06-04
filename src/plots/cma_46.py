@@ -80,6 +80,8 @@ def cma_counting_by_model(model_id, k_list, dataset):
                 top_k_heads = get_top_k_heads(mediation_scores, k)
             else:
                 top_k_heads = get_top_k_heads(mediation_scores, k, max_k=False)
+            for l,h in top_k_heads:
+                print(f"cat({cat}) top-{k}: {mediation_scores[l,h]}")
             accs[cat][k] = cma_counting_trials(model, processor, num_heads, dataset, top_k_heads)
 
     return accs

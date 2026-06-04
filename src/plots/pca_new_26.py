@@ -174,8 +174,8 @@ def main():
     config = load_config()
     tier = config['pipeline']['tier']
     model, processor = load_vlm(model_id, tier)
-    # num_layers = get_num_hidden_layers(model)
-    num_layers = 6
+    num_layers = get_num_hidden_layers(model)
+    # num_layers = 6
     dataset = generate_dataset()
     images, text_prompts, rel_pos_labels, abs_pos_labels, feat_pos_labels, is_central_labels = collect_labels(
         model, processor, dataset

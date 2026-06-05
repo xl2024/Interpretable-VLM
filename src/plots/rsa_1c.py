@@ -103,7 +103,9 @@ def get_dynamic_token_indices(model: Any, processor: Any, colors: List[str], sha
     else:
         prefix = f"{prefix} and a"
         text_prompt = get_text_prompt(model, prefix, image, processor, format="color_first")
-
+    print("shapes:", shapes)
+    print("shapes[shuffle[i]]:", [shapes[shuffle[i]] for i in range(9)])
+    print("text_prompt:", text_prompt)
     inputs = processor(text=text_prompt, images=image, return_tensors="pt")
     input_ids = inputs["input_ids"][0].tolist()
 
@@ -113,13 +115,12 @@ def get_dynamic_token_indices(model: Any, processor: Any, colors: List[str], sha
         token_ids = input_ids[token_index-1:token_index+1]
         token_str = processor.tokenizer.decode(token_ids).strip().lower()
         if ',' in token_str and shapes[shuffle[obj_idx]] in token_str:
+            print(f"obj_idx={obj_idx}, shapes[shuffle[obj_idx]]={shapes[shuffle[obj_idx]]}, token_index={token_index}")
             indices.append({'coords': coords[shuffle[obj_idx]], 'color': colors[shuffle[obj_idx]], 'shape': shapes[shuffle[obj_idx]], 'index': token_index})
             obj_idx += 1
             # print("Token index:", token_index, token_str)
 
     indices.append({'coords': coords[shuffle[-1]], 'color': colors[shuffle[-1]], 'shape': shapes[shuffle[-1]], 'index': len(input_ids)-1})
-    if len(indices) < 9:
-        print("indices:", indices)
     return indices, text_prompt
 
 def rsa_by_model(model_id, save_path):

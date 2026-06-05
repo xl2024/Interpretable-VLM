@@ -168,7 +168,7 @@ def main():
         "Qwen/Qwen2.5-VL-7B-Instruct",
         #  "Qwen/Qwen2.5-VL-32B-Instruct",
         "llava-hf/llava-1.5-7b-hf",
-        #  "llava-hf/llava-1.5-13b-hf",
+         "llava-hf/llava-1.5-13b-hf",
         "llava-hf/llava-onevision-qwen2-7b-ov-hf"
     ]
 

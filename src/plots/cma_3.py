@@ -287,7 +287,7 @@ def main():
                      ("Qwen/Qwen2.5-VL-7B-Instruct", 38),               # figure 38
                     #  ("Qwen/Qwen2.5-VL-32B-Instruct", 39),              # figure 39
                      ("llava-hf/llava-1.5-7b-hf", 41),                  # figure 41
-                    #  ("llava-hf/llava-1.5-13b-hf", 42),                 # figure 42
+                     ("llava-hf/llava-1.5-13b-hf", 42),                 # figure 42
                      ("llava-hf/llava-onevision-qwen2-7b-ov-hf", 43)    # figure 43
     ]
     k_list = [2,5,10,12,15,20,30,40,50,100,200]

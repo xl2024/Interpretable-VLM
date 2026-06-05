@@ -183,8 +183,8 @@ def main():
         "Qwen/Qwen2.5-VL-3B-Instruct",    # left: 135/212, right: 86/212
         "Qwen/Qwen2.5-VL-7B-Instruct",    # left: 70/212, right: 41/212
         #  "Qwen/Qwen2.5-VL-32B-Instruct",
-        "llava-hf/llava-1.5-7b-hf"    # left: 16/212, right: 6/212
-        #  "llava-hf/llava-1.5-13b-hf"
+        "llava-hf/llava-1.5-7b-hf",    # left: 16/212, right: 6/212
+         "llava-hf/llava-1.5-13b-hf"
     ]
 
     image_list, color_list, shape_list = generate_dataset()

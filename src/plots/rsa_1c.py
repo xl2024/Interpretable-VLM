@@ -114,6 +114,8 @@ def get_dynamic_token_indices(model: Any, processor: Any, colors: List[str], sha
     for token_index in range(1, len(input_ids)):
         token_ids = input_ids[token_index-1:token_index+1]
         token_str = processor.tokenizer.decode(token_ids).strip().lower()
+        if token_index >= 588:
+            print(token_index, token_str)
         if ',' in token_str and shapes[shuffle[obj_idx]] in token_str:
             print(f"obj_idx={obj_idx}, shapes[shuffle[obj_idx]]={shapes[shuffle[obj_idx]]}, token_index={token_index}")
             indices.append({'coords': coords[shuffle[obj_idx]], 'color': colors[shuffle[obj_idx]], 'shape': shapes[shuffle[obj_idx]], 'index': token_index})

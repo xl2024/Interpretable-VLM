@@ -123,7 +123,7 @@ def get_dynamic_token_indices(model: Any, processor: Any, colors: List[str], sha
             # print("Token index:", token_index, token_str)
 
     indices.append({'coords': coords[shuffle[-1]], 'color': colors[shuffle[-1]], 'shape': shapes[shuffle[-1]], 'index': len(input_ids)-1})
-    if len(indices) < 9:
+    if len(indices) != 9:
         print("!!!!!!!!!!!!!!!!!!!!! len(indices):",len(indices))
     return indices, text_prompt
 

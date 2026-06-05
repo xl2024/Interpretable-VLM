@@ -25,10 +25,6 @@ def build_target_rsms(trials: List[Dict[str, Any]], trial_object_ids: List[List[
     for oi in range(num_objects):
         coords_i = []
         for mid, tr in enumerate(trials):
-            print("oi:",oi)
-            print(tr['trial'])
-            print(tr['trial'][oi])
-            print(tr['trial'][oi]['coords'])
             coords_i.append(tr['trial'][oi]['coords'])
         coords_i = np.array(coords_i)
         distances = pdist(coords_i, metric='euclidean')

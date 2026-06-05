@@ -119,7 +119,8 @@ def plot_position_patching(aggregated_data, save_path):
     
     ax.set_xticks(x)
     ax.set_xticklabels(x_labels)
-    # ax.tick_params(axis='y')
+    ax.tick_params(bottom=False, left=False)
+    # ax.tick_params(length=0)
     ax.set_ylim(0, 1.0)
     
     ax.spines['top'].set_visible(False)

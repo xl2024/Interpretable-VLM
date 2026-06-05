@@ -111,8 +111,8 @@ def get_dynamic_token_indices(model: Any, processor: Any, colors: List[str], sha
 
     indices = []
     obj_idx = 0
-    for token_index in range(1, len(input_ids)):
-        token_ids = input_ids[token_index-1:token_index+1]
+    for token_index in range(2, len(input_ids)):    # umbrella=um+bre+lla in LLaVa 1.5 7b
+        token_ids = input_ids[token_index-2:token_index+1]
         token_str = processor.tokenizer.decode(token_ids).strip().lower()
         if token_index >= 588:
             print(token_index, token_str)
@@ -123,6 +123,8 @@ def get_dynamic_token_indices(model: Any, processor: Any, colors: List[str], sha
             # print("Token index:", token_index, token_str)
 
     indices.append({'coords': coords[shuffle[-1]], 'color': colors[shuffle[-1]], 'shape': shapes[shuffle[-1]], 'index': len(input_ids)-1})
+    if len(indices) < 9:
+        print("!!!!!!!!!!!!!!!!!!!!! len(indices):",len(indices))
     return indices, text_prompt
 
 def rsa_by_model(model_id, save_path):

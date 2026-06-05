@@ -1,5 +1,5 @@
 import numpy as np
-from typing import Dict, List, Tuple, Any
+import matplotlib.pyplot as plt
 from pathlib import Path
 
 from src.model.loader import load_vlm
@@ -8,11 +8,129 @@ from src.utils.tools import load_config, _resolve_text_model_dims, get_text_prom
 from src.plots.cma_1d import run_mediation_analysis
 from src.mech_interp.cma import cma_head_patching_by_logits, get_head_embeddings, get_top_k_heads
 
+# Reproduces Figure 29
 
 
+def aggregate_data(fig_29_results):
+    aggregated = {}
+    model_id_to_label = {
+        "Qwen/Qwen2-VL-7B-Instruct": "Qwen 2\n7B",
+        "Qwen/Qwen2.5-VL-3B-Instruct": "Qwen 2.5\n3B",
+        "Qwen/Qwen2.5-VL-7B-Instruct": "Qwen 2.5\n7B",
+        "Qwen/Qwen2.5-VL-32B-Instruct": "Qwen 2.5\n32B",
+        "llava-hf/llava-1.5-7b-hf": "LLaVA-1.5\n7B",
+        "llava-hf/llava-1.5-13b-hf": "LLaVA-1.5\n13B"
+    }
 
-absolute_score = 0
-relative_score = 0
+    for model_id, model_label in model_id_to_label.items():
+        if model_id not in fig_29_results:
+            continue
+
+        k_data = fig_29_results[model_id]
+        best_k = None
+        best_rel_mean = -1.0
+        best_k_metrics = {}
+
+        for k, repeats_data in k_data.item().items():
+            if k == 0:
+                continue
+
+            rel_accs = []
+            abs_accs = []
+
+            for repeat, word_counts in repeats_data.items():
+                rel_count = 0
+                abs_count = 0
+                
+                for word, freq in word_counts.items():
+                    w = str(word).lower().strip()
+                    if w in ['orange', 'yellow']:
+                        rel_count += freq
+                    elif w in ['purple', 'pur']:
+                        abs_count += freq
+
+                # 20 counts total per repeat
+                rel_accs.append(rel_count / 20.0)
+                abs_accs.append(abs_count / 20.0)
+
+            mean_rel = np.mean(rel_accs)
+            
+            if mean_rel > best_rel_mean:
+                best_rel_mean = mean_rel
+                
+                # Calculate Standard Error of the Mean (SEM)
+                se_rel = np.std(rel_accs, ddof=1) / np.sqrt(len(rel_accs)) if len(rel_accs) > 1 else 0
+                
+                mean_abs = np.mean(abs_accs)
+                se_abs = np.std(abs_accs, ddof=1) / np.sqrt(len(abs_accs)) if len(abs_accs) > 1 else 0
+
+                best_k = k
+                best_k_metrics = {
+                    'mean_rel': mean_rel,
+                    'se_rel': se_rel,
+                    'mean_abs': mean_abs,
+                    'se_abs': se_abs
+                }
+
+        aggregated[model_label] = {
+            'best_k': best_k,
+            'metrics': best_k_metrics
+        }
+        
+    return aggregated
+
+def plot_position_patching(aggregated_data, save_path):
+    models = list(aggregated_data.keys())
+    
+    x_labels = []
+    means_abs, se_abs = [], []
+    means_rel, se_rel = [], []
+    
+    for m in models:
+        # Append k value to the model name for the x-axis tick
+        k_val = aggregated_data[m]['best_k']
+        x_labels.append(f"{m}\nk={k_val}")
+        
+        metrics = aggregated_data[m]['metrics']
+        means_abs.append(metrics['mean_abs'])
+        se_abs.append(metrics['se_abs'])
+        means_rel.append(metrics['mean_rel'])
+        se_rel.append(metrics['se_rel'])
+
+    x = np.arange(len(models))
+    width = 0.35
+    
+    fig, ax = plt.subplots(figsize=(6, 4))
+    
+    # Plot bars
+    color_rel = '#666666'  # Dark Gray
+    color_abs = '#cccccc'   # Light Gray
+    edge_color = '#333333'
+    ax.bar(x - width/2, means_abs, width, yerr=se_abs, 
+           label='Absolute', color=color_abs, edgecolor=edge_color,
+           capsize=3, error_kw={'elinewidth': 2.5, 'capthick': 2.5, 'ecolor': edge_color})
+    
+    ax.bar(x + width/2, means_rel, width, yerr=se_rel, 
+           label='Relative', color=color_rel, edgecolor=edge_color,
+           capsize=3, error_kw={'elinewidth': 2.5, 'capthick': 2.5, 'ecolor': edge_color})
+    
+    ax.set_ylabel('Proportion Correct', fontsize=11)
+    ax.set_title('Position Patching Performance', fontsize=12, fontweight='bold', pad=15)
+    
+    ax.set_xticks(x)
+    ax.set_xticklabels(x_labels)
+    # ax.tick_params(axis='y')
+    ax.set_ylim(0, 1.0)
+    
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    
+    ax.legend(frameon=True, edgecolor='lightgray', loc='upper right')
+    
+    plt.tight_layout()
+    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.close(fig) 
+    print(f"Bar Chart Saved at: {save_path}")
 
 def get_cma_test_cases():
     """
@@ -132,12 +250,12 @@ def cma_test_by_model(model_id):
 
 def main():
     print("=== Execution Suite: Live Mechanistic Head Interventions ===")
-    model_ids = ["Qwen/Qwen2-VL-7B-Instruct",
+    model_ids = ["Qwen/Qwen2-VL-7B-Instruct",    # rel: orange, abs: purple
                 #  "llava-hf/llava-1.5-13b-hf",
-                 "Qwen/Qwen2.5-VL-7B-Instruct",
+                 "Qwen/Qwen2.5-VL-7B-Instruct",    # rel: yellow/orange, abs: purple
                 #  "Qwen/Qwen2.5-VL-32B-Instruct",
-                 "llava-hf/llava-1.5-7b-hf",
-                 "Qwen/Qwen2.5-VL-3B-Instruct"
+                 "llava-hf/llava-1.5-7b-hf",    # rel: yellow, abs: pur
+                 "Qwen/Qwen2.5-VL-3B-Instruct"    # rel: orange, abs: purple
                  ]
     # model_ids = ["llava-hf/llava-1.5-13b-hf"]
 
@@ -157,7 +275,11 @@ def main():
             fig_29_results[model_id] = cma_test_by_model(model_id)
    
     np.savez(filename, **fig_29_results)
-    print(f"Saved in {filename}. fig_29_results: {fig_29_results}")
+    print(f"fig_29_results Saved in {filename}.")
+
+    fig_path = "outputs/cma/cma_fig_29.png"
+    processed_data = aggregate_data(fig_29_results)
+    plot_position_patching(processed_data, fig_path)
 
 
 if __name__ == "__main__":

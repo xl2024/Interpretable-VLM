@@ -2,6 +2,7 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 import os
+import re
 
 from src.model.loader import load_vlm
 from src.data.synthetic_generator import generate_custom_image
@@ -54,7 +55,7 @@ def cma_counting_trials(model, processor, num_heads, dataset, top_k_heads):
             max_new_tokens=200
         )
         pred = predicted_words.split('Answer: ')
-        if len(pred) >= 2 and pred[-1] == str(gt):
+        if len(pred) >= 2 and re.sub(r'\D', '',  pred[-1]) == str(gt):
             corr_trials += 1
         else:
             print(f"predicted_words={predicted_words}, \nindex={image_data['index']}, pred={pred}, target_count={gt}")
@@ -81,7 +82,9 @@ def cma_counting_by_model(model_id, k_list, dataset):
                 top_k_heads = get_top_k_heads(mediation_scores, k)
             else:
                 top_k_heads = get_top_k_heads(mediation_scores, k, max_k=False)
+            print(f"{cat} top-{k}:")
             accs[cat][k] = cma_counting_trials(model, processor, num_heads, dataset, top_k_heads)
+            print(f"acc={accs[cat][k]}")
 
     return accs
 
@@ -109,9 +112,10 @@ def main():
     model_id = "Qwen/Qwen2.5-VL-32B-Instruct"
     model_name = model_id.replace('/', '_')
     # k_list = [0,10,20,50,100,150,200,250,300,400,500]
-    k_list = [0,10,100,200,300,400]
+    k_list = [0,10,20,50,100,200,300,500]
     num_imgs = 10
     dataset_path = "dataset/figure_46_v2"
+    os.makedirs(dataset_path, exist_ok=True)
     dataset = get_counting_dataset(num_imgs, dataset_path)
     accs = cma_counting_by_model(model_id, k_list, dataset)
 

@@ -161,15 +161,15 @@ def cma_binding_embeddings(model, processor, num_heads, top_k_heads, stage, est_
     image_list = []
     left_token_pos_list = [] if stage == 1 else None
     right_token_pos_list = [] if stage == 1 else None
-
+    system_format = "COLOR ANIMAL, replacing COLOR and ANIMAL with the missing color and animal in the image. Do not repeat the prompt words, just append with the requested format"
     for image_data in est_dataset:
         image_list.append(image_data["image"])
         left_prompt = f"In this image there is a {image_data['right_color']} {image_data['right_animal']} and a"
-        left_text_prompt = get_text_prompt(model, left_prompt, image_data["image"], processor)
+        left_text_prompt = get_text_prompt(model, left_prompt, image_data["image"], processor, format=system_format)
         text_prompts["left_target"].append(left_text_prompt)
         
         right_prompt = f"In this image there is a {image_data['left_color']} {image_data['left_animal']} and a"
-        right_text_prompt = get_text_prompt(model, right_prompt, image_data["image"], processor)
+        right_text_prompt = get_text_prompt(model, right_prompt, image_data["image"], processor, format=system_format)
         text_prompts["right_target"].append(right_text_prompt)
 
         if stage == 1:
@@ -216,6 +216,7 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
         print(f"patching_acc (alpha={alpha}, position={pos}): {matchings}/{len(patching_results)}, patching_results: {patching_results}")
         # print(f"patching_acc (alpha={alpha}, position={pos}): {matchings}/{len(patching_results)}")
 
+    system_format = "COLOR ANIMAL, replacing COLOR and ANIMAL with the missing color and animal in the image. Do not repeat the prompt words, just append with the requested format"
     left_patching_results = {}
     right_patching_results = {}
     first_tensor = next(iter(left_binding_embs.values()))
@@ -225,7 +226,7 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
         right_patching_results[str(alpha)] = []
         for image_data in eval_dataset:
             left_prompt = f"In this image there is a {image_data['right_color']} {image_data['right_animal']} and a"
-            left_prompt_text = get_text_prompt(model, left_prompt, image_data["image"], processor)
+            left_prompt_text = get_text_prompt(model, left_prompt, image_data["image"], processor, format=system_format)
             if stage == 1:
                 left_token_pos_1 = get_token_position(processor, left_prompt_text, image_data['image'], image_data['right_color'], False)
                 left_token_pos_2 = get_token_position(processor, left_prompt_text, image_data['image'], image_data['right_animal'], False)
@@ -251,7 +252,7 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
             left_patching_results[str(alpha)].append([image_data["right_color"], predicted_word])
         
             right_prompt = f"In this image there is a {image_data['left_color']} {image_data['left_animal']} and a"
-            right_prompt_text = get_text_prompt(model, right_prompt, image_data["image"], processor)
+            right_prompt_text = get_text_prompt(model, right_prompt, image_data["image"], processor, format=system_format)
             if stage == 1:
                 right_token_pos_1 = get_token_position(processor, right_prompt_text, image_data['image'], image_data['left_color'], False)
                 right_token_pos_2 = get_token_position(processor, right_prompt_text, image_data['image'], image_data['left_animal'], False)

@@ -109,14 +109,14 @@ def rsa_entr_by_model(model_id, num_trials, repeat, save_path):
     ]
 
     rsa_results = {}
-    for j in range(repeat):
-        config = load_config()
-        tier = config['pipeline']['tier']
-        model, processor = load_vlm(model_id, tier)
-        num_layers = get_num_hidden_layers(model)
-    
+    for j in range(repeat):    
         rsa_results[j] = {}
         for i, entr in enumerate(['High', 'Low']):
+            config = load_config()
+            tier = config['pipeline']['tier']
+            model, processor = load_vlm(model_id, tier)
+            num_layers = get_num_hidden_layers(model)
+
             trials, acc = get_trial_data(model, processor, colors_list[i], shapes_list[i], num_trials)
             
             print(f"\nExecuting RSA across {len(trials)} trials and {num_layers} layers...")
@@ -126,10 +126,10 @@ def rsa_entr_by_model(model_id, num_trials, repeat, save_path):
             rsa_scores_prompt, rsa_scores_last_token = compute_rsa_scores(hidden_states_by_trial, trials, num_layers)
             rsa_results[j][entr] = {"Prompt": rsa_scores_prompt['pos'], "Last": rsa_scores_last_token['pos'], "Acc": acc}
 
-        del model
-        del processor
-        gc.collect()
-        torch.cuda.empty_cache()
+            del model
+            del processor
+            gc.collect()
+            torch.cuda.empty_cache()
 
     plot_rsa_figures(rsa_results=rsa_results[0], num_layers=num_layers, save_path=save_path)
 

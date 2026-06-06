@@ -2,6 +2,8 @@ import numpy as np
 import gc
 import torch
 import pandas as pd
+import json
+from pathlib import Path
 
 from src.model.loader import load_vlm
 from src.data.synthetic_generator import generate_custom_image
@@ -173,12 +175,13 @@ def cma_entr_by_model(model_id, num_trials, top_k):
     torch.cuda.empty_cache()
 
     total_trials = num_trials * len(colors_list[0]) ** 2
-    return corr_high/total_trials, corr_low/total_trials, corr_low_interv/total_trials
+    return corr_high, corr_low, corr_low_interv, total_trials
 
 def cma_save_table(accs, save_path):
     processed_data = []
     for model_id, scores in accs.items():
-        high_acc, low_no_int, low_with_int = scores
+        high_acc, low_no_int, low_with_int, total_trials = scores
+        high_acc, low_no_int, low_with_int = high_acc/total_trials, low_no_int/total_trials, low_with_int/total_trials
         improvement = low_with_int - low_no_int
         processed_data.append([model_id, high_acc, low_no_int, low_with_int, improvement])
 
@@ -213,19 +216,31 @@ def cma_save_table(accs, save_path):
 
 def main():
     model_id_list = [
-        ("Qwen/Qwen2-VL-7B-Instruct", "Qwen 2-VL 7B"),
-        ("Qwen/Qwen2.5-VL-3B-Instruct", "Qwen 2.5-VL 3B"),
-        ("Qwen/Qwen2.5-VL-7B-Instruct", "Qwen 2.5-VL 7B"),
-        ("llava-hf/llava-1.5-7b-hf", "LLaVA 1.5 7B"),
-        ("llava-hf/llava-1.5-13b-hf", "LLaVA 1.5 13B")
+        ("Qwen/Qwen2-VL-7B-Instruct", "Qwen 2-VL 7B")
+        # ("Qwen/Qwen2.5-VL-3B-Instruct", "Qwen 2.5-VL 3B"),
+        # ("Qwen/Qwen2.5-VL-7B-Instruct", "Qwen 2.5-VL 7B"),
+        # ("llava-hf/llava-1.5-7b-hf", "LLaVA 1.5 7B"),
+        # ("llava-hf/llava-1.5-13b-hf", "LLaVA 1.5 13B")
     ]
     num_trials = 1
     k_list = [2,5,10,20,50,100]
+    k_list = [200]
     for top_k in k_list:
         # top_k = 10
         accs = {}
         for model_id, model_label in model_id_list:
+            model_name = model_id.replace('/', '_')
+            filename = f"src/data/cma/entr/{model_name}.json"
+            file_path = Path(filename)
+            if file_path.exists():
+                print(f"Found {filename}! Loading results for entropy intervention...")
+                with open(filename, 'r') as f:
+                    accs[model_id] = json.load(f)
+                continue
+
             accs[model_label] = cma_entr_by_model(model_id, num_trials, top_k)
+            with open(filename, 'w') as f:
+                json.dump(accs[model_id], f, indent=4)
 
         save_path = f"outputs/cma/entr/cma_tbl_1_k_{top_k}"
         cma_save_table(accs, save_path)

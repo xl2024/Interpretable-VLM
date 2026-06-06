@@ -58,6 +58,8 @@ def cma_entr_trials(model, processor, num_layers, num_heads, color_list, shape_l
             print(f"pred={pred}, target_color={obj_indices[-1]['color']}, target_shape={obj_indices[-1]['shape']}")
         
         if interv:
+            print("interv - coord: ", obj_indices[-1]["coords"])
+            print("interv - k heads: ", embeds[obj_indices[-1]["coords"]].keys())
             predicted_word = cma_head_patching_by_generator(
                 model=model,
                 processor=processor,
@@ -89,6 +91,8 @@ def cma_entr_trials(model, processor, num_layers, num_heads, color_list, shape_l
                 image_list=image_lists[coord], 
                 top_k_heads=top_k_heads
             )
+            print("coord: ", coord)
+            print("k heads: ", high_entr_embeds[coord].keys())
         return corr_trials, high_entr_embeds
     
     if interv:
@@ -115,7 +119,7 @@ def cma_entr_by_model(model_id, num_trials, top_k):
         ['circle', 'star', 'plane', 'square', 'umbrella', 'triangle', 'sun', 'heart', 'cross'],
         ['circle', 'circle', 'square', 'square', 'triangle', 'triangle', 'circle', 'triangle', 'square']
     ]
-
+    print("top k heads:", top_k_heads)
     print("Conducting high entropy trials...")
     corr_high, embeds = cma_entr_trials(
         model, processor, num_layers, num_heads, colors_list[0], shapes_list[0], num_trials, 

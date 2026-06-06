@@ -51,7 +51,7 @@ def cma_counting_trials(model, processor, num_heads, dataset, top_k_heads):
             prompt_text=text_prompt,
             image=img,
             top_k_heads=top_k_heads,
-            max_new_tokens=200
+            max_new_tokens=300
         )
         pred = predicted_words.split('Answer: ')
         if len(pred) >= 2 and re.sub(r'\D', '',  pred[-1]) == str(gt):

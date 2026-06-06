@@ -217,11 +217,11 @@ def cma_save_table(accs, save_path):
 
 def main():
     model_id_list = [
-        # ("llava-hf/llava-1.5-7b-hf", "LLaVA 1.5 7B"),
-        ("llava-hf/llava-1.5-13b-hf", "LLaVA 1.5 13B")
-        # ("Qwen/Qwen2.5-VL-3B-Instruct", "Qwen 2.5-VL 3B"),
-        # ("Qwen/Qwen2.5-VL-7B-Instruct", "Qwen 2.5-VL 7B"),
-        # ("Qwen/Qwen2-VL-7B-Instruct", "Qwen 2-VL 7B")
+        ("llava-hf/llava-1.5-7b-hf", "LLaVA 1.5 7B"),
+        # ("llava-hf/llava-1.5-13b-hf", "LLaVA 1.5 13B")
+        ("Qwen/Qwen2.5-VL-3B-Instruct", "Qwen 2.5-VL 3B"),
+        ("Qwen/Qwen2.5-VL-7B-Instruct", "Qwen 2.5-VL 7B"),
+        ("Qwen/Qwen2-VL-7B-Instruct", "Qwen 2-VL 7B")
     ]
     num_trials = 50
     # k_list = [2,5,10,20,50,100,200]    # sweeping with num_trials = 1

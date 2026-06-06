@@ -48,6 +48,9 @@ def rsa_tracer(
                             prompt_states[layer_idx][i] = hs[token_index, :].save()
                     
             # Append the resolved dictionaries to main lists
+            for layer_idx, layer_states in prompt_states.items():
+                for i in layer_states.keys():
+                    layer_states[i] = layer_states[i].cpu().to(torch.float32).numpy()
             hidden_states_by_trial.append(prompt_states)
 
             gc_collect()

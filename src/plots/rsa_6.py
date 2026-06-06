@@ -254,9 +254,9 @@ def plot_bar_chart(config, save_path):
 def main():
     model_id_list = [
         # ("Qwen/Qwen2-VL-7B-Instruct", "Qwen 2\n7B", "6_30"),
-        # ("Qwen/Qwen2.5-VL-3B-Instruct", "Qwen 2.5\n3B", "31"),
+        ("Qwen/Qwen2.5-VL-3B-Instruct", "Qwen 2.5\n3B", "31")
         # ("Qwen/Qwen2.5-VL-7B-Instruct", "Qwen 2.5\n7B", "32"),
-        ("Qwen/Qwen2.5-VL-32B-Instruct", "Qwen 2.5\n32B", "33")
+        # ("Qwen/Qwen2.5-VL-32B-Instruct", "Qwen 2.5\n32B", "33")
         # ("llava-hf/llava-1.5-7b-hf", "LLaVA 1.5\n7B", "34"),
         # ("llava-hf/llava-1.5-13b-hf", "LLaVA 1.5\n13B", "35"),
         # ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "LLaVA One\n7B", "36")

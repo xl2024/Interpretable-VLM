@@ -254,7 +254,7 @@ def main():
     model_ids = ["Qwen/Qwen2-VL-7B-Instruct",    # rel: orange, abs: purple
                  "llava-hf/llava-1.5-13b-hf",
                  "Qwen/Qwen2.5-VL-7B-Instruct",    # rel: yellow/orange, abs: purple
-                #  "Qwen/Qwen2.5-VL-32B-Instruct",
+                 "Qwen/Qwen2.5-VL-32B-Instruct",
                  "llava-hf/llava-1.5-7b-hf",    # rel: yellow, abs: pur
                  "Qwen/Qwen2.5-VL-3B-Instruct"    # rel: orange, abs: purple
                  ]

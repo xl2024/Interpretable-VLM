@@ -78,12 +78,15 @@ def cma_counting_by_model(model_id, k_list, dataset):
     max_top_500_heads = get_top_k_heads(mediation_scores, 500)
     for i in range(500):
         print(f"{i+1},{mediation_scores[max_top_500_heads[i]]}", end=' ')
+        if (i+1) % 10 == 0:
+            print('\n')
     print("Bottom top-500 heads:")
     bottom_top_500_heads = get_top_k_heads(mediation_scores, 500, max_k=False)
     for i in range(500):
         print(f"{i+1},{mediation_scores[bottom_top_500_heads[i]]}", end=' ')
-    print('\n')
-    
+        if (i+1) % 10 == 0:
+            print('\n')
+
     accs = {"Max": {}, "Bottom": {}}
     for cat in accs.keys():
         for k in k_list:

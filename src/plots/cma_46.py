@@ -73,8 +73,17 @@ def cma_counting_by_model(model_id, k_list, dataset):
     mediation_scores = np.zeros((num_layers, num_heads))
     for l,h in [(a, b) for a in range(num_layers) for b in range(num_heads)]:
         mediation_scores[l,h] = max(mediation_scores_list[0][l,h], mediation_scores_list[1][l,h], mediation_scores_list[2][l,h])
-    print("Max top-500 heads:",get_top_k_heads(mediation_scores, 500))
-    print("Bottom top-500 heads:",get_top_k_heads(mediation_scores, 500, max_k=False))
+
+    print("Max top-500 heads:")
+    max_top_500_heads = get_top_k_heads(mediation_scores, 500)
+    for i in range(500):
+        print(f"{i+1},{mediation_scores[max_top_500_heads[i]]}", end=' ')
+    print("Bottom top-500 heads:")
+    bottom_top_500_heads = get_top_k_heads(mediation_scores, 500, max_k=False)
+    for i in range(500):
+        print(f"{i+1},{mediation_scores[bottom_top_500_heads[i]]}", end=' ')
+    print('\n')
+    
     accs = {"Max": {}, "Bottom": {}}
     for cat in accs.keys():
         for k in k_list:

@@ -72,6 +72,7 @@ def cma_entr_get_embeds(model, processor, num_heads, color_list, shape_list, num
             image_list=image_lists[coord], 
             top_k_heads=top_k_heads
         )
+    print("keys(get):",high_entr_embeds.keys())
     return corr_trials, high_entr_embeds
 
 def cma_entr_intervs(model, processor, num_layers, num_heads, color_list, shape_list, num_trials, top_k_heads, embeds):
@@ -111,7 +112,8 @@ def cma_entr_intervs(model, processor, num_layers, num_heads, color_list, shape_
                     corr_trials += 1
                 else:
                     print(f"pred={pred}, target_color={obj_indices[-1]['color']}, target_shape={obj_indices[-1]['shape']}")
-                
+                print("obj index:",obj_indices[-1]["coords"])
+                print("keys:",embeds.keys())
                 predicted_word = cma_head_patching_by_generator(
                     model=model,
                     processor=processor,
@@ -143,6 +145,7 @@ def cma_entr_by_model(model_id, num_trials, top_k):
     mediation_scores_list = run_mediation_analysis(model_id)
     mediation_scores = mediation_scores_list[1]
     top_k_heads = get_top_k_heads(mediation_scores, top_k)
+    print("top k heads:",top_k_heads)
     
     colors_list = [
         ['red', 'blue', 'green', 'purple'],

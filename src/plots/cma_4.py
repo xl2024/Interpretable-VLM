@@ -182,7 +182,7 @@ def main():
         "Qwen/Qwen2-VL-7B-Instruct",    # left: 61/212, right: 3/212    split: 432 total, 220 in est, 212 in eval
         "Qwen/Qwen2.5-VL-3B-Instruct",    # left: 135/212, right: 86/212
         "Qwen/Qwen2.5-VL-7B-Instruct",    # left: 70/212, right: 41/212
-        #  "Qwen/Qwen2.5-VL-32B-Instruct",
+        "Qwen/Qwen2.5-VL-32B-Instruct",
         "llava-hf/llava-1.5-7b-hf",    # left: 16/212, right: 6/212
          "llava-hf/llava-1.5-13b-hf"
     ]

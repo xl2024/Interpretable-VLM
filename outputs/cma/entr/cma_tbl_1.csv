@@ -1,2 +1,4 @@
 Model,High Entropy,Low Entropy (No Intervention),Low Entropy (With Intervention),Improvement
+LLaVA 1.5 7B,66.57\%,44.54\%,48.69\%,4.15\%
 LLaVA 1.5 13B,76.32\%,70.47\%,78.15\%,7.68\%
+Qwen 2.5-VL 3B,98.99\%,92.89\%,92.64\%,-0.25\%

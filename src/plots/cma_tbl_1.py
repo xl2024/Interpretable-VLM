@@ -172,7 +172,8 @@ def cma_entr_by_model(model_id, num_trials, top_k):
     gc.collect()
     torch.cuda.empty_cache()
 
-    return corr_high/num_trials, corr_low/num_trials, corr_low_interv/num_trials
+    total_trials = num_trials * len(colors_list[0]) ** 2
+    return corr_high/total_trials, corr_low/total_trials, corr_low_interv/total_trials
 
 def cma_save_table(accs, save_path):
     processed_data = []

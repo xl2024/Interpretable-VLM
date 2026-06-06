@@ -112,6 +112,7 @@ def rsa_entr_by_model(model_id, num_trials, repeat, save_path):
     for j in range(repeat):    
         rsa_results[j] = {}
         for i, entr in enumerate(['High', 'Low']):
+            # try to save vram
             config = load_config()
             tier = config['pipeline']['tier']
             model, processor = load_vlm(model_id, tier)

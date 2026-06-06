@@ -1,0 +1,3794 @@
+{
+    "000000492905.jpg": {
+        "O_0": "computer monitor",
+        "O_1": "keyboard"
+    },
+    "000000549055.jpg": {
+        "O_0": "Surfer",
+        "O_1": "Surfboard"
+    },
+    "000000338304.jpg": {
+        "O_0": "sheep",
+        "O_1": "person"
+    },
+    "000000160556.jpg": {
+        "O_0": "microwave",
+        "O_1": "computer monitor"
+    },
+    "000000511321.jpg": {
+        "O_0": "boat",
+        "O_1": "bridge"
+    },
+    "000000255664.jpg": {
+        "O_0": "dog",
+        "O_1": "frisbee"
+    },
+    "000000578500.jpg": {
+        "O_0": "couch",
+        "O_1": "lamp"
+    },
+    "000000244181.jpg": {
+        "O_0": "sandwich",
+        "O_1": "bottle cap"
+    },
+    "000000309655.jpg": {
+        "O_0": "man",
+        "O_1": "ski lift"
+    },
+    "000000537991.jpg": {
+        "O_0": "woman",
+        "O_1": "Christmas tree"
+    },
+    "000000237071.jpg": {
+        "O_0": "tennis player",
+        "O_1": "tennis racket"
+    },
+    "000000404601.jpg": {
+        "O_0": "sign",
+        "O_1": "building"
+    },
+    "000000099114.jpg": {
+        "O_0": "traffic light",
+        "O_1": "pedestrian crossing"
+    },
+    "000000379453.jpg": {
+        "O_0": "airplane",
+        "O_1": "sky"
+    },
+    "000000308466.jpg": {
+        "O_0": "toilet",
+        "O_1": "bathtub"
+    },
+    "000000472375.jpg": {
+        "O_0": "dog",
+        "O_1": "motorcycle"
+    },
+    "000000205776.jpg": {
+        "O_0": "bear",
+        "O_1": "hammock"
+    },
+    "000000042296.jpg": {
+        "O_0": "polar bear",
+        "O_1": "ball"
+    },
+    "000000505942.jpg": {
+        "O_0": "traffic light",
+        "O_1": "street sign"
+    },
+    "000000554266.jpg": {
+        "O_0": "lamp",
+        "O_1": "bed"
+    },
+    "000000211674.jpg": {
+        "O_0": "bus",
+        "O_1": "sign"
+    },
+    "000000326542.jpg": {
+        "O_0": "skier",
+        "O_1": "ski lift"
+    },
+    "000000327592.jpg": {
+        "O_0": "woman",
+        "O_1": "cake"
+    },
+    "000000148957.jpg": {
+        "O_0": "Donut",
+        "O_1": "box"
+    },
+    "000000290293.jpg": {
+        "O_0": "train",
+        "O_1": "platform"
+    },
+    "000000245651.jpg": {
+        "O_0": "cake",
+        "O_1": "star"
+    },
+    "000000355325.jpg": {
+        "O_0": "pizza",
+        "O_1": "wine glass"
+    },
+    "000000423229.jpg": {
+        "O_0": "train",
+        "O_1": "signal pole"
+    },
+    "000000160012.jpg": {
+        "O_0": "pizza",
+        "O_1": "bottle"
+    },
+    "000000308799.jpg": {
+        "O_0": "stove",
+        "O_1": "cabinet"
+    },
+    "000000554291.jpg": {
+        "O_0": "cat",
+        "O_1": "bowl"
+    },
+    "000000319607.jpg": {
+        "O_0": "traffic light",
+        "O_1": "bicycle"
+    },
+    "000000502599.jpg": {
+        "O_0": "airplane",
+        "O_1": "window"
+    },
+    "000000483667.jpg": {
+        "O_0": "man",
+        "O_1": "top hat"
+    },
+    "000000516038.jpg": {
+        "O_0": "Pitcher",
+        "O_1": "Baseball Field"
+    },
+    "000000025057.jpg": {
+        "O_0": "man",
+        "O_1": "frisbee"
+    },
+    "000000575970.jpg": {
+        "O_0": "fridge",
+        "O_1": "window"
+    },
+    "000000070229.jpg": {
+        "O_0": "stuffed bear",
+        "O_1": "bench"
+    },
+    "000000066635.jpg": {
+        "O_0": "computer monitor",
+        "O_1": "keyboard"
+    },
+    "000000463849.jpg": {
+        "O_0": "canal",
+        "O_1": "boat"
+    },
+    "000000205514.jpg": {
+        "O_0": "chair",
+        "O_1": "table"
+    },
+    "000000198805.jpg": {
+        "O_0": "truck",
+        "O_1": "car"
+    },
+    "000000410712.jpg": {
+        "O_0": "crosswalk sign",
+        "O_1": "street sign"
+    },
+    "000000481386.jpg": {
+        "O_0": "woman",
+        "O_1": "cabinet"
+    },
+    "000000180487.jpg": {
+        "O_0": "man",
+        "O_1": "mug"
+    },
+    "000000369812.jpg": {
+        "O_0": "tree",
+        "O_1": "sign"
+    },
+    "000000166563.jpg": {
+        "O_0": "elephant",
+        "O_1": "sign"
+    },
+    "000000406611.jpg": {
+        "O_0": "ski lift",
+        "O_1": "crowd"
+    },
+    "000000259830.jpg": {
+        "O_0": "motorcycle",
+        "O_1": "bicycle"
+    },
+    "000000003934.jpg": {
+        "O_0": "girl",
+        "O_1": "couch"
+    },
+    "000000571008.jpg": {
+        "O_0": "stop sign",
+        "O_1": "one-way sign"
+    },
+    "000000415990.jpg": {
+        "O_0": "cows",
+        "O_1": "man"
+    },
+    "000000066886.jpg": {
+        "O_0": "child",
+        "O_1": "comb"
+    },
+    "000000035197.jpg": {
+        "O_0": "skateboard",
+        "O_1": "person"
+    },
+    "000000404479.jpg": {
+        "O_0": "airplane",
+        "O_1": "mountain range"
+    },
+    "000000496722.jpg": {
+        "O_0": "postbox",
+        "O_1": "street"
+    },
+    "000000134112.jpg": {
+        "O_0": "laptop",
+        "O_1": "dog"
+    },
+    "000000052591.jpg": {
+        "O_0": "woman",
+        "O_1": "ski pole"
+    },
+    "000000089078.jpg": {
+        "O_0": "woman",
+        "O_1": "snowboard"
+    },
+    "000000559348.jpg": {
+        "O_0": "Batter",
+        "O_1": "Baseball Bat"
+    },
+    "000000173371.jpg": {
+        "O_0": "pizza",
+        "O_1": "salad"
+    },
+    "000000155291.jpg": {
+        "O_0": "cat",
+        "O_1": "window"
+    },
+    "000000472623.jpg": {
+        "O_0": "Bicyclist",
+        "O_1": "rock formation"
+    },
+    "000000199977.jpg": {
+        "O_0": "airplane",
+        "O_1": "smoke trail"
+    },
+    "000000069138.jpg": {
+        "O_0": "traffic light",
+        "O_1": "van"
+    },
+    "000000226130.jpg": {
+        "O_0": "hot dog",
+        "O_1": "bun"
+    },
+    "000000173183.jpg": {
+        "O_0": "street sign",
+        "O_1": "tree"
+    },
+    "000000426836.jpg": {
+        "O_0": "kite",
+        "O_1": "tree"
+    },
+    "000000336053.jpg": {
+        "O_0": "child",
+        "O_1": "plate"
+    },
+    "000000392722.jpg": {
+        "O_0": "house",
+        "O_1": "bus"
+    },
+    "000000231169.jpg": {
+        "O_0": "train",
+        "O_1": "signal box"
+    },
+    "000000088040.jpg": {
+        "O_0": "spaghetti",
+        "O_1": "shrimp"
+    },
+    "000000274460.jpg": {
+        "O_0": "surfboard",
+        "O_1": "person"
+    },
+    "000000260106.jpg": {
+        "O_0": "horse",
+        "O_1": "rider"
+    },
+    "000000555009.jpg": {
+        "O_0": "laptop",
+        "O_1": "monitor"
+    },
+    "000000369541.jpg": {
+        "O_0": "dog",
+        "O_1": "frisbee"
+    },
+    "000000515579.jpg": {
+        "O_0": "man",
+        "O_1": "ball"
+    },
+    "000000091654.jpg": {
+        "O_0": "bowl",
+        "O_1": "spoon"
+    },
+    "000000290592.jpg": {
+        "O_0": "sheep",
+        "O_1": "fence"
+    },
+    "000000467511.jpg": {
+        "O_0": "motorcycle",
+        "O_1": "woman"
+    },
+    "000000138856.jpg": {
+        "O_0": "blue pot",
+        "O_1": "red kettle"
+    },
+    "000000059044.jpg": {
+        "O_0": "woman",
+        "O_1": "man"
+    },
+    "000000341196.jpg": {
+        "O_0": "Surfer",
+        "O_1": "Wave"
+    },
+    "000000291791.jpg": {
+        "O_0": "motorcycle",
+        "O_1": "man"
+    },
+    "000000210032.jpg": {
+        "O_0": "sandwich",
+        "O_1": "bird"
+    },
+    "000000532855.jpg": {
+        "O_0": "shoe",
+        "O_1": "skateboard"
+    },
+    "000000451043.jpg": {
+        "O_0": "Snowboarder",
+        "O_1": "Snow-covered slope"
+    },
+    "000000081738.jpg": {
+        "O_0": "cake",
+        "O_1": "knife"
+    },
+    "000000375493.jpg": {
+        "O_0": "woman",
+        "O_1": "fire hydrant"
+    },
+    "000000119995.jpg": {
+        "O_0": "Tennis player",
+        "O_1": "tennis racket"
+    },
+    "000000369751.jpg": {
+        "O_0": "traffic cone",
+        "O_1": "parking meter"
+    },
+    "000000518326.jpg": {
+        "O_0": "bed",
+        "O_1": "person"
+    },
+    "000000154705.jpg": {
+        "O_0": "printer",
+        "O_1": "computer monitor"
+    },
+    "000000119452.jpg": {
+        "O_0": "banana",
+        "O_1": "n orange"
+    },
+    "000000021167.jpg": {
+        "O_0": "woman",
+        "O_1": "man"
+    },
+    "000000162543.jpg": {
+        "O_0": "elephant",
+        "O_1": "fence"
+    },
+    "000000291664.jpg": {
+        "O_0": "fire hydrant",
+        "O_1": "dog"
+    },
+    "000000087742.jpg": {
+        "O_0": "peacock feather arrangement",
+        "O_1": "vase"
+    },
+    "000000486046.jpg": {
+        "O_0": "Giraffe",
+        "O_1": "Zebra"
+    },
+    "000000015254.jpg": {
+        "O_0": "salad",
+        "O_1": "carrot"
+    },
+    "000000332351.jpg": {
+        "O_0": "surfboard",
+        "O_1": "surfer"
+    },
+    "000000368982.jpg": {
+        "O_0": "scissors",
+        "O_1": "paper edger"
+    },
+    "000000367569.jpg": {
+        "O_0": "piano",
+        "O_1": "fireplace"
+    },
+    "000000433204.jpg": {
+        "O_0": "motorcycle",
+        "O_1": "police officer"
+    },
+    "000000224724.jpg": {
+        "O_0": "woman",
+        "O_1": "building"
+    },
+    "000000119516.jpg": {
+        "O_0": "woman",
+        "O_1": "building"
+    },
+    "000000542089.jpg": {
+        "O_0": "sink",
+        "O_1": "mirror"
+    },
+    "000000560256.jpg": {
+        "O_0": "bananas",
+        "O_1": "pineapple"
+    },
+    "000000071226.jpg": {
+        "O_0": "dog",
+        "O_1": "cat"
+    },
+    "000000495448.jpg": {
+        "O_0": "cake",
+        "O_1": "stand"
+    },
+    "000000297681.jpg": {
+        "O_0": "sign",
+        "O_1": "car"
+    },
+    "000000122606.jpg": {
+        "O_0": "bus",
+        "O_1": "driver"
+    },
+    "000000122927.jpg": {
+        "O_0": "pheasant",
+        "O_1": "bird"
+    },
+    "000000154358.jpg": {
+        "O_0": "woman",
+        "O_1": "table"
+    },
+    "000000500613.jpg": {
+        "O_0": "fire truck",
+        "O_1": "building"
+    },
+    "000000369323.jpg": {
+        "O_0": "woman",
+        "O_1": "tennis racket"
+    },
+    "000000032081.jpg": {
+        "O_0": "woman",
+        "O_1": "tennis racket"
+    },
+    "000000458992.jpg": {
+        "O_0": "woman",
+        "O_1": "pizza"
+    },
+    "000000518213.jpg": {
+        "O_0": "bull",
+        "O_1": "tree"
+    },
+    "000000270677.jpg": {
+        "O_0": "man",
+        "O_1": "skateboard"
+    },
+    "000000248980.jpg": {
+        "O_0": "salad",
+        "O_1": "plate"
+    },
+    "000000232649.jpg": {
+        "O_0": "sink",
+        "O_1": "toilet"
+    },
+    "000000254814.jpg": {
+        "O_0": "motorcycle",
+        "O_1": "van"
+    },
+    "000000492758.jpg": {
+        "O_0": "lamp",
+        "O_1": "table"
+    },
+    "000000006471.jpg": {
+        "O_0": "umpire",
+        "O_1": "catcher"
+    },
+    "000000194716.jpg": {
+        "O_0": "woman",
+        "O_1": "baby"
+    },
+    "000000166768.jpg": {
+        "O_0": "woman",
+        "O_1": "man"
+    },
+    "000000094852.jpg": {
+        "O_0": "elephant",
+        "O_1": "calf"
+    },
+    "000000522638.jpg": {
+        "O_0": "bear",
+        "O_1": "monkey"
+    },
+    "000000110999.jpg": {
+        "O_0": "portrait",
+        "O_1": "fruit basket"
+    },
+    "000000465129.jpg": {
+        "O_0": "woman",
+        "O_1": "kitchen light fixture"
+    },
+    "000000105249.jpg": {
+        "O_0": "toilet",
+        "O_1": "sink"
+    },
+    "000000008844.jpg": {
+        "O_0": "bananas",
+        "O_1": "woman"
+    },
+    "000000046378.jpg": {
+        "O_0": "cat",
+        "O_1": "bird"
+    },
+    "000000524456.jpg": {
+        "O_0": "laptop",
+        "O_1": "mouse"
+    },
+    "000000383337.jpg": {
+        "O_0": "hand",
+        "O_1": "donut"
+    },
+    "000000560371.jpg": {
+        "O_0": "street sign",
+        "O_1": "pole"
+    },
+    "000000305695.jpg": {
+        "O_0": "zebra",
+        "O_1": "truck"
+    },
+    "000000558854.jpg": {
+        "O_0": "bowl of chili",
+        "O_1": "sandwich"
+    },
+    "000000172877.jpg": {
+        "O_0": "man",
+        "O_1": "lamp"
+    },
+    "000000545958.jpg": {
+        "O_0": "door",
+        "O_1": "cow"
+    },
+    "000000480936.jpg": {
+        "O_0": "woman",
+        "O_1": "plate"
+    },
+    "000000453040.jpg": {
+        "O_0": "cake",
+        "O_1": "flower arrangement"
+    },
+    "000000154004.jpg": {
+        "O_0": "woman",
+        "O_1": "man"
+    },
+    "000000187362.jpg": {
+        "O_0": "man",
+        "O_1": "surfboard"
+    },
+    "000000200839.jpg": {
+        "O_0": "bus",
+        "O_1": "tree"
+    },
+    "000000042888.jpg": {
+        "O_0": "sign",
+        "O_1": "tree"
+    },
+    "000000238410.jpg": {
+        "O_0": "table",
+        "O_1": "chair"
+    },
+    "000000363072.jpg": {
+        "O_0": "train",
+        "O_1": "building"
+    },
+    "000000220584.jpg": {
+        "O_0": "man",
+        "O_1": "surfboard"
+    },
+    "000000047010.jpg": {
+        "O_0": "giraffe",
+        "O_1": "pond"
+    },
+    "000000221155.jpg": {
+        "O_0": "cow",
+        "O_1": "windmill"
+    },
+    "000000181859.jpg": {
+        "O_0": "cat",
+        "O_1": "sink"
+    },
+    "000000140658.jpg": {
+        "O_0": "clock tower",
+        "O_1": "stained glass window"
+    },
+    "000000273642.jpg": {
+        "O_0": "dog",
+        "O_1": "remote control"
+    },
+    "000000519522.jpg": {
+        "O_0": "clock tower",
+        "O_1": "palace"
+    },
+    "000000302165.jpg": {
+        "O_0": "cow",
+        "O_1": "fence"
+    },
+    "000000033221.jpg": {
+        "O_0": "lifeguard tower",
+        "O_1": "woman holding a baseball bat"
+    },
+    "000000346707.jpg": {
+        "O_0": "banana bunch",
+        "O_1": "banana flower"
+    },
+    "000000463730.jpg": {
+        "O_0": "bus",
+        "O_1": "truck"
+    },
+    "000000290843.jpg": {
+        "O_0": "cat",
+        "O_1": "laptop"
+    },
+    "000000042070.jpg": {
+        "O_0": "bus",
+        "O_1": "building"
+    },
+    "000000255483.jpg": {
+        "O_0": "hand",
+        "O_1": "stack of papers"
+    },
+    "000000430073.jpg": {
+        "O_0": "cow",
+        "O_1": "man"
+    },
+    "000000419653.jpg": {
+        "O_0": "jar",
+        "O_1": "bottle"
+    },
+    "000000500464.jpg": {
+        "O_0": "sink",
+        "O_1": "shelf"
+    },
+    "000000396729.jpg": {
+        "O_0": "camera lens",
+        "O_1": "book"
+    },
+    "000000321214.jpg": {
+        "O_0": "child",
+        "O_1": "cake"
+    },
+    "000000491130.jpg": {
+        "O_0": "Snowboarder",
+        "O_1": "snowboard"
+    },
+    "000000575815.jpg": {
+        "O_0": "pizza",
+        "O_1": "cutting board"
+    },
+    "000000280930.jpg": {
+        "O_0": "child",
+        "O_1": "tray of dough rolls"
+    },
+    "000000127987.jpg": {
+        "O_0": "Bobblehead",
+        "O_1": "computer monitor"
+    },
+    "000000166521.jpg": {
+        "O_0": "television",
+        "O_1": "bookshelf"
+    },
+    "000000306733.jpg": {
+        "O_0": "towel",
+        "O_1": "shower curtain"
+    },
+    "000000266892.jpg": {
+        "O_0": "Tennis player",
+        "O_1": "tennis racket"
+    },
+    "000000572678.jpg": {
+        "O_0": "lamp",
+        "O_1": "couch"
+    },
+    "000000372718.jpg": {
+        "O_0": "flowers",
+        "O_1": "vase"
+    },
+    "000000484760.jpg": {
+        "O_0": "statue",
+        "O_1": "church"
+    },
+    "000000261161.jpg": {
+        "O_0": "bench",
+        "O_1": "dog"
+    },
+    "000000556873.jpg": {
+        "O_0": "cake",
+        "O_1": "field of daisies"
+    },
+    "000000133567.jpg": {
+        "O_0": "train",
+        "O_1": "man"
+    },
+    "000000059920.jpg": {
+        "O_0": "toilet",
+        "O_1": "bidet"
+    },
+    "000000263969.jpg": {
+        "O_0": "bride",
+        "O_1": "groom"
+    },
+    "000000036494.jpg": {
+        "O_0": "clock",
+        "O_1": "restaurant"
+    },
+    "000000090631.jpg": {
+        "O_0": "plane",
+        "O_1": "sky"
+    },
+    "000000002923.jpg": {
+        "O_0": "Grass field",
+        "O_1": "boat"
+    },
+    "000000581062.jpg": {
+        "O_0": "skateboarder",
+        "O_1": "drainage tunnel"
+    },
+    "000000562843.jpg": {
+        "O_0": "cup",
+        "O_1": "pair of scissors"
+    },
+    "000000331317.jpg": {
+        "O_0": "clock",
+        "O_1": "window"
+    },
+    "000000321557.jpg": {
+        "O_0": "motorcycle",
+        "O_1": "building"
+    },
+    "000000358923.jpg": {
+        "O_0": "woman",
+        "O_1": "phone"
+    },
+    "000000067315.jpg": {
+        "O_0": "shirt",
+        "O_1": "tie"
+    },
+    "000000546717.jpg": {
+        "O_0": "woman",
+        "O_1": "laptop"
+    },
+    "000000008532.jpg": {
+        "O_0": "man",
+        "O_1": "hat"
+    },
+    "000000198489.jpg": {
+        "O_0": "girl",
+        "O_1": "car"
+    },
+    "000000499313.jpg": {
+        "O_0": "pizza",
+        "O_1": "plate"
+    },
+    "000000163258.jpg": {
+        "O_0": "toilet",
+        "O_1": "shower"
+    },
+    "000000105923.jpg": {
+        "O_0": "car",
+        "O_1": "building"
+    },
+    "000000378454.jpg": {
+        "O_0": "man",
+        "O_1": "frisbee"
+    },
+    "000000327769.jpg": {
+        "O_0": "cat",
+        "O_1": "sink"
+    },
+    "000000025394.jpg": {
+        "O_0": "man",
+        "O_1": "wine bottle"
+    },
+    "000000036678.jpg": {
+        "O_0": "building",
+        "O_1": "boat"
+    },
+    "000000158956.jpg": {
+        "O_0": "woman",
+        "O_1": "cake"
+    },
+    "000000288685.jpg": {
+        "O_0": "sheep",
+        "O_1": "dog"
+    },
+    "000000066038.jpg": {
+        "O_0": "beach chair",
+        "O_1": "beach umbrella"
+    },
+    "000000243148.jpg": {
+        "O_0": "child",
+        "O_1": "skier"
+    },
+    "000000084362.jpg": {
+        "O_0": "cat",
+        "O_1": "baby"
+    },
+    "000000549390.jpg": {
+        "O_0": "woman",
+        "O_1": "bicycle"
+    },
+    "000000224807.jpg": {
+        "O_0": "table",
+        "O_1": "group of people"
+    },
+    "000000302990.jpg": {
+        "O_0": "Surfer",
+        "O_1": "Wave"
+    },
+    "000000575500.jpg": {
+        "O_0": "banana bunch",
+        "O_1": "flower bud"
+    },
+    "000000383621.jpg": {
+        "O_0": "airplane",
+        "O_1": "pole"
+    },
+    "000000326462.jpg": {
+        "O_0": "Donut",
+        "O_1": "napkin"
+    },
+    "000000500565.jpg": {
+        "O_0": "woman",
+        "O_1": "baby"
+    },
+    "000000393014.jpg": {
+        "O_0": "sandwich",
+        "O_1": "strawberry"
+    },
+    "000000438304.jpg": {
+        "O_0": "woman",
+        "O_1": "tennis racket"
+    },
+    "000000572517.jpg": {
+        "O_0": "polar bear",
+        "O_1": "bird"
+    },
+    "000000103723.jpg": {
+        "O_0": "elephant",
+        "O_1": "woman"
+    },
+    "000000149222.jpg": {
+        "O_0": "computer monitor",
+        "O_1": "computer mouse"
+    },
+    "000000411665.jpg": {
+        "O_0": "mirror",
+        "O_1": "cat"
+    },
+    "000000212226.jpg": {
+        "O_0": "mirror",
+        "O_1": "woman"
+    },
+    "000000345941.jpg": {
+        "O_0": "Strawberry",
+        "O_1": "Dessert"
+    },
+    "000000009772.jpg": {
+        "O_0": "mirror",
+        "O_1": "television"
+    },
+    "000000112997.jpg": {
+        "O_0": "hand",
+        "O_1": "phone"
+    },
+    "000000018575.jpg": {
+        "O_0": "sandwich",
+        "O_1": "pickle"
+    },
+    "000000464251.jpg": {
+        "O_0": "bird",
+        "O_1": "plant"
+    },
+    "000000045596.jpg": {
+        "O_0": "building",
+        "O_1": "person"
+    },
+    "000000195045.jpg": {
+        "O_0": "tree",
+        "O_1": "bench"
+    },
+    "000000453341.jpg": {
+        "O_0": "computer monitor",
+        "O_1": "computer tower"
+    },
+    "000000193717.jpg": {
+        "O_0": "fire hydrant",
+        "O_1": "man"
+    },
+    "000000334767.jpg": {
+        "O_0": "In this image there is 1",
+        "O_1": "ski pole"
+    },
+    "000000377497.jpg": {
+        "O_0": "Zebra",
+        "O_1": "bridle"
+    },
+    "000000120853.jpg": {
+        "O_0": "sandwich",
+        "O_1": "bowl of coleslaw"
+    },
+    "000000165713.jpg": {
+        "O_0": "fire hydrant",
+        "O_1": "pole"
+    },
+    "000000055167.jpg": {
+        "O_0": "bus",
+        "O_1": "van"
+    },
+    "000000028452.jpg": {
+        "O_0": "Refrigerator",
+        "O_1": "bottle"
+    },
+    "000000078823.jpg": {
+        "O_0": "dog",
+        "O_1": "car"
+    },
+    "000000099054.jpg": {
+        "O_0": "airplane",
+        "O_1": "jet bridge"
+    },
+    "000000310622.jpg": {
+        "O_0": "street sign",
+        "O_1": "building"
+    },
+    "000000422998.jpg": {
+        "O_0": "sandwich",
+        "O_1": "bottle of mayonnaise"
+    },
+    "000000080666.jpg": {
+        "O_0": "cat",
+        "O_1": "bench"
+    },
+    "000000479596.jpg": {
+        "O_0": "oranges",
+        "O_1": "apples"
+    },
+    "000000346703.jpg": {
+        "O_0": "man",
+        "O_1": "spoon"
+    },
+    "000000419974.jpg": {
+        "O_0": "dog",
+        "O_1": "knife"
+    },
+    "000000125936.jpg": {
+        "O_0": "man",
+        "O_1": "woman"
+    },
+    "000000102805.jpg": {
+        "O_0": "man",
+        "O_1": "frisbee"
+    },
+    "000000477955.jpg": {
+        "O_0": "kite surfer",
+        "O_1": "kite"
+    },
+    "000000292060.jpg": {
+        "O_0": "stove",
+        "O_1": "sink"
+    },
+    "000000357888.jpg": {
+        "O_0": "man",
+        "O_1": "kite"
+    },
+    "000000443303.jpg": {
+        "O_0": "cat",
+        "O_1": "suitcase"
+    },
+    "000000393569.jpg": {
+        "O_0": "toilet",
+        "O_1": "bunk bed"
+    },
+    "000000549136.jpg": {
+        "O_0": "pole",
+        "O_1": "teddy bear"
+    },
+    "000000304396.jpg": {
+        "O_0": "clock tower",
+        "O_1": "lion sculpture"
+    },
+    "000000440507.jpg": {
+        "O_0": "suitcase",
+        "O_1": "pair of shoes"
+    },
+    "000000322352.jpg": {
+        "O_0": "table",
+        "O_1": "chair"
+    },
+    "000000450303.jpg": {
+        "O_0": "man",
+        "O_1": "laptop"
+    },
+    "000000190307.jpg": {
+        "O_0": "woman",
+        "O_1": "surfboard"
+    },
+    "000000534639.jpg": {
+        "O_0": "train",
+        "O_1": "platform"
+    },
+    "000000031093.jpg": {
+        "O_0": "skateboarder",
+        "O_1": "skateboard"
+    },
+    "000000184762.jpg": {
+        "O_0": "clock",
+        "O_1": "wooden surface"
+    },
+    "000000095843.jpg": {
+        "O_0": "bus",
+        "O_1": "street lamp"
+    },
+    "000000230008.jpg": {
+        "O_0": "motorcycle",
+        "O_1": "police officer"
+    },
+    "000000133418.jpg": {
+        "O_0": "man",
+        "O_1": "tennis racket"
+    },
+    "000000433980.jpg": {
+        "O_0": "woman",
+        "O_1": "phone"
+    },
+    "000000054967.jpg": {
+        "O_0": "street sign",
+        "O_1": "traffic light"
+    },
+    "000000395575.jpg": {
+        "O_0": "bench",
+        "O_1": "horse"
+    },
+    "000000240767.jpg": {
+        "O_0": "brick wall",
+        "O_1": "street sign"
+    },
+    "000000237984.jpg": {
+        "O_0": "bench",
+        "O_1": "chair"
+    },
+    "000000190637.jpg": {
+        "O_0": "child",
+        "O_1": "blanket"
+    },
+    "000000533816.jpg": {
+        "O_0": "woman",
+        "O_1": "tennis court"
+    },
+    "000000532530.jpg": {
+        "O_0": "map",
+        "O_1": "sign"
+    },
+    "000000041488.jpg": {
+        "O_0": "sign",
+        "O_1": "road"
+    },
+    "000000098633.jpg": {
+        "O_0": "cake",
+        "O_1": "strawberry"
+    },
+    "000000127476.jpg": {
+        "O_0": "pizza",
+        "O_1": "plate"
+    },
+    "000000449579.jpg": {
+        "O_0": "Tennis player",
+        "O_1": "tennis racket"
+    },
+    "000000266409.jpg": {
+        "O_0": "man",
+        "O_1": "snow-covered forest"
+    },
+    "000000171190.jpg": {
+        "O_0": "table",
+        "O_1": "wine bottle"
+    },
+    "000000080932.jpg": {
+        "O_0": "child",
+        "O_1": "slice of pizza"
+    },
+    "000000344611.jpg": {
+        "O_0": "water on pavement sign",
+        "O_1": "flooded street"
+    },
+    "000000186938.jpg": {
+        "O_0": "bird",
+        "O_1": "rock"
+    },
+    "000000475387.jpg": {
+        "O_0": "train",
+        "O_1": "platform"
+    },
+    "000000144798.jpg": {
+        "O_0": "bathtub",
+        "O_1": "cup"
+    },
+    "000000500826.jpg": {
+        "O_0": "street sign",
+        "O_1": "building"
+    },
+    "000000404191.jpg": {
+        "O_0": "refrigerator",
+        "O_1": "basket"
+    },
+    "000000205834.jpg": {
+        "O_0": "dog",
+        "O_1": "bowl"
+    },
+    "000000373382.jpg": {
+        "O_0": "Tennis player",
+        "O_1": "tennis racket"
+    },
+    "000000322724.jpg": {
+        "O_0": "skier",
+        "O_1": "snowy mountain"
+    },
+    "000000493613.jpg": {
+        "O_0": "skateboard",
+        "O_1": "shoe"
+    },
+    "000000279730.jpg": {
+        "O_0": "sandwich",
+        "O_1": "cup"
+    },
+    "000000060507.jpg": {
+        "O_0": "Batter",
+        "O_1": "Catcher"
+    },
+    "000000271116.jpg": {
+        "O_0": "man",
+        "O_1": "phone"
+    },
+    "000000466156.jpg": {
+        "O_0": "cat",
+        "O_1": "car"
+    },
+    "000000423617.jpg": {
+        "O_0": "bus",
+        "O_1": "taxi"
+    },
+    "000000187734.jpg": {
+        "O_0": "ladder",
+        "O_1": "tennis ball container"
+    },
+    "000000127270.jpg": {
+        "O_0": "woman",
+        "O_1": "tennis racket"
+    },
+    "000000242678.jpg": {
+        "O_0": "Horse",
+        "O_1": "Rider"
+    },
+    "000000163640.jpg": {
+        "O_0": "man",
+        "O_1": "donut"
+    },
+    "000000446207.jpg": {
+        "O_0": "camera",
+        "O_1": "phone"
+    },
+    "000000393056.jpg": {
+        "O_0": "Surfer",
+        "O_1": "Wave"
+    },
+    "000000201775.jpg": {
+        "O_0": "sink",
+        "O_1": "urinal"
+    },
+    "000000472030.jpg": {
+        "O_0": "tree",
+        "O_1": "bench"
+    },
+    "000000434297.jpg": {
+        "O_0": "sandwich",
+        "O_1": "plate"
+    },
+    "000000523807.jpg": {
+        "O_0": "hot dog",
+        "O_1": "bun"
+    },
+    "000000003501.jpg": {
+        "O_0": "Broccoli",
+        "O_1": "Rice"
+    },
+    "000000219578.jpg": {
+        "O_0": "dog",
+        "O_1": "cat"
+    },
+    "000000232244.jpg": {
+        "O_0": "elephant",
+        "O_1": "blanket"
+    },
+    "000000376365.jpg": {
+        "O_0": "glass candle holder",
+        "O_1": "reflective purple sphere"
+    },
+    "000000144114.jpg": {
+        "O_0": "airplane",
+        "O_1": "propeller"
+    },
+    "000000237316.jpg": {
+        "O_0": "toilet",
+        "O_1": "sink"
+    },
+    "000000446574.jpg": {
+        "O_0": "toilet",
+        "O_1": "bathtub"
+    },
+    "000000234757.jpg": {
+        "O_0": "Parking meter",
+        "O_1": "pole"
+    },
+    "000000389451.jpg": {
+        "O_0": "cow",
+        "O_1": "boat"
+    },
+    "000000272364.jpg": {
+        "O_0": "giraffe",
+        "O_1": "feeder"
+    },
+    "000000072281.jpg": {
+        "O_0": "skateboard",
+        "O_1": "boy"
+    },
+    "000000213255.jpg": {
+        "O_0": "man",
+        "O_1": "hot dog cart"
+    },
+    "000000138979.jpg": {
+        "O_0": "bus",
+        "O_1": "van"
+    },
+    "000000528862.jpg": {
+        "O_0": "giraffe",
+        "O_1": "tree"
+    },
+    "000000367228.jpg": {
+        "O_0": "kite",
+        "O_1": "person"
+    },
+    "000000191471.jpg": {
+        "O_0": "Stop sign",
+        "O_1": "building"
+    },
+    "000000085478.jpg": {
+        "O_0": "polar bear",
+        "O_1": "paw"
+    },
+    "000000530820.jpg": {
+        "O_0": "man",
+        "O_1": "tennis racket"
+    },
+    "000000225532.jpg": {
+        "O_0": "highway sign",
+        "O_1": "streetlight"
+    },
+    "000000183648.jpg": {
+        "O_0": "elephant",
+        "O_1": "man"
+    },
+    "000000333772.jpg": {
+        "O_0": "cat",
+        "O_1": "computer monitor"
+    },
+    "000000199442.jpg": {
+        "O_0": "Surfer",
+        "O_1": "Surfboard"
+    },
+    "000000578545.jpg": {
+        "O_0": "woman",
+        "O_1": "book"
+    },
+    "000000037777.jpg": {
+        "O_0": "fridge",
+        "O_1": "table"
+    },
+    "000000022705.jpg": {
+        "O_0": "woman",
+        "O_1": "refrigerator"
+    },
+    "000000368212.jpg": {
+        "O_0": "child",
+        "O_1": "toilet"
+    },
+    "000000472046.jpg": {
+        "O_0": "pineapple",
+        "O_1": "pot"
+    },
+    "000000576654.jpg": {
+        "O_0": "parasail",
+        "O_1": "person"
+    },
+    "000000455624.jpg": {
+        "O_0": "motorcycle",
+        "O_1": "rider"
+    },
+    "000000547519.jpg": {
+        "O_0": "Bear",
+        "O_1": "forest"
+    },
+    "000000384513.jpg": {
+        "O_0": "Horse",
+        "O_1": "cart"
+    },
+    "000000513688.jpg": {
+        "O_0": "chair",
+        "O_1": "laptop"
+    },
+    "000000192670.jpg": {
+        "O_0": "catcher",
+        "O_1": "batter"
+    },
+    "000000210789.jpg": {
+        "O_0": "girl",
+        "O_1": "woman"
+    },
+    "000000474293.jpg": {
+        "O_0": "window",
+        "O_1": "door"
+    },
+    "000000407650.jpg": {
+        "O_0": "Snowboarder",
+        "O_1": "snowboard"
+    },
+    "000000182162.jpg": {
+        "O_0": "black leather couch",
+        "O_1": "lamp"
+    },
+    "000000406129.jpg": {
+        "O_0": "man",
+        "O_1": "tennis racket"
+    },
+    "000000213033.jpg": {
+        "O_0": "man",
+        "O_1": "umbrella"
+    },
+    "000000407943.jpg": {
+        "O_0": "silhouette of a person",
+        "O_1": "reflective surface"
+    },
+    "000000563648.jpg": {
+        "O_0": "skateboarder",
+        "O_1": "ramp"
+    },
+    "000000186980.jpg": {
+        "O_0": "refrigerator",
+        "O_1": "chandelier"
+    },
+    "000000527029.jpg": {
+        "O_0": "man",
+        "O_1": "banana"
+    },
+    "000000427649.jpg": {
+        "O_0": "mountain",
+        "O_1": "boat"
+    },
+    "000000222863.jpg": {
+        "O_0": "cow",
+        "O_1": "rope"
+    },
+    "000000565962.jpg": {
+        "O_0": "cat",
+        "O_1": "statue"
+    },
+    "000000085329.jpg": {
+        "O_0": "woman",
+        "O_1": "necklace"
+    },
+    "000000581100.jpg": {
+        "O_0": "Giraffe",
+        "O_1": "Palm Tree"
+    },
+    "000000304560.jpg": {
+        "O_0": "cat",
+        "O_1": "grass field"
+    },
+    "000000400803.jpg": {
+        "O_0": "lifeboat",
+        "O_1": "flag"
+    },
+    "000000313182.jpg": {
+        "O_0": "bus",
+        "O_1": "building"
+    },
+    "000000086956.jpg": {
+        "O_0": "woman",
+        "O_1": "man"
+    },
+    "000000249180.jpg": {
+        "O_0": "man",
+        "O_1": "staircase"
+    },
+    "000000162581.jpg": {
+        "O_0": "man",
+        "O_1": "tennis racket"
+    },
+    "000000303863.jpg": {
+        "O_0": "train",
+        "O_1": "building"
+    },
+    "000000047112.jpg": {
+        "O_0": "pizza",
+        "O_1": "glass of beer"
+    },
+    "000000310200.jpg": {
+        "O_0": "donut",
+        "O_1": "plate"
+    },
+    "000000170545.jpg": {
+        "O_0": "traffic light",
+        "O_1": "street sign"
+    },
+    "000000253835.jpg": {
+        "O_0": "train",
+        "O_1": "woman"
+    },
+    "000000516677.jpg": {
+        "O_0": "group of people",
+        "O_1": "snowy mountain landscape"
+    },
+    "000000229111.jpg": {
+        "O_0": "remote control",
+        "O_1": "boy"
+    },
+    "000000065736.jpg": {
+        "O_0": "woman",
+        "O_1": "tennis racket"
+    },
+    "000000102331.jpg": {
+        "O_0": "motorcyclist",
+        "O_1": "dirt bike"
+    },
+    "000000048555.jpg": {
+        "O_0": "Horse",
+        "O_1": "Rider"
+    },
+    "000000001425.jpg": {
+        "O_0": "sandwich",
+        "O_1": "cup"
+    },
+    "000000327605.jpg": {
+        "O_0": "person",
+        "O_1": "ski lift"
+    },
+    "000000253819.jpg": {
+        "O_0": "skateboard",
+        "O_1": "person"
+    },
+    "000000035326.jpg": {
+        "O_0": "spice rack",
+        "O_1": "stove top"
+    },
+    "000000298396.jpg": {
+        "O_0": "clock",
+        "O_1": "table"
+    },
+    "000000517069.jpg": {
+        "O_0": "woman",
+        "O_1": "bus stop sign"
+    },
+    "000000130599.jpg": {
+        "O_0": "man",
+        "O_1": "giraffe"
+    },
+    "000000337987.jpg": {
+        "O_0": "bird",
+        "O_1": "branch"
+    },
+    "000000061658.jpg": {
+        "O_0": "broccoli",
+        "O_1": "cauliflower"
+    },
+    "000000169356.jpg": {
+        "O_0": "skateboard",
+        "O_1": "fence"
+    },
+    "000000538364.jpg": {
+        "O_0": "motorcycle",
+        "O_1": "police officer"
+    },
+    "000000331817.jpg": {
+        "O_0": "spatula",
+        "O_1": "bowl"
+    },
+    "000000166478.jpg": {
+        "O_0": "man",
+        "O_1": "laptop"
+    },
+    "000000569030.jpg": {
+        "O_0": "Bench",
+        "O_1": "Fire Hydrant"
+    },
+    "000000497568.jpg": {
+        "O_0": "airplane",
+        "O_1": "terminal building"
+    },
+    "000000076417.jpg": {
+        "O_0": "dog",
+        "O_1": "car"
+    },
+    "000000050679.jpg": {
+        "O_0": "orange",
+        "O_1": "road"
+    },
+    "000000170474.jpg": {
+        "O_0": "Tennis player",
+        "O_1": "tennis racket"
+    },
+    "000000209972.jpg": {
+        "O_0": "boat",
+        "O_1": "beach"
+    },
+    "000000021879.jpg": {
+        "O_0": "girl",
+        "O_1": "surfboard"
+    },
+    "000000369675.jpg": {
+        "O_0": "train",
+        "O_1": "platform"
+    },
+    "000000027186.jpg": {
+        "O_0": "girl",
+        "O_1": "couch"
+    },
+    "000000356427.jpg": {
+        "O_0": "man",
+        "O_1": "backpack"
+    },
+    "000000345361.jpg": {
+        "O_0": "child",
+        "O_1": "table"
+    },
+    "000000002006.jpg": {
+        "O_0": "Bus",
+        "O_1": "Road"
+    },
+    "000000503855.jpg": {
+        "O_0": "yellow umbrella",
+        "O_1": "palm tree"
+    },
+    "000000152465.jpg": {
+        "O_0": "fire hydrant",
+        "O_1": "tire"
+    },
+    "000000032941.jpg": {
+        "O_0": "pole",
+        "O_1": "yellow sign"
+    },
+    "000000020333.jpg": {
+        "O_0": "child",
+        "O_1": "bucket"
+    },
+    "000000415716.jpg": {
+        "O_0": "cabinet",
+        "O_1": "lamp"
+    },
+    "000000084170.jpg": {
+        "O_0": "bus",
+        "O_1": "car"
+    },
+    "000000515266.jpg": {
+        "O_0": "truck",
+        "O_1": "trailer"
+    },
+    "000000556193.jpg": {
+        "O_0": "man",
+        "O_1": "television"
+    },
+    "000000400082.jpg": {
+        "O_0": "hot dog",
+        "O_1": "box of fries"
+    },
+    "000000333237.jpg": {
+        "O_0": "bed",
+        "O_1": "dresser"
+    },
+    "000000191845.jpg": {
+        "O_0": "crowd of people crossing a street",
+        "O_1": "variety of colorful umbrellas"
+    },
+    "000000239318.jpg": {
+        "O_0": "laptop",
+        "O_1": "keyboard"
+    },
+    "000000032610.jpg": {
+        "O_0": "backpack",
+        "O_1": "laptop"
+    },
+    "000000146363.jpg": {
+        "O_0": "beach chair",
+        "O_1": "beach umbrella"
+    },
+    "000000133819.jpg": {
+        "O_0": "bus",
+        "O_1": "street sign"
+    },
+    "000000478420.jpg": {
+        "O_0": "woman",
+        "O_1": "phone"
+    },
+    "000000297830.jpg": {
+        "O_0": "dog",
+        "O_1": "bottle"
+    },
+    "000000067534.jpg": {
+        "O_0": "shirt",
+        "O_1": "tie"
+    },
+    "000000129756.jpg": {
+        "O_0": "man",
+        "O_1": "sheep"
+    },
+    "000000385997.jpg": {
+        "O_0": "dog",
+        "O_1": "fan"
+    },
+    "000000227478.jpg": {
+        "O_0": "woman",
+        "O_1": "bench"
+    },
+    "000000529966.jpg": {
+        "O_0": "bowl",
+        "O_1": "orange"
+    },
+    "000000076416.jpg": {
+        "O_0": "bus",
+        "O_1": "building"
+    },
+    "000000579307.jpg": {
+        "O_0": "kite",
+        "O_1": "boy"
+    },
+    "000000555412.jpg": {
+        "O_0": "bread",
+        "O_1": "prosciutto"
+    },
+    "000000046252.jpg": {
+        "O_0": "Batter",
+        "O_1": "Catcher"
+    },
+    "000000136600.jpg": {
+        "O_0": "laptop",
+        "O_1": "shelf"
+    },
+    "000000096549.jpg": {
+        "O_0": "airplane",
+        "O_1": "runway"
+    },
+    "000000512985.jpg": {
+        "O_0": "Surfer",
+        "O_1": "Surfboard"
+    },
+    "000000007888.jpg": {
+        "O_0": "clock",
+        "O_1": "pole"
+    },
+    "000000398203.jpg": {
+        "O_0": "soccer ball",
+        "O_1": "boy"
+    },
+    "000000157601.jpg": {
+        "O_0": "woman",
+        "O_1": "coffee cup"
+    },
+    "000000111951.jpg": {
+        "O_0": "mirror",
+        "O_1": "sink"
+    },
+    "000000531495.jpg": {
+        "O_0": "boat",
+        "O_1": "dock"
+    },
+    "000000528980.jpg": {
+        "O_0": "red umbrella",
+        "O_1": "building"
+    },
+    "000000002685.jpg": {
+        "O_0": "man",
+        "O_1": "woman"
+    },
+    "000000455352.jpg": {
+        "O_0": "clock tower",
+        "O_1": "clock"
+    },
+    "000000037689.jpg": {
+        "O_0": "Snowboarder",
+        "O_1": "snowboard"
+    },
+    "000000540928.jpg": {
+        "O_0": "chair",
+        "O_1": "cat"
+    },
+    "000000230983.jpg": {
+        "O_0": "skateboard",
+        "O_1": "bucket"
+    },
+    "000000552842.jpg": {
+        "O_0": "Pitcher",
+        "O_1": "baseball"
+    },
+    "000000491757.jpg": {
+        "O_0": "cat",
+        "O_1": "bed"
+    },
+    "000000303893.jpg": {
+        "O_0": "child",
+        "O_1": "pizza box"
+    },
+    "000000550471.jpg": {
+        "O_0": "orange slice",
+        "O_1": "fork"
+    },
+    "000000436551.jpg": {
+        "O_0": "swan",
+        "O_1": "reed"
+    },
+    "000000470779.jpg": {
+        "O_0": "group of people skiing",
+        "O_1": "snowy landscape"
+    },
+    "000000241319.jpg": {
+        "O_0": "toothbrush",
+        "O_1": "toothbrush holder"
+    },
+    "000000270908.jpg": {
+        "O_0": "man",
+        "O_1": "tennis racket"
+    },
+    "000000400044.jpg": {
+        "O_0": "Snowboarder",
+        "O_1": "building"
+    },
+    "000000054164.jpg": {
+        "O_0": "Surfer",
+        "O_1": "Wave"
+    },
+    "000000153217.jpg": {
+        "O_0": "cat",
+        "O_1": "motorcycle"
+    },
+    "000000351331.jpg": {
+        "O_0": "pizza",
+        "O_1": "fork"
+    },
+    "000000402346.jpg": {
+        "O_0": "flower",
+        "O_1": "tomato"
+    },
+    "000000292488.jpg": {
+        "O_0": "person",
+        "O_1": "phone"
+    },
+    "000000104198.jpg": {
+        "O_0": "temple",
+        "O_1": "stop sign"
+    },
+    "000000032811.jpg": {
+        "O_0": "bird",
+        "O_1": "window"
+    },
+    "000000214703.jpg": {
+        "O_0": "person",
+        "O_1": "surfboard"
+    },
+    "000000133087.jpg": {
+        "O_0": "traffic light",
+        "O_1": "street lamp"
+    },
+    "000000134096.jpg": {
+        "O_0": "cat",
+        "O_1": "faucet"
+    },
+    "000000527616.jpg": {
+        "O_0": "TV",
+        "O_1": "sign"
+    },
+    "000000275198.jpg": {
+        "O_0": "woman",
+        "O_1": "table"
+    },
+    "000000458325.jpg": {
+        "O_0": "skateboard",
+        "O_1": "man"
+    },
+    "000000516318.jpg": {
+        "O_0": "Surfer",
+        "O_1": "Bird"
+    },
+    "000000308391.jpg": {
+        "O_0": "sign",
+        "O_1": "building"
+    },
+    "000000293044.jpg": {
+        "O_0": "orange",
+        "O_1": "carrot"
+    },
+    "000000328286.jpg": {
+        "O_0": "CityFerry",
+        "O_1": "Thornton Street Ferry sign"
+    },
+    "000000320664.jpg": {
+        "O_0": "hot dog",
+        "O_1": "plate"
+    },
+    "000000110638.jpg": {
+        "O_0": "elephant calf",
+        "O_1": "mother elephant"
+    },
+    "000000447342.jpg": {
+        "O_0": "trolley",
+        "O_1": "bus"
+    },
+    "000000232646.jpg": {
+        "O_0": "STOP SIGN",
+        "O_1": "RAILING"
+    },
+    "000000407298.jpg": {
+        "O_0": "Boy",
+        "O_1": "baseball glove"
+    },
+    "000000560474.jpg": {
+        "O_0": "car",
+        "O_1": "mannequin head"
+    },
+    "000000478286.jpg": {
+        "O_0": "train",
+        "O_1": "streetlight"
+    },
+    "000000100238.jpg": {
+        "O_0": "man",
+        "O_1": "frisbee"
+    },
+    "000000135410.jpg": {
+        "O_0": "parking meter",
+        "O_1": "swing set"
+    },
+    "000000294831.jpg": {
+        "O_0": "pizza slice",
+        "O_1": "plate"
+    },
+    "000000388927.jpg": {
+        "O_0": "phone",
+        "O_1": "pastry"
+    },
+    "000000544519.jpg": {
+        "O_0": "toothbrush",
+        "O_1": "girl"
+    },
+    "000000361268.jpg": {
+        "O_0": "cow",
+        "O_1": "fence"
+    },
+    "000000116589.jpg": {
+        "O_0": "Zebra",
+        "O_1": "log"
+    },
+    "000000268378.jpg": {
+        "O_0": "woman",
+        "O_1": "table"
+    },
+    "000000194832.jpg": {
+        "O_0": "seat",
+        "O_1": "screen"
+    },
+    "000000201148.jpg": {
+        "O_0": "train",
+        "O_1": "signal light"
+    },
+    "000000412531.jpg": {
+        "O_0": "parking meter",
+        "O_1": "fence"
+    },
+    "000000382009.jpg": {
+        "O_0": "Tennis player",
+        "O_1": "tennis racket"
+    },
+    "000000304291.jpg": {
+        "O_0": "horse",
+        "O_1": "fence"
+    },
+    "000000371529.jpg": {
+        "O_0": "girl",
+        "O_1": "toilet"
+    },
+    "000000129322.jpg": {
+        "O_0": "toilet",
+        "O_1": "toilet paper roll"
+    },
+    "000000017436.jpg": {
+        "O_0": "man",
+        "O_1": "church"
+    },
+    "000000123213.jpg": {
+        "O_0": "Batter",
+        "O_1": "Catcher"
+    },
+    "000000523782.jpg": {
+        "O_0": "car",
+        "O_1": "truck"
+    },
+    "000000255912.jpg": {
+        "O_0": "sandwich",
+        "O_1": "salad"
+    },
+    "000000520077.jpg": {
+        "O_0": "Corona bottle",
+        "O_1": "stack of books"
+    },
+    "000000490171.jpg": {
+        "O_0": "dog",
+        "O_1": "surfboard"
+    },
+    "000000062554.jpg": {
+        "O_0": "broccoli",
+        "O_1": "bowl"
+    },
+    "000000547502.jpg": {
+        "O_0": "dog",
+        "O_1": "frisbee"
+    },
+    "000000088970.jpg": {
+        "O_0": "Tennis player",
+        "O_1": "tennis racket"
+    },
+    "000000423519.jpg": {
+        "O_0": "bus",
+        "O_1": "tree"
+    },
+    "000000383676.jpg": {
+        "O_0": "Giraffe",
+        "O_1": "fence"
+    },
+    "000000407825.jpg": {
+        "O_0": "apple clock",
+        "O_1": "penguin card"
+    },
+    "000000231822.jpg": {
+        "O_0": "sandwich",
+        "O_1": "glass of juice"
+    },
+    "000000312192.jpg": {
+        "O_0": "pizza",
+        "O_1": "bottle"
+    },
+    "000000272566.jpg": {
+        "O_0": "man",
+        "O_1": "basket of bananas"
+    },
+    "000000438774.jpg": {
+        "O_0": "man",
+        "O_1": "woman"
+    },
+    "000000437205.jpg": {
+        "O_0": "boy",
+        "O_1": "banana"
+    },
+    "000000261888.jpg": {
+        "O_0": "cyclist",
+        "O_1": "horse"
+    },
+    "000000163611.jpg": {
+        "O_0": "pizza",
+        "O_1": "fork"
+    },
+    "000000249129.jpg": {
+        "O_0": "teddy bear",
+        "O_1": "table"
+    },
+    "000000427997.jpg": {
+        "O_0": "Tennis player",
+        "O_1": "tennis racket"
+    },
+    "000000092091.jpg": {
+        "O_0": "child",
+        "O_1": "teddy bear"
+    },
+    "000000356505.jpg": {
+        "O_0": "woman",
+        "O_1": "wave"
+    },
+    "000000534041.jpg": {
+        "O_0": "child",
+        "O_1": "woman"
+    },
+    "000000361238.jpg": {
+        "O_0": "woman",
+        "O_1": "pizza"
+    },
+    "000000239773.jpg": {
+        "O_0": "batter",
+        "O_1": "baseball bat"
+    },
+    "000000156278.jpg": {
+        "O_0": "clock",
+        "O_1": "cabinet"
+    },
+    "000000359855.jpg": {
+        "O_0": "suitcase",
+        "O_1": "plant"
+    },
+    "000000430377.jpg": {
+        "O_0": "person",
+        "O_1": "ski lift"
+    },
+    "000000112634.jpg": {
+        "O_0": "giraffe",
+        "O_1": "tree"
+    },
+    "000000559543.jpg": {
+        "O_0": "girl",
+        "O_1": "couch"
+    },
+    "000000252332.jpg": {
+        "O_0": "Stop sign",
+        "O_1": "tree"
+    },
+    "000000141597.jpg": {
+        "O_0": "van",
+        "O_1": "car"
+    },
+    "000000570664.jpg": {
+        "O_0": "cat",
+        "O_1": "person"
+    },
+    "000000161875.jpg": {
+        "O_0": "girl",
+        "O_1": "tree"
+    },
+    "000000488592.jpg": {
+        "O_0": "market",
+        "O_1": "bicycle"
+    },
+    "000000109441.jpg": {
+        "O_0": "building",
+        "O_1": "traffic light"
+    },
+    "000000038048.jpg": {
+        "O_0": "fire hydrant",
+        "O_1": "pedestrian crossing sign"
+    },
+    "000000559099.jpg": {
+        "O_0": "cow",
+        "O_1": "field"
+    },
+    "000000114770.jpg": {
+        "O_0": "jeep",
+        "O_1": "motorcycle"
+    },
+    "000000281687.jpg": {
+        "O_0": "woman",
+        "O_1": "phone"
+    },
+    "000000443426.jpg": {
+        "O_0": "man",
+        "O_1": "whiteboard"
+    },
+    "000000416104.jpg": {
+        "O_0": "umbrella",
+        "O_1": "table"
+    },
+    "000000026690.jpg": {
+        "O_0": "skateboarder",
+        "O_1": "skateboard"
+    },
+    "000000017029.jpg": {
+        "O_0": "dog",
+        "O_1": "frisbee"
+    },
+    "000000379533.jpg": {
+        "O_0": "Zebra",
+        "O_1": "Elephant"
+    },
+    "000000401250.jpg": {
+        "O_0": "skier",
+        "O_1": "ski"
+    },
+    "000000065485.jpg": {
+        "O_0": "jeep",
+        "O_1": "dog"
+    },
+    "000000472298.jpg": {
+        "O_0": "boat",
+        "O_1": "man"
+    },
+    "000000445658.jpg": {
+        "O_0": "stove",
+        "O_1": "microwave"
+    },
+    "000000120777.jpg": {
+        "O_0": "sandwich",
+        "O_1": "cup"
+    },
+    "000000161609.jpg": {
+        "O_0": "dog",
+        "O_1": "backpack"
+    },
+    "000000449996.jpg": {
+        "O_0": "airplane",
+        "O_1": "runway"
+    },
+    "000000017905.jpg": {
+        "O_0": "man",
+        "O_1": "traffic light"
+    },
+    "000000100489.jpg": {
+        "O_0": "bird",
+        "O_1": "tree branch"
+    },
+    "000000157365.jpg": {
+        "O_0": "Man",
+        "O_1": "skateboard"
+    },
+    "000000492362.jpg": {
+        "O_0": "man",
+        "O_1": "skateboard"
+    },
+    "000000543043.jpg": {
+        "O_0": "bus",
+        "O_1": "car"
+    },
+    "000000528578.jpg": {
+        "O_0": "clock tower",
+        "O_1": "bridge"
+    },
+    "000000256192.jpg": {
+        "O_0": "motorcycle",
+        "O_1": "crowd"
+    },
+    "000000216497.jpg": {
+        "O_0": "microwave",
+        "O_1": "kitchen island"
+    },
+    "000000209829.jpg": {
+        "O_0": "Surfer",
+        "O_1": "Wave"
+    },
+    "000000552902.jpg": {
+        "O_0": "Zebra",
+        "O_1": "Tree"
+    },
+    "000000291619.jpg": {
+        "O_0": "man",
+        "O_1": "frisbee"
+    },
+    "000000537812.jpg": {
+        "O_0": "toilet",
+        "O_1": "bucket"
+    },
+    "000000449312.jpg": {
+        "O_0": "woman",
+        "O_1": "cake display case"
+    },
+    "000000151857.jpg": {
+        "O_0": "train",
+        "O_1": "platform"
+    },
+    "000000110884.jpg": {
+        "O_0": "sink",
+        "O_1": "toilet"
+    },
+    "000000063154.jpg": {
+        "O_0": "Surfer",
+        "O_1": "Surfboard"
+    },
+    "000000146825.jpg": {
+        "O_0": "train",
+        "O_1": "platform"
+    },
+    "000000460841.jpg": {
+        "O_0": "cat",
+        "O_1": "bottle"
+    },
+    "000000384468.jpg": {
+        "O_0": "elephant",
+        "O_1": "person"
+    },
+    "000000033104.jpg": {
+        "O_0": "man",
+        "O_1": "skier"
+    },
+    "000000404249.jpg": {
+        "O_0": "Boy",
+        "O_1": "skateboard"
+    },
+    "000000484978.jpg": {
+        "O_0": "woman",
+        "O_1": "table"
+    },
+    "000000429718.jpg": {
+        "O_0": "train",
+        "O_1": "signal light"
+    },
+    "000000166166.jpg": {
+        "O_0": "television",
+        "O_1": "vase"
+    },
+    "000000183709.jpg": {
+        "O_0": "man",
+        "O_1": "traffic light"
+    },
+    "000000116208.jpg": {
+        "O_0": "pizza",
+        "O_1": "bottle"
+    },
+    "000000422886.jpg": {
+        "O_0": "man",
+        "O_1": "hot dog"
+    },
+    "000000042528.jpg": {
+        "O_0": "chair",
+        "O_1": "phone"
+    },
+    "000000233033.jpg": {
+        "O_0": "umbrella",
+        "O_1": "table"
+    },
+    "000000499109.jpg": {
+        "O_0": "sandwich",
+        "O_1": "pickle"
+    },
+    "000000284279.jpg": {
+        "O_0": "bird feeder",
+        "O_1": "bird"
+    },
+    "000000228214.jpg": {
+        "O_0": "man",
+        "O_1": "phone"
+    },
+    "000000309678.jpg": {
+        "O_0": "hand",
+        "O_1": "tomato"
+    },
+    "000000193494.jpg": {
+        "O_0": "bed",
+        "O_1": "quilt"
+    },
+    "000000229659.jpg": {
+        "O_0": "computer screen",
+        "O_1": "laptop"
+    },
+    "000000197388.jpg": {
+        "O_0": "skier",
+        "O_1": "ski pole"
+    },
+    "000000528314.jpg": {
+        "O_0": "skier",
+        "O_1": "snow-covered slope"
+    },
+    "000000421834.jpg": {
+        "O_0": "bird feeder",
+        "O_1": "cardinal"
+    },
+    "000000323355.jpg": {
+        "O_0": "pizza",
+        "O_1": "boy"
+    },
+    "000000023751.jpg": {
+        "O_0": "statue",
+        "O_1": "kite"
+    },
+    "000000424135.jpg": {
+        "O_0": "Clock",
+        "O_1": "Building"
+    },
+    "000000470173.jpg": {
+        "O_0": "Statue",
+        "O_1": "Palm Plant"
+    },
+    "000000093261.jpg": {
+        "O_0": "man",
+        "O_1": "kite"
+    },
+    "000000239627.jpg": {
+        "O_0": "sink",
+        "O_1": "faucet"
+    },
+    "000000470773.jpg": {
+        "O_0": "chef",
+        "O_1": "buffet table"
+    },
+    "000000176857.jpg": {
+        "O_0": "cat",
+        "O_1": "woman"
+    },
+    "000000526103.jpg": {
+        "O_0": "elephant",
+        "O_1": "sign"
+    },
+    "000000520707.jpg": {
+        "O_0": "man",
+        "O_1": "volunteer"
+    },
+    "000000183391.jpg": {
+        "O_0": "tennis racket",
+        "O_1": "tennis player"
+    },
+    "000000438876.jpg": {
+        "O_0": "man",
+        "O_1": "tennis ball"
+    },
+    "000000515982.jpg": {
+        "O_0": "baseball player sliding into base",
+        "O_1": "baseball player catching the ball"
+    },
+    "000000097994.jpg": {
+        "O_0": "lamp",
+        "O_1": "monitor"
+    },
+    "000000060052.jpg": {
+        "O_0": "hand",
+        "O_1": "pole"
+    },
+    "000000248810.jpg": {
+        "O_0": "giraffe",
+        "O_1": "fence"
+    },
+    "000000209142.jpg": {
+        "O_0": "salad",
+        "O_1": "fork"
+    },
+    "000000270244.jpg": {
+        "O_0": "zebra",
+        "O_1": "field"
+    },
+    "000000222455.jpg": {
+        "O_0": "Microwave",
+        "O_1": "Snack Pack"
+    },
+    "000000369771.jpg": {
+        "O_0": "cheese",
+        "O_1": "fork"
+    },
+    "000000031050.jpg": {
+        "O_0": "Vase",
+        "O_1": "Dried Flowers"
+    },
+    "000000521819.jpg": {
+        "O_0": "frisbee",
+        "O_1": "group of people"
+    },
+    "000000563267.jpg": {
+        "O_0": "man",
+        "O_1": "table"
+    },
+    "000000399462.jpg": {
+        "O_0": "Girl",
+        "O_1": "kite"
+    },
+    "000000534827.jpg": {
+        "O_0": "motorcycle",
+        "O_1": "helmet"
+    },
+    "000000579970.jpg": {
+        "O_0": "lamp",
+        "O_1": "couch"
+    },
+    "000000263679.jpg": {
+        "O_0": "kite",
+        "O_1": "person"
+    },
+    "000000405195.jpg": {
+        "O_0": "display case",
+        "O_1": "variety of donuts"
+    },
+    "000000457559.jpg": {
+        "O_0": "soccer player",
+        "O_1": "soccer ball"
+    },
+    "000000557672.jpg": {
+        "O_0": "woman",
+        "O_1": "umbrella"
+    },
+    "000000261097.jpg": {
+        "O_0": "Tennis player",
+        "O_1": "crowd"
+    },
+    "000000553669.jpg": {
+        "O_0": "man",
+        "O_1": "laptop"
+    },
+    "000000419312.jpg": {
+        "O_0": "glass",
+        "O_1": "plate"
+    },
+    "000000558114.jpg": {
+        "O_0": "coach",
+        "O_1": "basketball player"
+    },
+    "000000132931.jpg": {
+        "O_0": "man",
+        "O_1": "baseball field"
+    },
+    "000000022371.jpg": {
+        "O_0": "man",
+        "O_1": "laptop"
+    },
+    "000000466256.jpg": {
+        "O_0": "salad",
+        "O_1": "fork"
+    },
+    "000000148739.jpg": {
+        "O_0": "Surfer",
+        "O_1": "wave"
+    },
+    "000000136633.jpg": {
+        "O_0": "market stall",
+        "O_1": "woman walking"
+    },
+    "000000255824.jpg": {
+        "O_0": "eclair",
+        "O_1": "mug"
+    },
+    "000000292997.jpg": {
+        "O_0": "SUV",
+        "O_1": "car"
+    },
+    "000000500716.jpg": {
+        "O_0": "man",
+        "O_1": "pair of scissors"
+    },
+    "000000499181.jpg": {
+        "O_0": "traffic light",
+        "O_1": "parking sign"
+    },
+    "000000471893.jpg": {
+        "O_0": "boy",
+        "O_1": "man"
+    },
+    "000000563281.jpg": {
+        "O_0": "child",
+        "O_1": "toy rooster"
+    },
+    "000000250619.jpg": {
+        "O_0": "umbrella",
+        "O_1": "woman"
+    },
+    "000000482970.jpg": {
+        "O_0": "laptop",
+        "O_1": "speaker"
+    },
+    "000000142324.jpg": {
+        "O_0": "man",
+        "O_1": "scooter"
+    },
+    "000000002153.jpg": {
+        "O_0": "Pitcher",
+        "O_1": "Batter"
+    },
+    "000000048564.jpg": {
+        "O_0": "man",
+        "O_1": "snowboarder"
+    },
+    "000000433192.jpg": {
+        "O_0": "laptop",
+        "O_1": "bed"
+    },
+    "000000155051.jpg": {
+        "O_0": "clock",
+        "O_1": "moon"
+    },
+    "000000330554.jpg": {
+        "O_0": "blender",
+        "O_1": "countertop"
+    },
+    "000000427338.jpg": {
+        "O_0": "wall",
+        "O_1": "motorcycle"
+    },
+    "000000467848.jpg": {
+        "O_0": "truck",
+        "O_1": "trailer"
+    },
+    "000000012748.jpg": {
+        "O_0": "horse",
+        "O_1": "baby"
+    },
+    "000000354753.jpg": {
+        "O_0": "traffic light",
+        "O_1": "car"
+    },
+    "000000442993.jpg": {
+        "O_0": "clock tower",
+        "O_1": "building"
+    },
+    "000000226171.jpg": {
+        "O_0": "computer monitor",
+        "O_1": "keyboard"
+    },
+    "000000528524.jpg": {
+        "O_0": "sheep",
+        "O_1": "bush"
+    },
+    "000000447187.jpg": {
+        "O_0": "Batter",
+        "O_1": "Catcher"
+    },
+    "000000022755.jpg": {
+        "O_0": "mirror",
+        "O_1": "bus"
+    },
+    "000000227511.jpg": {
+        "O_0": "car",
+        "O_1": "sign"
+    },
+    "000000153527.jpg": {
+        "O_0": "wooden rail",
+        "O_1": "pile of bricks"
+    },
+    "000000100510.jpg": {
+        "O_0": "horse",
+        "O_1": "rider"
+    },
+    "000000260470.jpg": {
+        "O_0": "cake",
+        "O_1": "display case"
+    },
+    "000000329614.jpg": {
+        "O_0": "bus",
+        "O_1": "car"
+    },
+    "000000298738.jpg": {
+        "O_0": "panda",
+        "O_1": "bamboo plant"
+    },
+    "000000278848.jpg": {
+        "O_0": "bus stop sign",
+        "O_1": "double-decker bus"
+    },
+    "000000005529.jpg": {
+        "O_0": "skier",
+        "O_1": "snowy forest"
+    },
+    "000000050943.jpg": {
+        "O_0": "Surfer",
+        "O_1": "Wave"
+    },
+    "000000006723.jpg": {
+        "O_0": "building",
+        "O_1": "street"
+    },
+    "000000439180.jpg": {
+        "O_0": "horse",
+        "O_1": "rider"
+    },
+    "000000215723.jpg": {
+        "O_0": "umbrella",
+        "O_1": "car"
+    },
+    "000000229747.jpg": {
+        "O_0": "airplane",
+        "O_1": "sky"
+    },
+    "000000446206.jpg": {
+        "O_0": "train",
+        "O_1": "bus"
+    },
+    "000000230450.jpg": {
+        "O_0": "construction site",
+        "O_1": "parking meter"
+    },
+    "000000269682.jpg": {
+        "O_0": "traffic light",
+        "O_1": "street sign"
+    },
+    "000000383606.jpg": {
+        "O_0": "sink",
+        "O_1": "mirror"
+    },
+    "000000355169.jpg": {
+        "O_0": "clock",
+        "O_1": "train schedule board"
+    },
+    "000000419882.jpg": {
+        "O_0": "train tracks",
+        "O_1": "building"
+    },
+    "000000046031.jpg": {
+        "O_0": "laptop",
+        "O_1": "monitor"
+    },
+    "000000523033.jpg": {
+        "O_0": "wave",
+        "O_1": "surfer"
+    },
+    "000000460682.jpg": {
+        "O_0": "Horse",
+        "O_1": "Hill"
+    },
+    "000000478862.jpg": {
+        "O_0": "airplane",
+        "O_1": "flag"
+    },
+    "000000355905.jpg": {
+        "O_0": "Dog",
+        "O_1": "beach"
+    },
+    "000000256941.jpg": {
+        "O_0": "umbrella",
+        "O_1": "bicycle"
+    },
+    "000000251572.jpg": {
+        "O_0": "woman",
+        "O_1": "puppy"
+    },
+    "000000390902.jpg": {
+        "O_0": "man",
+        "O_1": "racket"
+    },
+    "000000423798.jpg": {
+        "O_0": "traffic light",
+        "O_1": "streetlight"
+    },
+    "000000017379.jpg": {
+        "O_0": "mirror",
+        "O_1": "television"
+    },
+    "000000511760.jpg": {
+        "O_0": "man",
+        "O_1": "child"
+    },
+    "000000568290.jpg": {
+        "O_0": "bus",
+        "O_1": "tree"
+    },
+    "000000216636.jpg": {
+        "O_0": "cake",
+        "O_1": "candle"
+    },
+    "000000179392.jpg": {
+        "O_0": "cat",
+        "O_1": "computer monitor"
+    },
+    "000000230362.jpg": {
+        "O_0": "boat",
+        "O_1": "mast"
+    },
+    "000000227491.jpg": {
+        "O_0": "woman",
+        "O_1": "ski poles"
+    },
+    "000000308531.jpg": {
+        "O_0": "Clock tower",
+        "O_1": "bush"
+    },
+    "000000285894.jpg": {
+        "O_0": "giraffe",
+        "O_1": "palm tree"
+    },
+    "000000302107.jpg": {
+        "O_0": "Batter",
+        "O_1": "Catcher"
+    },
+    "000000218997.jpg": {
+        "O_0": "child",
+        "O_1": "baseball"
+    },
+    "000000446117.jpg": {
+        "O_0": "orange",
+        "O_1": "bench"
+    },
+    "000000028449.jpg": {
+        "O_0": "elephant",
+        "O_1": "herd of elephants"
+    },
+    "000000402765.jpg": {
+        "O_0": "Wii Remote",
+        "O_1": "Hand"
+    },
+    "000000402433.jpg": {
+        "O_0": "pizza",
+        "O_1": "scooter"
+    },
+    "000000551439.jpg": {
+        "O_0": "woman",
+        "O_1": "book"
+    },
+    "000000433515.jpg": {
+        "O_0": "kite",
+        "O_1": "field"
+    },
+    "000000558558.jpg": {
+        "O_0": "traffic light",
+        "O_1": "car"
+    },
+    "000000109313.jpg": {
+        "O_0": "man",
+        "O_1": "remote control"
+    },
+    "000000017031.jpg": {
+        "O_0": "giraffe",
+        "O_1": "tree"
+    },
+    "000000355677.jpg": {
+        "O_0": "Lifeguard surfboard",
+        "O_1": "yellow flag"
+    },
+    "000000223130.jpg": {
+        "O_0": "giraffe",
+        "O_1": "tree"
+    },
+    "000000190753.jpg": {
+        "O_0": "man",
+        "O_1": "bench"
+    },
+    "000000010995.jpg": {
+        "O_0": "bed",
+        "O_1": "window"
+    },
+    "000000476704.jpg": {
+        "O_0": "bus",
+        "O_1": "truck"
+    },
+    "000000124442.jpg": {
+        "O_0": "man",
+        "O_1": "kite"
+    },
+    "000000567197.jpg": {
+        "O_0": "West Washington Market",
+        "O_1": "truck"
+    },
+    "000000100428.jpg": {
+        "O_0": "man",
+        "O_1": "tie"
+    },
+    "000000449603.jpg": {
+        "O_0": "kite surfer",
+        "O_1": "wave"
+    },
+    "000000417779.jpg": {
+        "O_0": "fire hydrant",
+        "O_1": "street sign"
+    },
+    "000000457078.jpg": {
+        "O_0": "TV",
+        "O_1": "shelf"
+    },
+    "000000455555.jpg": {
+        "O_0": "Boy",
+        "O_1": "skateboard"
+    },
+    "000000409198.jpg": {
+        "O_0": "man",
+        "O_1": "frisbee"
+    },
+    "000000274708.jpg": {
+        "O_0": "person",
+        "O_1": "snowboard"
+    },
+    "000000484893.jpg": {
+        "O_0": "child",
+        "O_1": "sheep"
+    },
+    "000000355817.jpg": {
+        "O_0": "bus",
+        "O_1": "building"
+    },
+    "000000464522.jpg": {
+        "O_0": "Dog",
+        "O_1": "Chain"
+    },
+    "000000263644.jpg": {
+        "O_0": "four-poster bed",
+        "O_1": "dresser"
+    },
+    "000000060823.jpg": {
+        "O_0": "man",
+        "O_1": "bull"
+    },
+    "000000093154.jpg": {
+        "O_0": "street sign",
+        "O_1": "drive-in restaurant sign"
+    },
+    "000000134034.jpg": {
+        "O_0": "horse",
+        "O_1": "fence"
+    },
+    "000000407518.jpg": {
+        "O_0": "bird",
+        "O_1": "fence"
+    },
+    "000000459153.jpg": {
+        "O_0": "man",
+        "O_1": "laptop"
+    },
+    "000000007977.jpg": {
+        "O_0": "skateboard",
+        "O_1": "person"
+    },
+    "000000098497.jpg": {
+        "O_0": "Surfing sign",
+        "O_1": "Mosque"
+    },
+    "000000545407.jpg": {
+        "O_0": "airplane",
+        "O_1": "sky"
+    },
+    "000000500477.jpg": {
+        "O_0": "sheep",
+        "O_1": "shearer"
+    },
+    "000000349594.jpg": {
+        "O_0": "Boy",
+        "O_1": "fruit"
+    },
+    "000000404923.jpg": {
+        "O_0": "bat",
+        "O_1": "baseball player"
+    },
+    "000000008211.jpg": {
+        "O_0": "motorcycle",
+        "O_1": "scooter"
+    },
+    "000000209530.jpg": {
+        "O_0": "man",
+        "O_1": "pizza"
+    },
+    "000000505565.jpg": {
+        "O_0": "stork",
+        "O_1": "hedge"
+    },
+    "000000165831.jpg": {
+        "O_0": "tray",
+        "O_1": "vegetable dish"
+    },
+    "000000567825.jpg": {
+        "O_0": "sandwich",
+        "O_1": "glass of red wine"
+    },
+    "000000154644.jpg": {
+        "O_0": "cigarette",
+        "O_1": "phone"
+    },
+    "000000448256.jpg": {
+        "O_0": "car",
+        "O_1": "boat"
+    },
+    "000000064868.jpg": {
+        "O_0": "man",
+        "O_1": "dog"
+    },
+    "000000387916.jpg": {
+        "O_0": "mountain",
+        "O_1": "ski lift"
+    },
+    "000000210030.jpg": {
+        "O_0": "slice of cake",
+        "O_1": "fork"
+    },
+    "000000006213.jpg": {
+        "O_0": "bathtub",
+        "O_1": "shower curtain"
+    },
+    "000000239717.jpg": {
+        "O_0": "man",
+        "O_1": "plate"
+    },
+    "000000147729.jpg": {
+        "O_0": "man",
+        "O_1": "phone"
+    },
+    "000000002431.jpg": {
+        "O_0": "bread",
+        "O_1": "napkin"
+    },
+    "000000482978.jpg": {
+        "O_0": "train",
+        "O_1": "window"
+    },
+    "000000230993.jpg": {
+        "O_0": "umbrella",
+        "O_1": "person"
+    },
+    "000000490125.jpg": {
+        "O_0": "truck",
+        "O_1": "van"
+    },
+    "000000365642.jpg": {
+        "O_0": "woman",
+        "O_1": "toilet"
+    },
+    "000000516916.jpg": {
+        "O_0": "computer monitor",
+        "O_1": "laptop"
+    },
+    "000000244750.jpg": {
+        "O_0": "laptop",
+        "O_1": "wine glass"
+    },
+    "000000490413.jpg": {
+        "O_0": "airplane",
+        "O_1": "fence"
+    },
+    "000000192871.jpg": {
+        "O_0": "bowl",
+        "O_1": "peach"
+    },
+    "000000131386.jpg": {
+        "O_0": "fighter jet",
+        "O_1": "formation"
+    },
+    "000000111609.jpg": {
+        "O_0": "man",
+        "O_1": "blanket"
+    },
+    "000000344614.jpg": {
+        "O_0": "clock tower",
+        "O_1": "skyscraper"
+    },
+    "000000019221.jpg": {
+        "O_0": "Broccoli",
+        "O_1": "Hand"
+    },
+    "000000210520.jpg": {
+        "O_0": "flower arrangement",
+        "O_1": "bowl of fruit salad"
+    },
+    "000000338325.jpg": {
+        "O_0": "airplane",
+        "O_1": "sky"
+    },
+    "000000437331.jpg": {
+        "O_0": "Surfer",
+        "O_1": "Surfboard"
+    },
+    "000000172083.jpg": {
+        "O_0": "mirror",
+        "O_1": "sink"
+    },
+    "000000456015.jpg": {
+        "O_0": "Horse",
+        "O_1": "Rider"
+    },
+    "000000485027.jpg": {
+        "O_0": "Tennis player",
+        "O_1": "tennis racket"
+    },
+    "000000488710.jpg": {
+        "O_0": "woman",
+        "O_1": "parking sign"
+    },
+    "000000117719.jpg": {
+        "O_0": "bar",
+        "O_1": "bartender"
+    },
+    "000000140439.jpg": {
+        "O_0": "Tulips",
+        "O_1": "vase"
+    },
+    "000000094614.jpg": {
+        "O_0": "man skiing",
+        "O_1": "tree"
+    },
+    "000000160666.jpg": {
+        "O_0": "toothbrush",
+        "O_1": "toothpaste tube"
+    },
+    "000000126216.jpg": {
+        "O_0": "elephant",
+        "O_1": "tree"
+    },
+    "000000229858.jpg": {
+        "O_0": "moose",
+        "O_1": "calf"
+    },
+    "000000404534.jpg": {
+        "O_0": "diner",
+        "O_1": "fence"
+    },
+    "000000119911.jpg": {
+        "O_0": "skateboard",
+        "O_1": "boy"
+    },
+    "000000281929.jpg": {
+        "O_0": "man",
+        "O_1": "bicycle"
+    },
+    "000000244496.jpg": {
+        "O_0": "man",
+        "O_1": "tie"
+    },
+    "000000132544.jpg": {
+        "O_0": "catcher",
+        "O_1": "batter"
+    },
+    "000000027972.jpg": {
+        "O_0": "Surfer",
+        "O_1": "surfboard"
+    },
+    "000000445248.jpg": {
+        "O_0": "elephant",
+        "O_1": "fence"
+    },
+    "000000397327.jpg": {
+        "O_0": "toilet",
+        "O_1": "sink"
+    },
+    "000000172571.jpg": {
+        "O_0": "pizza",
+        "O_1": "glass"
+    },
+    "000000189752.jpg": {
+        "O_0": "salad",
+        "O_1": "pizza"
+    },
+    "000000479030.jpg": {
+        "O_0": "train",
+        "O_1": "road"
+    },
+    "000000257896.jpg": {
+        "O_0": "man",
+        "O_1": "train track"
+    },
+    "000000209747.jpg": {
+        "O_0": "cat",
+        "O_1": "brush"
+    },
+    "000000175535.jpg": {
+        "O_0": "sandwich",
+        "O_1": "plate"
+    },
+    "000000260925.jpg": {
+        "O_0": "cat",
+        "O_1": "car"
+    },
+    "000000496571.jpg": {
+        "O_0": "man",
+        "O_1": "plate"
+    },
+    "000000312549.jpg": {
+        "O_0": "street sign",
+        "O_1": "building"
+    },
+    "000000234366.jpg": {
+        "O_0": "clock tower",
+        "O_1": "building"
+    },
+    "000000054593.jpg": {
+        "O_0": "Catcher",
+        "O_1": "Batter"
+    },
+    "000000333697.jpg": {
+        "O_0": "Graffiti",
+        "O_1": "No Entry sign"
+    },
+    "000000098018.jpg": {
+        "O_0": "Vase",
+        "O_1": "lamp"
+    },
+    "000000360951.jpg": {
+        "O_0": "monitor",
+        "O_1": "laptop"
+    },
+    "000000114884.jpg": {
+        "O_0": "bus",
+        "O_1": "woman"
+    },
+    "000000322574.jpg": {
+        "O_0": "hot dog",
+        "O_1": "french fries"
+    },
+    "000000400367.jpg": {
+        "O_0": "car",
+        "O_1": "street light"
+    },
+    "000000462629.jpg": {
+        "O_0": "refrigerator",
+        "O_1": "dishwasher"
+    },
+    "000000071711.jpg": {
+        "O_0": "airplane",
+        "O_1": "jet engine"
+    },
+    "000000546976.jpg": {
+        "O_0": "man",
+        "O_1": "motorcycle"
+    },
+    "000000280779.jpg": {
+        "O_0": "man",
+        "O_1": "snowy forest"
+    },
+    "000000356428.jpg": {
+        "O_0": "man",
+        "O_1": "banana"
+    },
+    "000000262048.jpg": {
+        "O_0": "umbrella",
+        "O_1": "woman"
+    },
+    "000000182417.jpg": {
+        "O_0": "slice of cheesecake",
+        "O_1": "spoon"
+    },
+    "000000144984.jpg": {
+        "O_0": "boy",
+        "O_1": "wii controller"
+    },
+    "000000130826.jpg": {
+        "O_0": "man",
+        "O_1": "woman"
+    },
+    "000000449432.jpg": {
+        "O_0": "bus",
+        "O_1": "group of uniformed individuals"
+    },
+    "000000010977.jpg": {
+        "O_0": "bathtub",
+        "O_1": "toilet"
+    },
+    "000000156924.jpg": {
+        "O_0": "man",
+        "O_1": "woman"
+    },
+    "000000507575.jpg": {
+        "O_0": "laptop",
+        "O_1": "monitor"
+    },
+    "000000266400.jpg": {
+        "O_0": "motorcycle",
+        "O_1": "sidewalk"
+    },
+    "000000170613.jpg": {
+        "O_0": "woman",
+        "O_1": "surfboard"
+    },
+    "000000107554.jpg": {
+        "O_0": "wheelbarrow",
+        "O_1": "surfboard"
+    },
+    "000000380913.jpg": {
+        "O_0": "man",
+        "O_1": "phone"
+    },
+    "000000169996.jpg": {
+        "O_0": "truck",
+        "O_1": "car"
+    },
+    "000000306700.jpg": {
+        "O_0": "woman",
+        "O_1": "pizza"
+    },
+    "000000020553.jpg": {
+        "O_0": "Teddy bear",
+        "O_1": "table"
+    },
+    "000000015335.jpg": {
+        "O_0": "man",
+        "O_1": "boy"
+    },
+    "000000109976.jpg": {
+        "O_0": "stove",
+        "O_1": "microwave"
+    },
+    "000000542856.jpg": {
+        "O_0": "bus",
+        "O_1": "traffic light"
+    },
+    "000000395343.jpg": {
+        "O_0": "vase",
+        "O_1": "flower"
+    },
+    "000000061471.jpg": {
+        "O_0": "puppy",
+        "O_1": "toilet"
+    },
+    "000000290081.jpg": {
+        "O_0": "Oranges",
+        "O_1": "bowl"
+    },
+    "000000233567.jpg": {
+        "O_0": "black sheep",
+        "O_1": "white sheep"
+    },
+    "000000545826.jpg": {
+        "O_0": "cat",
+        "O_1": "chair"
+    },
+    "000000570782.jpg": {
+        "O_0": "laptop",
+        "O_1": "desk"
+    },
+    "000000577735.jpg": {
+        "O_0": "vase",
+        "O_1": "bouquet of flowers"
+    },
+    "000000009400.jpg": {
+        "O_0": "laptop",
+        "O_1": "person"
+    },
+    "000000037751.jpg": {
+        "O_0": "motorcycle",
+        "O_1": "person"
+    },
+    "000000350148.jpg": {
+        "O_0": "man",
+        "O_1": "camera"
+    },
+    "000000536038.jpg": {
+        "O_0": "socks",
+        "O_1": "book"
+    },
+    "000000364587.jpg": {
+        "O_0": "train",
+        "O_1": "tree"
+    },
+    "000000471869.jpg": {
+        "O_0": "Teddy bear",
+        "O_1": "lace blanket"
+    },
+    "000000032285.jpg": {
+        "O_0": "toilet",
+        "O_1": "towel rack"
+    },
+    "000000491683.jpg": {
+        "O_0": "horse",
+        "O_1": "train"
+    },
+    "000000533493.jpg": {
+        "O_0": "man",
+        "O_1": "frisbee"
+    },
+    "000000389684.jpg": {
+        "O_0": "bus",
+        "O_1": "signboard"
+    },
+    "000000183965.jpg": {
+        "O_0": "coffee cup",
+        "O_1": "pastry"
+    },
+    "000000460494.jpg": {
+        "O_0": "broccoli",
+        "O_1": "plate"
+    },
+    "000000384350.jpg": {
+        "O_0": "airplane",
+        "O_1": "runway"
+    },
+    "000000251119.jpg": {
+        "O_0": "sandwich",
+        "O_1": "yogurt cup"
+    },
+    "000000490515.jpg": {
+        "O_0": "Snowboarder",
+        "O_1": "snowboard"
+    },
+    "000000393226.jpg": {
+        "O_0": "ice cream truck",
+        "O_1": "man"
+    },
+    "000000225184.jpg": {
+        "O_0": "dog",
+        "O_1": "sheep"
+    },
+    "000000195754.jpg": {
+        "O_0": "wheel",
+        "O_1": "couch"
+    },
+    "000000378673.jpg": {
+        "O_0": "skateboarder",
+        "O_1": "skateboard"
+    },
+    "000000519338.jpg": {
+        "O_0": "train",
+        "O_1": "pole"
+    },
+    "000000126592.jpg": {
+        "O_0": "STOP SIGN",
+        "O_1": "STREET SIGN"
+    },
+    "000000051598.jpg": {
+        "O_0": "sink",
+        "O_1": "mirror"
+    },
+    "000000534673.jpg": {
+        "O_0": "bus",
+        "O_1": "man"
+    },
+    "000000002532.jpg": {
+        "O_0": "person",
+        "O_1": "ski pole"
+    },
+    "000000092939.jpg": {
+        "O_0": "man",
+        "O_1": "woman"
+    },
+    "000000116439.jpg": {
+        "O_0": "woman",
+        "O_1": "boat"
+    },
+    "000000146831.jpg": {
+        "O_0": "skateboarder",
+        "O_1": "ramp"
+    },
+    "000000527220.jpg": {
+        "O_0": "Ferrari",
+        "O_1": "gas pump"
+    },
+    "000000311518.jpg": {
+        "O_0": "boat",
+        "O_1": "building"
+    },
+    "000000482319.jpg": {
+        "O_0": "woman",
+        "O_1": "baby"
+    },
+    "000000030213.jpg": {
+        "O_0": "refrigerator",
+        "O_1": "table"
+    },
+    "000000328601.jpg": {
+        "O_0": "man",
+        "O_1": "tennis racket"
+    },
+    "000000227898.jpg": {
+        "O_0": "horse",
+        "O_1": "carriage"
+    },
+    "000000200162.jpg": {
+        "O_0": "train",
+        "O_1": "signal light"
+    },
+    "000000408120.jpg": {
+        "O_0": "child",
+        "O_1": "pink umbrella"
+    },
+    "000000241677.jpg": {
+        "O_0": "bridge",
+        "O_1": "donkey"
+    },
+    "000000163118.jpg": {
+        "O_0": "frisbee",
+        "O_1": "player"
+    },
+    "000000154947.jpg": {
+        "O_0": "lamb",
+        "O_1": "field"
+    },
+    "000000578093.jpg": {
+        "O_0": "train",
+        "O_1": "platform"
+    },
+    "000000087144.jpg": {
+        "O_0": "woman",
+        "O_1": "baby"
+    },
+    "000000271402.jpg": {
+        "O_0": "scooter",
+        "O_1": "tennis racket"
+    },
+    "000000090108.jpg": {
+        "O_0": "sink",
+        "O_1": "mirror"
+    },
+    "000000213035.jpg": {
+        "O_0": "phone",
+        "O_1": "hand"
+    },
+    "000000546626.jpg": {
+        "O_0": "lemon",
+        "O_1": "mug"
+    },
+    "000000307172.jpg": {
+        "O_0": "pizza",
+        "O_1": "bowl"
+    },
+    "000000350679.jpg": {
+        "O_0": "bride",
+        "O_1": "groom"
+    },
+    "000000322844.jpg": {
+        "O_0": "teddy bear",
+        "O_1": "clownfish"
+    },
+    "000000311295.jpg": {
+        "O_0": "zebra",
+        "O_1": "giraffe"
+    },
+    "000000097988.jpg": {
+        "O_0": "Man",
+        "O_1": "Banner"
+    },
+    "000000546556.jpg": {
+        "O_0": "sheep",
+        "O_1": "field"
+    },
+    "000000429761.jpg": {
+        "O_0": "Tennis player",
+        "O_1": "tennis racket"
+    },
+    "000000377393.jpg": {
+        "O_0": "clock tower",
+        "O_1": "beach"
+    },
+    "000000536073.jpg": {
+        "O_0": "bottle",
+        "O_1": "blender"
+    },
+    "000000164885.jpg": {
+        "O_0": "skier",
+        "O_1": "ski lift"
+    },
+    "000000032334.jpg": {
+        "O_0": "woman",
+        "O_1": "man"
+    },
+    "000000299355.jpg": {
+        "O_0": "broccoli",
+        "O_1": "potato dish"
+    },
+    "000000306136.jpg": {
+        "O_0": "bus",
+        "O_1": "bicycle"
+    },
+    "000000451714.jpg": {
+        "O_0": "man",
+        "O_1": "ski lift"
+    },
+    "000000370208.jpg": {
+        "O_0": "Bike",
+        "O_1": "parking meter"
+    },
+    "000000510095.jpg": {
+        "O_0": "Man",
+        "O_1": "Bat"
+    },
+    "000000426372.jpg": {
+        "O_0": "truck",
+        "O_1": "car"
+    },
+    "000000403817.jpg": {
+        "O_0": "cat",
+        "O_1": "laptop"
+    },
+    "000000019786.jpg": {
+        "O_0": "man",
+        "O_1": "couch"
+    },
+    "000000118515.jpg": {
+        "O_0": "kitten",
+        "O_1": "bench"
+    },
+    "000000530624.jpg": {
+        "O_0": "dog",
+        "O_1": "blanket"
+    },
+    "000000206838.jpg": {
+        "O_0": "woman",
+        "O_1": "horse"
+    },
+    "000000181421.jpg": {
+        "O_0": "boat",
+        "O_1": "paddle"
+    },
+    "000000270297.jpg": {
+        "O_0": "train",
+        "O_1": "signal light"
+    },
+    "000000226417.jpg": {
+        "O_0": "traffic light",
+        "O_1": "scooter"
+    },
+    "000000043737.jpg": {
+        "O_0": "clock",
+        "O_1": "building"
+    },
+    "000000519569.jpg": {
+        "O_0": "flower vase",
+        "O_1": "countertop"
+    },
+    "000000041888.jpg": {
+        "O_0": "guinea fowl",
+        "O_1": "bush"
+    },
+    "000000251140.jpg": {
+        "O_0": "book",
+        "O_1": "bicycle"
+    },
+    "000000065455.jpg": {
+        "O_0": "giraffe",
+        "O_1": "crowd"
+    },
+    "000000224664.jpg": {
+        "O_0": "Grass",
+        "O_1": "Kite"
+    },
+    "000000273420.jpg": {
+        "O_0": "man",
+        "O_1": "chair"
+    },
+    "000000001675.jpg": {
+        "O_0": "cat",
+        "O_1": "laptop"
+    },
+    "000000044877.jpg": {
+        "O_0": "woman",
+        "O_1": "wheelchair"
+    },
+    "000000148783.jpg": {
+        "O_0": "Zebra",
+        "O_1": "Fence"
+    },
+    "000000137294.jpg": {
+        "O_0": "machine",
+        "O_1": "man"
+    },
+    "000000545100.jpg": {
+        "O_0": "man",
+        "O_1": "phone"
+    },
+    "000000125245.jpg": {
+        "O_0": "fish",
+        "O_1": "coral reef"
+    },
+    "000000400794.jpg": {
+        "O_0": "man",
+        "O_1": "cake"
+    },
+    "000000476810.jpg": {
+        "O_0": "cat",
+        "O_1": "remote control"
+    },
+    "000000335800.jpg": {
+        "O_0": "street sign",
+        "O_1": "skyscraper"
+    },
+    "000000297343.jpg": {
+        "O_0": "stop sign",
+        "O_1": "wall"
+    },
+    "000000410878.jpg": {
+        "O_0": "motorcycle",
+        "O_1": "trash can"
+    },
+    "000000246454.jpg": {
+        "O_0": "girl",
+        "O_1": "dog"
+    },
+    "000000225670.jpg": {
+        "O_0": "dog",
+        "O_1": "frisbee"
+    },
+    "000000121417.jpg": {
+        "O_0": "woman",
+        "O_1": "pink umbrella"
+    },
+    "000000166642.jpg": {
+        "O_0": "elephant",
+        "O_1": "rock wall"
+    },
+    "000000542073.jpg": {
+        "O_0": "street sign",
+        "O_1": "lamp post"
+    },
+    "000000356094.jpg": {
+        "O_0": "bat",
+        "O_1": "player"
+    },
+    "000000332845.jpg": {
+        "O_0": "man",
+        "O_1": "bed"
+    },
+    "000000557501.jpg": {
+        "O_0": "sink",
+        "O_1": "mirror"
+    },
+    "000000402096.jpg": {
+        "O_0": "sign",
+        "O_1": "door"
+    },
+    "000000262227.jpg": {
+        "O_0": "computer monitor",
+        "O_1": "laptop"
+    },
+    "000000459396.jpg": {
+        "O_0": "black cow",
+        "O_1": "brown cow"
+    },
+    "000000008899.jpg": {
+        "O_0": "fire hydrant",
+        "O_1": "building"
+    },
+    "000000240023.jpg": {
+        "O_0": "man",
+        "O_1": "tennis racket"
+    },
+    "000000269932.jpg": {
+        "O_0": "chair",
+        "O_1": "horse"
+    },
+    "000000034873.jpg": {
+        "O_0": "sink",
+        "O_1": "faucet"
+    },
+    "000000078959.jpg": {
+        "O_0": "banana plant",
+        "O_1": "flower bud"
+    },
+    "000000455301.jpg": {
+        "O_0": "child",
+        "O_1": "book"
+    },
+    "000000153510.jpg": {
+        "O_0": "broccoli",
+        "O_1": "chicken"
+    },
+    "000000481159.jpg": {
+        "O_0": "Horse",
+        "O_1": "Fence"
+    },
+    "000000525286.jpg": {
+        "O_0": "clock",
+        "O_1": "tree"
+    },
+    "000000162092.jpg": {
+        "O_0": "woman",
+        "O_1": "cake"
+    },
+    "000000012062.jpg": {
+        "O_0": "sheep",
+        "O_1": "pile of wool"
+    },
+    "000000338718.jpg": {
+        "O_0": "street sign",
+        "O_1": "car"
+    },
+    "000000155451.jpg": {
+        "O_0": "traffic light",
+        "O_1": "street"
+    },
+    "000000481404.jpg": {
+        "O_0": "altar",
+        "O_1": "cross"
+    },
+    "000000553990.jpg": {
+        "O_0": "horse",
+        "O_1": "rider"
+    },
+    "000000395388.jpg": {
+        "O_0": "man",
+        "O_1": "sheep"
+    },
+    "000000289960.jpg": {
+        "O_0": "kite",
+        "O_1": "man"
+    },
+    "000000382122.jpg": {
+        "O_0": "church",
+        "O_1": "fence"
+    },
+    "000000538236.jpg": {
+        "O_0": "croissant",
+        "O_1": "sausage"
+    },
+    "000000424975.jpg": {
+        "O_0": "building",
+        "O_1": "mural"
+    },
+    "000000579902.jpg": {
+        "O_0": "motorcycle",
+        "O_1": "car"
+    },
+    "000000490936.jpg": {
+        "O_0": "motorcycle",
+        "O_1": "motorcycle cover"
+    },
+    "000000028993.jpg": {
+        "O_0": "fire hydrant",
+        "O_1": "building"
+    },
+    "000000206025.jpg": {
+        "O_0": "man",
+        "O_1": "palm tree"
+    },
+    "000000104612.jpg": {
+        "O_0": "noodles",
+        "O_1": "broccoli"
+    },
+    "000000522156.jpg": {
+        "O_0": "cracker",
+        "O_1": "cheese topping"
+    },
+    "000000190676.jpg": {
+        "O_0": "airplane",
+        "O_1": "crowd"
+    },
+    "000000161799.jpg": {
+        "O_0": "skateboarder",
+        "O_1": "ramp"
+    },
+    "000000466125.jpg": {
+        "O_0": "girl",
+        "O_1": "backpack"
+    },
+    "000000480944.jpg": {
+        "O_0": "traffic light",
+        "O_1": "stop sign"
+    },
+    "000000023666.jpg": {
+        "O_0": "toilet",
+        "O_1": "bathtub"
+    },
+    "000000481567.jpg": {
+        "O_0": "man",
+        "O_1": "motorcycle"
+    },
+    "000000007991.jpg": {
+        "O_0": "carrot",
+        "O_1": "plate"
+    },
+    "000000516871.jpg": {
+        "O_0": "bento box",
+        "O_1": "broccoli"
+    },
+    "000000002473.jpg": {
+        "O_0": "skier",
+        "O_1": "snow-covered slope"
+    },
+    "000000019924.jpg": {
+        "O_0": "hat",
+        "O_1": "cigarette"
+    },
+    "000000173004.jpg": {
+        "O_0": "pizza slice",
+        "O_1": "fork"
+    },
+    "000000367082.jpg": {
+        "O_0": "dog",
+        "O_1": "chair"
+    },
+    "000000365745.jpg": {
+        "O_0": "truck",
+        "O_1": "man"
+    },
+    "000000141821.jpg": {
+        "O_0": "pizza",
+        "O_1": "Mountain Dew can"
+    },
+    "000000530162.jpg": {
+        "O_0": "umbrella",
+        "O_1": "man"
+    },
+    "000000377635.jpg": {
+        "O_0": "skateboarder",
+        "O_1": "skateboard"
+    },
+    "000000216296.jpg": {
+        "O_0": "Tennis player",
+        "O_1": "tennis racket"
+    },
+    "000000197658.jpg": {
+        "O_0": "glove",
+        "O_1": "player"
+    },
+    "000000136033.jpg": {
+        "O_0": "soap dispenser",
+        "O_1": "mirror"
+    },
+    "000000522940.jpg": {
+        "O_0": "STOP sign",
+        "O_1": "snowy landscape"
+    }
+}

@@ -54,7 +54,7 @@ def cma_counting_trials(model, processor, num_heads, dataset, top_k_heads):
             top_k_heads=top_k_heads,
             max_new_tokens=300
         )
-        pred = predicted_words.split('Answer: ')
+        pred = predicted_words.split('Answer:')
         if len(pred) >= 2 and re.sub(r'\D', '',  pred[-1]) == str(gt):
             corr_trials += 1
         else:
@@ -112,7 +112,7 @@ def main():
     model_id = "Qwen/Qwen2.5-VL-32B-Instruct"
     model_name = model_id.replace('/', '_')
     # k_list = [0,10,20,50,100,150,200,250,300,400,500]
-    k_list = [0,10,20,50,100,200,300,500]
+    k_list = [10,100,250,500]
     num_imgs = 100
     dataset_path = "dataset/figure_46_v2"
     os.makedirs(dataset_path, exist_ok=True)

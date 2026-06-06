@@ -112,7 +112,7 @@ def compute_rsa_scores(
             # Gather the hidden states for object 'i' across all trials
             obj_states = []
             for t in range(num_trials):
-                state = hidden_states_by_trial[t][layer_idx][i].detach().cpu().float().squeeze().numpy()
+                state = hidden_states_by_trial[t][layer_idx][i]
                 obj_states.append(state)
 
             obj_matrix = np.stack(obj_states)

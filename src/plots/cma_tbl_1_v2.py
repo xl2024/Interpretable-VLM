@@ -22,8 +22,8 @@ def cma_entr_get_embeds(model, processor, num_heads, color_list, shape_list, num
     prompt_lists = {}
     image_lists = {}
     for pos in range(len(color_list)):
-        prompt_lists[get_coord_from_index(pos)] = []
-        image_lists[get_coord_from_index(pos)] = []
+        prompt_lists[get_coord_from_index(pos, n_cols=2)] = []
+        image_lists[get_coord_from_index(pos, n_cols=2)] = []
     for last_object in range(len(color_list)):
         for last_pos in range(len(color_list)):
             for c_shuffle in get_permutations([i for i in range(len(color_list)) if i != last_object]):
@@ -35,7 +35,7 @@ def cma_entr_get_embeds(model, processor, num_heads, color_list, shape_list, num
                     shapes.append(shape_list[c_shuffle[j]])
                     colors.append(color_list[c_shuffle[j]])
 
-                coords = [get_coord_from_index(p_shuffle[j]) for j in range(len(color_list))]
+                coords = [get_coord_from_index(p_shuffle[j],n_cols=2) for j in range(len(color_list))]
 
                 img = generate_custom_image(cols=2, rows=2, shapes=shapes, colors=colors, coords=coords)
                 
@@ -63,7 +63,7 @@ def cma_entr_get_embeds(model, processor, num_heads, color_list, shape_list, num
                 
     high_entr_embeds = {}
     for pos in range(len(color_list)):
-        coord = get_coord_from_index(pos)
+        coord = get_coord_from_index(pos,n_cols=2)
         high_entr_embeds[coord] = get_head_embeddings(
             model=model, 
             processor=processor, 
@@ -72,9 +72,6 @@ def cma_entr_get_embeds(model, processor, num_heads, color_list, shape_list, num
             image_list=image_lists[coord], 
             top_k_heads=top_k_heads
         )
-    for k, v in high_entr_embeds.items():
-        print("key:",k,"v:",v.keys())
-    print("keys(get):",high_entr_embeds.keys())
     return corr_trials, high_entr_embeds
 
 def cma_entr_intervs(model, processor, num_layers, num_heads, color_list, shape_list, num_trials, top_k_heads, embeds):
@@ -91,7 +88,7 @@ def cma_entr_intervs(model, processor, num_layers, num_heads, color_list, shape_
                     shapes.append(shape_list[c_shuffle[j]])
                     colors.append(color_list[c_shuffle[j]])
 
-                coords = [get_coord_from_index(p_shuffle[j]) for j in range(len(color_list))]
+                coords = [get_coord_from_index(p_shuffle[j],n_cols=2) for j in range(len(color_list))]
 
                 img = generate_custom_image(cols=2, rows=2, shapes=shapes, colors=colors, coords=coords)
                 
@@ -114,9 +111,7 @@ def cma_entr_intervs(model, processor, num_layers, num_heads, color_list, shape_
                     corr_trials += 1
                 else:
                     print(f"pred={pred}, target_color={obj_indices[-1]['color']}, target_shape={obj_indices[-1]['shape']}")
-                print("obj index:",obj_indices[-1]["coords"])
-                for k,v in embeds.items():
-                    print("k:",k,"v:",v.keys())
+
                 predicted_word = cma_head_patching_by_generator(
                     model=model,
                     processor=processor,
@@ -148,7 +143,6 @@ def cma_entr_by_model(model_id, num_trials, top_k):
     mediation_scores_list = run_mediation_analysis(model_id)
     mediation_scores = mediation_scores_list[1]
     top_k_heads = get_top_k_heads(mediation_scores, top_k)
-    print("top k heads:",top_k_heads)
     
     colors_list = [
         ['red', 'blue', 'green', 'purple'],

@@ -13,92 +13,129 @@ from src.plots.cma_1d import run_mediation_analysis
 # Reproduces Table 1 in Appendix D
 
 
-def cma_entr_trials(model, processor, num_layers, num_heads, color_list, shape_list, num_trials, get_embeds, interv, top_k_heads=None, embeds=None):
+def cma_entr_get_embeds(model, processor, num_heads, color_list, shape_list, num_trials, top_k_heads):
     corr_trials = 0
-    if get_embeds:
-        prompt_lists = {}
-        image_lists = {}
-        for pos in range(len(color_list)):
-            prompt_lists[get_coord_from_index(pos)] = []
-            image_lists[get_coord_from_index(pos)] = []
-    if interv:
-        corr_trials_interv = 0
-    for i in range(num_trials):
-        shuffle = np.random.permutation(len(color_list))
-        shapes, colors = [], []
-        for j in range(len(color_list)):
-            shapes.append(shape_list[shuffle[j]])
-            colors.append(color_list[shuffle[j]])
+    prompt_lists = {}
+    image_lists = {}
+    for pos in range(len(color_list)):
+        prompt_lists[get_coord_from_index(pos)] = []
+        image_lists[get_coord_from_index(pos)] = []
+    for last_object in range(len(color_list)):
+        for last_pos in range(len(color_list)):
+            for i in range(num_trials):
+                c_shuffle = np.random.permutation(len(color_list))
+                p_shuffle = np.random.permutation(len(color_list))
+                for pos in range(len(color_list)):
+                    if last_object == c_shuffle[pos]:
+                        c_shuffle[pos], c_shuffle[-1] = c_shuffle[-1], c_shuffle[pos]
+                    if last_pos == p_shuffle[pos]:
+                        p_shuffle[pos], p_shuffle[-1] = p_shuffle[-1], p_shuffle[pos]
+                shapes, colors = [], []
+                for j in range(len(color_list)):
+                    shapes.append(shape_list[c_shuffle[j]])
+                    colors.append(color_list[c_shuffle[j]])
 
-        coords = [get_coord_from_index(j) for j in range(len(color_list))]
+                coords = [get_coord_from_index(p_shuffle[j]) for j in range(len(color_list))]
 
-        img = generate_custom_image(cols=3, rows=3, shapes=shapes, colors=colors, coords=coords)
-        
-        obj_indices, text_prompt = get_dynamic_token_indices(
-            model, processor, colors=colors, shapes=shapes, coords=coords, image=img, last_color=False
+                img = generate_custom_image(cols=3, rows=3, shapes=shapes, colors=colors, coords=coords)
+                
+                obj_indices, text_prompt = get_dynamic_token_indices(
+                    model, processor, colors=colors, shapes=shapes, coords=coords, image=img, last_color=False, do_shffule=False
+                )
+
+                pred = predict(model, processor, img, text_prompt, max_new_tokens=10, new_only=True).split('.')[0].split()
+
+                equiv_shapes = [
+                    ['airplane', 'plane'],
+                    ['x', 'cross'],
+                    ['rectangle', 'square'],
+                    ['light bulb', 'sun']
+                    # ['dot', 'sun'] happens but shouldn't be equiv
+                ]
+                pred_color = pred[0].strip().lower()
+                pred_shape = ' '.join(pred[1:]).strip().lower()
+                if len(pred) >= 2 and pred_color == obj_indices[-1]['color'] and is_equiv(pred_shape, obj_indices[-1]['shape'], equiv_shapes):
+                    corr_trials += 1
+                    image_lists[obj_indices[-1]["coords"]].append(img)
+                    prompt_lists[obj_indices[-1]["coords"]].append(text_prompt)
+                else:
+                    print(f"pred={pred}, target_color={obj_indices[-1]['color']}, target_shape={obj_indices[-1]['shape']}")
+                
+    high_entr_embeds = {}
+    for pos in range(len(color_list)):
+        coord = get_coord_from_index(pos)
+        high_entr_embeds[coord] = get_head_embeddings(
+            model=model, 
+            processor=processor, 
+            num_heads=num_heads, 
+            prompt_list=prompt_lists[coord], 
+            image_list=image_lists[coord], 
+            top_k_heads=top_k_heads
         )
+    return corr_trials, high_entr_embeds
 
-        pred = predict(model, processor, img, text_prompt, max_new_tokens=10, new_only=True).split('.')[0].split()
+def cma_entr_intervs(model, processor, num_layers, num_heads, color_list, shape_list, num_trials, top_k_heads, embeds):
+    corr_trials = 0
+    corr_trials_interv = 0
+    for last_object in range(len(color_list)):
+        for last_pos in range(len(color_list)):
+            for i in range(num_trials):
+                c_shuffle = np.random.permutation(len(color_list))
+                p_shuffle = np.random.permutation(len(color_list))
+                for pos in range(len(color_list)):
+                    if last_object == c_shuffle[pos]:
+                        c_shuffle[pos], c_shuffle[-1] = c_shuffle[-1], c_shuffle[pos]
+                    if last_pos == p_shuffle[pos]:
+                        p_shuffle[pos], p_shuffle[-1] = p_shuffle[-1], p_shuffle[pos]
+                shapes, colors = [], []
+                for j in range(len(color_list)):
+                    shapes.append(shape_list[c_shuffle[j]])
+                    colors.append(color_list[c_shuffle[j]])
 
-        equiv_shapes = [
-            ['airplane', 'plane'],
-            ['x', 'cross'],
-            ['rectangle', 'square'],
-            ['light bulb', 'sun']
-            # ['dot', 'sun'] happens but shouldn't be equiv
-        ]
-        pred_color = pred[0].strip().lower()
-        pred_shape = ' '.join(pred[1:]).strip().lower()
-        if len(pred) >= 2 and pred_color == obj_indices[-1]['color'] and is_equiv(pred_shape, obj_indices[-1]['shape'], equiv_shapes):
-            corr_trials += 1
-            if get_embeds:
-                image_lists[obj_indices[-1]["coords"]].append(img)
-                prompt_lists[obj_indices[-1]["coords"]].append(text_prompt)
-        else:
-            print(f"pred={pred}, target_color={obj_indices[-1]['color']}, target_shape={obj_indices[-1]['shape']}")
-        
-        if interv:
-            print("interv - coord: ", obj_indices[-1]["coords"])
-            print("interv - k heads: ", embeds[obj_indices[-1]["coords"]].keys())
-            predicted_word = cma_head_patching_by_generator(
-                model=model,
-                processor=processor,
-                num_layers=num_layers,
-                num_heads=num_heads,
-                prompt_c1=text_prompt,
-                image_c1=img,
-                d_t_head_cache=embeds[obj_indices[-1]["coords"]],
-                top_k_heads=top_k_heads,
-                max_new_tokens=5
-            )
-            pred_interv = predicted_word[1].split('.')[0].split()
-            pred_color_interv = pred_interv[0].strip().lower()
-            pred_shape_interv = ' '.join(pred_interv[1:]).strip().lower()
-            if len(pred_interv) >= 2 and pred_color_interv == obj_indices[-1]['color'] and is_equiv(pred_shape_interv, obj_indices[-1]['shape'], equiv_shapes):
-                corr_trials_interv += 1
-            else:
-                print(f"pred_interv={pred_interv}, target_color={obj_indices[-1]['color']}, target_shape={obj_indices[-1]['shape']}")
+                coords = [get_coord_from_index(p_shuffle[j]) for j in range(len(color_list))]
 
-    if get_embeds:
-        high_entr_embeds = {}
-        for pos in range(len(color_list)):
-            coord = get_coord_from_index(pos)
-            high_entr_embeds[coord] = get_head_embeddings(
-                model=model, 
-                processor=processor, 
-                num_heads=num_heads, 
-                prompt_list=prompt_lists[coord], 
-                image_list=image_lists[coord], 
-                top_k_heads=top_k_heads
-            )
-            print("coord: ", coord)
-            print("k heads: ", high_entr_embeds[coord].keys())
-        return corr_trials, high_entr_embeds
-    
-    if interv:
-        return corr_trials, corr_trials_interv
-    
-    return corr_trials
+                img = generate_custom_image(cols=3, rows=3, shapes=shapes, colors=colors, coords=coords)
+                
+                obj_indices, text_prompt = get_dynamic_token_indices(
+                    model, processor, colors=colors, shapes=shapes, coords=coords, image=img, last_color=False, do_shffule=False
+                )
+
+                pred = predict(model, processor, img, text_prompt, max_new_tokens=10, new_only=True).split('.')[0].split()
+
+                equiv_shapes = [
+                    ['airplane', 'plane'],
+                    ['x', 'cross'],
+                    ['rectangle', 'square'],
+                    ['light bulb', 'sun']
+                    # ['dot', 'sun'] happens but shouldn't be equiv
+                ]
+                pred_color = pred[0].strip().lower()
+                pred_shape = ' '.join(pred[1:]).strip().lower()
+                if len(pred) >= 2 and pred_color == obj_indices[-1]['color'] and is_equiv(pred_shape, obj_indices[-1]['shape'], equiv_shapes):
+                    corr_trials += 1
+                else:
+                    print(f"pred={pred}, target_color={obj_indices[-1]['color']}, target_shape={obj_indices[-1]['shape']}")
+                
+                predicted_word = cma_head_patching_by_generator(
+                    model=model,
+                    processor=processor,
+                    num_layers=num_layers,
+                    num_heads=num_heads,
+                    prompt_c1=text_prompt,
+                    image_c1=img,
+                    d_t_head_cache=embeds[obj_indices[-1]["coords"]],
+                    top_k_heads=top_k_heads,
+                    max_new_tokens=5
+                )
+                pred_interv = predicted_word[1].split('.')[0].split()
+                pred_color_interv = pred_interv[0].strip().lower()
+                pred_shape_interv = ' '.join(pred_interv[1:]).strip().lower()
+                if len(pred_interv) >= 2 and pred_color_interv == obj_indices[-1]['color'] and is_equiv(pred_shape_interv, obj_indices[-1]['shape'], equiv_shapes):
+                    corr_trials_interv += 1
+                else:
+                    print(f"pred_interv={pred_interv}, target_color={obj_indices[-1]['color']}, target_shape={obj_indices[-1]['shape']}")
+
+    return corr_trials, corr_trials_interv
 
 def cma_entr_by_model(model_id, num_trials, top_k):
     print("=== Starting Table 1 Reproduction ===")
@@ -119,17 +156,15 @@ def cma_entr_by_model(model_id, num_trials, top_k):
         ['circle', 'star', 'plane', 'square', 'umbrella', 'triangle', 'sun', 'heart', 'cross'],
         ['circle', 'circle', 'square', 'square', 'triangle', 'triangle', 'circle', 'triangle', 'square']
     ]
-    print("top k heads:", top_k_heads)
+    
     print("Conducting high entropy trials...")
-    corr_high, embeds = cma_entr_trials(
-        model, processor, num_layers, num_heads, colors_list[0], shapes_list[0], num_trials, 
-        get_embeds=True, interv=False, top_k_heads=top_k_heads
+    corr_high, embeds = cma_entr_get_embeds(
+        model, processor, num_heads, colors_list[0], shapes_list[0], num_trials, top_k_heads
     )    # high entr
 
     print("Conducting low entropy trials and interventions...")
-    corr_low, corr_low_interv = cma_entr_trials(
-        model, processor, num_layers, num_heads, colors_list[1], shapes_list[1], num_trials, 
-        get_embeds=False, interv=True, top_k_heads=top_k_heads, embeds=embeds
+    corr_low, corr_low_interv = cma_entr_intervs(
+        model, processor, num_layers, num_heads, colors_list[1], shapes_list[1], num_trials, top_k_heads, embeds
     )    # low entr
 
     del model
@@ -183,7 +218,7 @@ def main():
         ("llava-hf/llava-1.5-7b-hf", "LLaVA 1.5 7B"),
         ("llava-hf/llava-1.5-13b-hf", "LLaVA 1.5 13B")
     ]
-    num_trials = 10
+    num_trials = 1
     k_list = [2,5,10,20,50,100]
     for top_k in k_list:
         # top_k = 10

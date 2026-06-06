@@ -87,13 +87,16 @@ def run_rsa_pipeline(
         save_path=save_path
     )
     
-def get_dynamic_token_indices(model: Any, processor: Any, colors: List[str], shapes: List[str], coords: List[tuple[int, int]], image: Image.Image, last_color: bool = True):
+def get_dynamic_token_indices(model: Any, processor: Any, colors: List[str], shapes: List[str], coords: List[tuple[int, int]], image: Image.Image, last_color: bool = True, do_shffule: bool = True):
     """
     Dynamically calculates the exact sequence indices of the target objects
     by measuring token lengths, bypassing sub-word tokenization quirks.
     """
     prefix = "In this image, there is"
-    shuffle = np.random.permutation(len(coords))
+    if do_shffule:
+        shuffle = np.random.permutation(len(coords))
+    else:
+        shuffle = np.arange(len(coords))
     # last_object = {'color': 'red', 'shape': 'circle'}
     for i in range(len(coords)-1):
         prefix = f"{prefix} a {colors[shuffle[i]]} {shapes[shuffle[i]]},"

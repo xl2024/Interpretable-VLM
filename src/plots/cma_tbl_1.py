@@ -13,6 +13,7 @@ from src.plots.rsa_1c import get_dynamic_token_indices
 from src.plots.cma_1d import run_mediation_analysis
 
 # Reproduces Table 1 in Appendix D
+# For 3x3 grid images
 
 
 def cma_entr_get_embeds(model, processor, num_heads, color_list, shape_list, num_trials, top_k_heads):
@@ -241,7 +242,8 @@ def main():
             with open(filename, 'w') as f:
                 json.dump(accs[model_label], f, indent=4)
 
-        save_path = f"outputs/cma/entr/cma_tbl_1_k_{top_k}"
+        # save_path = f"outputs/cma/entr/cma_tbl_1_k_{top_k}"    # for sweeping results
+        save_path = f"outputs/cma/entr/cma_tbl_1"
         cma_save_table(accs, save_path)
 
 

@@ -279,7 +279,7 @@ def main():
     print(f"fig_29_results Saved in {filename}.")
 
     fig_path = "outputs/cma/cma_fig_29.png"
-    processed_data = aggregate_data(fig_29_results)
+    processed_data = aggregate_data(fig_29_results)    # if get a "no items()" error, just re-run this script
     plot_position_patching(processed_data, fig_path)
 
 

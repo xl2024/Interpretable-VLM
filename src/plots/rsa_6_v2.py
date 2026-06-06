@@ -239,7 +239,10 @@ def plot_bar_chart(config, save_path):
     ax.set_ylabel(config['ylabel'], fontsize=11)
     ax.set_title(config['title'], fontweight='bold', fontsize=12, pad=15)
     ax.set_xticks(x)
-    ax.set_xticklabels(models)
+    ax.set_xticklabels(models, fontsize=8)
+    ax.spines['bottom'].set_visible(False)
+    ax.axhline(0, color='black', linewidth=1)
+    ax.tick_params(axis='x', bottom=False)
     ax.legend(loc='best')
     
     ax.spines['top'].set_visible(False)

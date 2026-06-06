@@ -189,7 +189,8 @@ def cma_test_by_model(model_id):
         "In this image there is a pink circle, a blue triangle, a",
         "In this image there is a blue triangle, a pink circle, a"
     ]
-
+    # Qwen 2.5 VL 32B model always starts by In...
+    system_format = "COLOR SHAPE, replacing COLOR and SHAPE with the color and shape of the missing object in the image. Do not repeat the prompt words, just append with the requested format"
     cma_by_model = {}
     # [Note: alpha=3, k=0 -> 'purple', k=1,...,21 -> 'orange', k>=22 -> 'blue']
     # top_k = int(0.1*num_layers*num_heads)
@@ -215,8 +216,8 @@ def cma_test_by_model(model_id):
                     coords=coords_2_list[i],
                     save_path=f'dataset/figure_29/{i+1}_b.png'
                 )
-                text_prompt_c1 = get_text_prompt(model, prompt_1[repeat % 3], image_c1, processor)
-                text_prompt_c2 = get_text_prompt(model, prompt_2[repeat % 2], image_c2, processor)
+                text_prompt_c1 = get_text_prompt(model, prompt_1[repeat % 3], image_c1, processor, format=system_format)
+                text_prompt_c2 = get_text_prompt(model, prompt_2[repeat % 2], image_c2, processor, format=system_format)
 
                 head_cache = get_head_embeddings(
                     model=model, 
@@ -271,7 +272,7 @@ def main():
         fig_29_results = {}
 
     for model_id in model_ids:
-        if model_id not in fig_29_results:
+        if model_id == "Qwen/Qwen2.5-VL-32B-Instruct" or model_id not in fig_29_results:
             print(f"Generating results in figure 29 for {model_id}...")
             fig_29_results[model_id] = cma_test_by_model(model_id)
    

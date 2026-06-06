@@ -99,11 +99,6 @@ def get_trial_data(model, processor, color_list, shape_list, num_trials):
 
 def rsa_entr_by_model(model_id, num_trials, repeat, save_path):
     print("=== Starting Figure 6 RSA Reproduction ===")
-    config = load_config()
-    tier = config['pipeline']['tier']
-    model, processor = load_vlm(model_id, tier)
-    num_layers = get_num_hidden_layers(model)
-    
     colors_list = [
         ['red', 'yellow', 'gray', 'blue', 'pink', 'green', 'black', 'purple', 'orange'],
         ['red', 'green', 'blue', 'red', 'blue', 'red', 'blue', 'green', 'green']
@@ -115,6 +110,11 @@ def rsa_entr_by_model(model_id, num_trials, repeat, save_path):
 
     rsa_results = {}
     for j in range(repeat):
+        config = load_config()
+        tier = config['pipeline']['tier']
+        model, processor = load_vlm(model_id, tier)
+        num_layers = get_num_hidden_layers(model)
+    
         rsa_results[j] = {}
         for i, entr in enumerate(['High', 'Low']):
             trials, acc = get_trial_data(model, processor, colors_list[i], shapes_list[i], num_trials)
@@ -126,12 +126,12 @@ def rsa_entr_by_model(model_id, num_trials, repeat, save_path):
             rsa_scores_prompt, rsa_scores_last_token = compute_rsa_scores(hidden_states_by_trial, trials, num_layers)
             rsa_results[j][entr] = {"Prompt": rsa_scores_prompt['pos'], "Last": rsa_scores_last_token['pos'], "Acc": acc}
 
-    plot_rsa_figures(rsa_results=rsa_results[0], num_layers=num_layers, save_path=save_path)
+        del model
+        del processor
+        gc.collect()
+        torch.cuda.empty_cache()
 
-    del model
-    del processor
-    gc.collect()
-    torch.cuda.empty_cache()
+    plot_rsa_figures(rsa_results=rsa_results[0], num_layers=num_layers, save_path=save_path)
 
     return rsa_results
 

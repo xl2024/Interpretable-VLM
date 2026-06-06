@@ -235,12 +235,12 @@ def main():
             if file_path.exists():
                 print(f"Found {filename}! Loading results for entropy intervention...")
                 with open(filename, 'r') as f:
-                    accs[model_id] = json.load(f)
+                    accs[model_label] = json.load(f)
                 continue
 
             accs[model_label] = cma_entr_by_model(model_id, num_trials, top_k)
             with open(filename, 'w') as f:
-                json.dump(accs[model_id], f, indent=4)
+                json.dump(accs[model_label], f, indent=4)
 
         save_path = f"outputs/cma/entr/cma_tbl_1_k_{top_k}"
         cma_save_table(accs, save_path)

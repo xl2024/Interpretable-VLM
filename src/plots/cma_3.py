@@ -282,19 +282,20 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
     return left_patching_results, right_patching_results
 
 def main():
-    model_id_list = [("llava-hf/llava-1.5-13b-hf", 42)                  # figure 42
-                    #  ("Qwen/Qwen2.5-VL-3B-Instruct", 37),               # figure 37
-                    #  ("Qwen/Qwen2.5-VL-7B-Instruct", 38),               # figure 38
-                    #  ("Qwen/Qwen2.5-VL-32B-Instruct", 39),              # figure 39
-                    #  ("llava-hf/llava-1.5-7b-hf", 41),                  # figure 41
-                    #  ("Qwen/Qwen2-VL-7B-Instruct", 40),                 # figure 40
-                    #  ("llava-hf/llava-onevision-qwen2-7b-ov-hf", 43)    # figure 43
+    model_id_list = [
+        # ("llava-hf/llava-1.5-13b-hf", 42)                  # figure 42
+        # ("Qwen/Qwen2.5-VL-3B-Instruct", 37),               # figure 37
+        # ("Qwen/Qwen2.5-VL-7B-Instruct", 38),               # figure 38
+        ("Qwen/Qwen2.5-VL-32B-Instruct", 39)              # figure 39
+        # ("llava-hf/llava-1.5-7b-hf", 41),                  # figure 41
+        # ("Qwen/Qwen2-VL-7B-Instruct", 40),                 # figure 40
+        # ("llava-hf/llava-onevision-qwen2-7b-ov-hf", 43)    # figure 43
     ]
-    k_list = [2,5,10,12,15,20,30,40,50,100,200]
+    k_list = [2,5,10,20,50,100]
     alpha_lists = [
-        [1,2,5,10,15,20,30,50,100,150,200],
-        [1,2,3,4,5,10,15,20],
-        [1,2,3,10,15,20,50,100]
+        [5,10,20,50,100,300],
+        [1,2,4,10,15],
+        [1,3,10,20,50,100]
     ]
 
     print("Loading estimation dataset...")

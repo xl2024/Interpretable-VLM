@@ -1,0 +1,1710 @@
+{
+    "000000549055.jpg": {
+        "O_0": "man on a surfboard",
+        "O_1": "surfboard"
+    },
+    "000000338304.jpg": {
+        "O_0": "large group of people gathered together",
+        "O_1": "herd of sheep"
+    },
+    "000000160556.jpg": {
+        "O_0": "microwave oven",
+        "O_1": "computer monitor"
+    },
+    "000000255664.jpg": {
+        "O_0": "dog",
+        "O_1": "frisbee"
+    },
+    "000000244181.jpg": {
+        "O_0": "sandwich on a plate",
+        "O_1": "slice of pie on a plate"
+    },
+    "000000308466.jpg": {
+        "O_0": "white toilet",
+        "O_1": "white sink"
+    },
+    "000000472375.jpg": {
+        "O_0": "dog wearing a helmet",
+        "O_1": "motorcycle"
+    },
+    "000000205776.jpg": {
+        "O_0": "large brown bear",
+        "O_1": "chair"
+    },
+    "000000042296.jpg": {
+        "O_0": "polar bear in the water",
+        "O_1": "green ball"
+    },
+    "000000148957.jpg": {
+        "O_0": "box of assorted donuts",
+        "O_1": "box of chocolate donuts"
+    },
+    "000000305343.jpg": {
+        "O_0": "bird and",
+        "O_1": "cat"
+    },
+    "000000355325.jpg": {
+        "O_0": "glass of wine",
+        "O_1": "plate of food"
+    },
+    "000000423229.jpg": {
+        "O_0": "train on the tracks",
+        "O_1": "railroad crossing sign"
+    },
+    "000000554291.jpg": {
+        "O_0": "cat",
+        "O_1": "blue bowl"
+    },
+    "000000502599.jpg": {
+        "O_0": "blue and white plane hanging from the ceiling",
+        "O_1": "yellow plane hanging from the ceiling"
+    },
+    "000000483667.jpg": {
+        "O_0": "man wearing a black hat",
+        "O_1": "man wearing a black shirt"
+    },
+    "000000516038.jpg": {
+        "O_0": "baseball player in a white uniform",
+        "O_1": "nother baseball player in a white uniform"
+    },
+    "000000219440.jpg": {
+        "O_0": "cow with its head turned to the side and",
+        "O_1": "cow with its head turned to the front"
+    },
+    "000000066635.jpg": {
+        "O_0": "white computer monitor",
+        "O_1": "keyboard"
+    },
+    "000000369812.jpg": {
+        "O_0": "street sign that says \"I love Tottenham\"",
+        "O_1": "street sign that says \"Newton Hate Village\" 3"
+    },
+    "000000166563.jpg": {
+        "O_0": "large elephant statue",
+        "O_1": "sign for an apartment rental"
+    },
+    "000000003934.jpg": {
+        "O_0": "little girl playing a video game",
+        "O_1": "group of people standing around and talking"
+    },
+    "000000571008.jpg": {
+        "O_0": "stop sign with graffiti on it",
+        "O_1": "no parking sign"
+    },
+    "000000035197.jpg": {
+        "O_0": "person riding a skateboard",
+        "O_1": "person standing in the background"
+    },
+    "000000559348.jpg": {
+        "O_0": "baseball player holding a bat",
+        "O_1": "catcher"
+    },
+    "000000155291.jpg": {
+        "O_0": "cat",
+        "O_1": "window"
+    },
+    "000000226130.jpg": {
+        "O_0": "hot dog with a bun",
+        "O_1": "piece of broccoli"
+    },
+    "000000496854.jpg": {
+        "O_0": "bride",
+        "O_1": "groom"
+    },
+    "000000173183.jpg": {
+        "O_0": "street sign for Lynn Ave",
+        "O_1": "street sign for Bigelow Ave"
+    },
+    "000000426836.jpg": {
+        "O_0": "person standing on a bridge",
+        "O_1": "kite flying in the sky"
+    },
+    "000000231169.jpg": {
+        "O_0": "train on the tracks",
+        "O_1": "train car"
+    },
+    "000000088040.jpg": {
+        "O_0": "plate of shrimp and vegetables",
+        "O_1": "plate of pasta with shrimp and tomatoes"
+    },
+    "000000555009.jpg": {
+        "O_0": "laptop",
+        "O_1": "desktop computer with a monitor"
+    },
+    "000000244833.jpg": {
+        "O_0": "yellow motorcycle with a flame design on the gas tank",
+        "O_1": "green motorcycle"
+    },
+    "000000369541.jpg": {
+        "O_0": "dog wearing a blue vest",
+        "O_1": "frisbee in the dog's mouth"
+    },
+    "000000127955.jpg": {
+        "O_0": "bear with its mouth open",
+        "O_1": "nother bear with its mouth closed"
+    },
+    "000000091654.jpg": {
+        "O_0": "bowl of soup",
+        "O_1": "spoon"
+    },
+    "000000138856.jpg": {
+        "O_0": "loaf of bread on a cooling rack",
+        "O_1": "blue pot"
+    },
+    "000000059044.jpg": {
+        "O_0": "man holding a wii controller",
+        "O_1": "woman holding a wii controller"
+    },
+    "000000341196.jpg": {
+        "O_0": "man surfing on a wave",
+        "O_1": "nother man swimming in the water"
+    },
+    "000000210032.jpg": {
+        "O_0": "plate with a sandwich and ketchup on it",
+        "O_1": "bird standing on the plate"
+    },
+    "000000532855.jpg": {
+        "O_0": "person riding a skateboard",
+        "O_1": "skateboard on a ramp"
+    },
+    "000000081738.jpg": {
+        "O_0": "person cutting a birthday cake",
+        "O_1": "cake with a knife"
+    },
+    "000000369751.jpg": {
+        "O_0": "stop sign",
+        "O_1": "yellow sign"
+    },
+    "000000518326.jpg": {
+        "O_0": "man wearing an orange vest",
+        "O_1": "bed with a person laying on it"
+    },
+    "000000119452.jpg": {
+        "O_0": "banana with a sticker on it",
+        "O_1": "bunch of oranges"
+    },
+    "000000021167.jpg": {
+        "O_0": "man wearing a tuxedo and a bow tie",
+        "O_1": "woman wearing a black dress"
+    },
+    "000000291664.jpg": {
+        "O_0": "red fire hydrant",
+        "O_1": "brown dog"
+    },
+    "000000486046.jpg": {
+        "O_0": "giraffe and",
+        "O_1": "zebra"
+    },
+    "000000015254.jpg": {
+        "O_0": "bowl of meat and noodles",
+        "O_1": "bowl of vegetables"
+    },
+    "000000332351.jpg": {
+        "O_0": "group of people in the water",
+        "O_1": "person on a surfboard"
+    },
+    "000000368982.jpg": {
+        "O_0": "pair of scissors",
+        "O_1": "pair of glasses"
+    },
+    "000000183104.jpg": {
+        "O_0": "giraffe standing next to a wall",
+        "O_1": "nother giraffe standing behind the first giraffe"
+    },
+    "000000244592.jpg": {
+        "O_0": "zebra standing in front of a fence",
+        "O_1": "zebra standing behind another zebra"
+    },
+    "000000367569.jpg": {
+        "O_0": "piano",
+        "O_1": "fireplace"
+    },
+    "000000433204.jpg": {
+        "O_0": "man riding a motorcycle",
+        "O_1": "group of people standing on the side of the road"
+    },
+    "000000224724.jpg": {
+        "O_0": "woman standing outside a building",
+        "O_1": "building with a sign on it"
+    },
+    "000000119516.jpg": {
+        "O_0": "woman standing on the sidewalk",
+        "O_1": "bicycle parked on the sidewalk"
+    },
+    "000000542089.jpg": {
+        "O_0": "sink with a bowl shaped basin",
+        "O_1": "mirror above the sink"
+    },
+    "000000560256.jpg": {
+        "O_0": "large display of bananas",
+        "O_1": "large display of apples"
+    },
+    "000000297681.jpg": {
+        "O_0": "car driving through flood waters",
+        "O_1": "street sign that says \"Do Not Block Intersection\" and 3"
+    },
+    "000000369323.jpg": {
+        "O_0": "woman wearing a black and gray tennis outfit",
+        "O_1": "nother woman wearing a black shirt and shorts"
+    },
+    "000000492758.jpg": {
+        "O_0": "woman sitting in a chair",
+        "O_1": "walker next to her"
+    },
+    "000000006471.jpg": {
+        "O_0": "batter holding a baseball bat",
+        "O_1": "catcher wearing a baseball glove"
+    },
+    "000000194716.jpg": {
+        "O_0": "woman wearing a brown dress",
+        "O_1": "baby wearing a pink dress"
+    },
+    "000000166768.jpg": {
+        "O_0": "man wearing a suit and tie",
+        "O_1": "woman wearing a pink shirt"
+    },
+    "000000094852.jpg": {
+        "O_0": "large elephant and",
+        "O_1": "smaller elephant"
+    },
+    "000000522638.jpg": {
+        "O_0": "brown teddy bear and",
+        "O_1": "brown monkey"
+    },
+    "000000105249.jpg": {
+        "O_0": "white sink",
+        "O_1": "white toilet"
+    },
+    "000000046378.jpg": {
+        "O_0": "cat",
+        "O_1": "dead bird"
+    },
+    "000000383337.jpg": {
+        "O_0": "person reaching into a box of donuts",
+        "O_1": "box of donuts on a table"
+    },
+    "000000305695.jpg": {
+        "O_0": "zebra standing in the grass",
+        "O_1": "truck parked in the background"
+    },
+    "000000558854.jpg": {
+        "O_0": "bowl of chili",
+        "O_1": "plate of french fries"
+    },
+    "000000153011.jpg": {
+        "O_0": "group of people standing around a table",
+        "O_1": "group of people sitting at a table"
+    },
+    "000000480936.jpg": {
+        "O_0": "woman sitting in a chair",
+        "O_1": "plate of food"
+    },
+    "000000042888.jpg": {
+        "O_0": "tow zone sign",
+        "O_1": "no parking sign"
+    },
+    "000000238410.jpg": {
+        "O_0": "group of people sitting around a table",
+        "O_1": "group of people sitting in chairs"
+    },
+    "000000363072.jpg": {
+        "O_0": "train on the tracks",
+        "O_1": "building in the background"
+    },
+    "000000220584.jpg": {
+        "O_0": "man in a wetsuit",
+        "O_1": "surfboard 3"
+    },
+    "000000221155.jpg": {
+        "O_0": "windmill",
+        "O_1": "water trough 3"
+    },
+    "000000140658.jpg": {
+        "O_0": "clock on the building",
+        "O_1": "window on the building 3"
+    },
+    "000000273642.jpg": {
+        "O_0": "dog lying on a bed",
+        "O_1": "remote control"
+    },
+    "000000519522.jpg": {
+        "O_0": "clock tower with two clocks on it",
+        "O_1": "castle-like building with a clock tower"
+    },
+    "000000302165.jpg": {
+        "O_0": "group of cows in a barn",
+        "O_1": "group of cows in a pen"
+    },
+    "000000033221.jpg": {
+        "O_0": "woman holding a towel and a bag",
+        "O_1": "woman holding a towel and a bag and making a funny face"
+    },
+    "000000463730.jpg": {
+        "O_0": "blue bus",
+        "O_1": "white bus"
+    },
+    "000000419653.jpg": {
+        "O_0": "kitchen counter with a microwave on it",
+        "O_1": "dining table with a bottle of wine and a box of wine glasses on it"
+    },
+    "000000500464.jpg": {
+        "O_0": "white sink in a bathroom",
+        "O_1": "mirror above the sink"
+    },
+    "000000396729.jpg": {
+        "O_0": "book",
+        "O_1": "cell phone"
+    },
+    "000000127987.jpg": {
+        "O_0": "baseball player figurine",
+        "O_1": "computer monitor"
+    },
+    "000000166521.jpg": {
+        "O_0": "television set on a wooden stand",
+        "O_1": "bookshelf filled with books"
+    },
+    "000000306733.jpg": {
+        "O_0": "white towel hanging on a towel rack",
+        "O_1": "potted plant on the counter"
+    },
+    "000000572678.jpg": {
+        "O_0": "dining table with a glass top",
+        "O_1": "couch"
+    },
+    "000000372718.jpg": {
+        "O_0": "vase",
+        "O_1": "glass vase 3"
+    },
+    "000000484760.jpg": {
+        "O_0": "statue of a woman",
+        "O_1": "clock on a building"
+    },
+    "000000261161.jpg": {
+        "O_0": "dog",
+        "O_1": "bench"
+    },
+    "000000556873.jpg": {
+        "O_0": "cake",
+        "O_1": "flower"
+    },
+    "000000133567.jpg": {
+        "O_0": "train on the tracks",
+        "O_1": "person standing on the sidewalk"
+    },
+    "000000059920.jpg": {
+        "O_0": "toilet with a white seat and lid",
+        "O_1": "sink"
+    },
+    "000000263969.jpg": {
+        "O_0": "bride and groom standing together",
+        "O_1": "cake on a table"
+    },
+    "000000002923.jpg": {
+        "O_0": "bird flying in the sky",
+        "O_1": "bird standing in the grass"
+    },
+    "000000581062.jpg": {
+        "O_0": "person riding a skateboard",
+        "O_1": "skateboard"
+    },
+    "000000562843.jpg": {
+        "O_0": "cell phone",
+        "O_1": "pair of scissors"
+    },
+    "000000016451.jpg": {
+        "O_0": "blue and white surfboard",
+        "O_1": "red surfboard"
+    },
+    "000000499313.jpg": {
+        "O_0": "pizza on a white plate",
+        "O_1": "glass of water"
+    },
+    "000000163258.jpg": {
+        "O_0": "toilet",
+        "O_1": "shower"
+    },
+    "000000105923.jpg": {
+        "O_0": "car on the street",
+        "O_1": "building with a window"
+    },
+    "000000036678.jpg": {
+        "O_0": "boat on the water",
+        "O_1": "clock tower"
+    },
+    "000000158956.jpg": {
+        "O_0": "woman wearing a red dress",
+        "O_1": "cake on a table"
+    },
+    "000000243148.jpg": {
+        "O_0": "child wearing a green coat and red pants",
+        "O_1": "woman wearing a pink coat and white pants"
+    },
+    "000000084362.jpg": {
+        "O_0": "cat sitting on a couch",
+        "O_1": "baby standing in the room"
+    },
+    "000000302990.jpg": {
+        "O_0": "man in a black wetsuit riding a wave on a surfboard",
+        "O_1": "nother man in the water"
+    },
+    "000000500565.jpg": {
+        "O_0": "woman and",
+        "O_1": "child"
+    },
+    "000000438304.jpg": {
+        "O_0": "woman playing tennis",
+        "O_1": "man playing tennis"
+    },
+    "000000572517.jpg": {
+        "O_0": "polar bear",
+        "O_1": "bird"
+    },
+    "000000068933.jpg": {
+        "O_0": "group of zebras grazing on grass",
+        "O_1": "herd of zebras"
+    },
+    "000000103723.jpg": {
+        "O_0": "woman with a ponytail",
+        "O_1": "large elephant"
+    },
+    "000000024243.jpg": {
+        "O_0": "woman sitting on a bench smoking a cigarette",
+        "O_1": "woman sitting inside a mini refrigerator"
+    },
+    "000000149222.jpg": {
+        "O_0": "computer monitor",
+        "O_1": "keyboard"
+    },
+    "000000411665.jpg": {
+        "O_0": "cat",
+        "O_1": "mirror"
+    },
+    "000000345941.jpg": {
+        "O_0": "plate with a dessert on it",
+        "O_1": "spoon on the plate"
+    },
+    "000000195045.jpg": {
+        "O_0": "bench",
+        "O_1": "fence"
+    },
+    "000000453341.jpg": {
+        "O_0": "mirror on a wooden stand",
+        "O_1": "couch"
+    },
+    "000000120853.jpg": {
+        "O_0": "sandwich cut in half",
+        "O_1": "bowl of coleslaw"
+    },
+    "000000165713.jpg": {
+        "O_0": "fire hydrant with graffiti on it",
+        "O_1": "pole with graffiti on it"
+    },
+    "000000028452.jpg": {
+        "O_0": "bottle of soda on the top of the refrigerator",
+        "O_1": "carton of eggs in the refrigerator"
+    },
+    "000000310622.jpg": {
+        "O_0": "street sign for West 32nd Street",
+        "O_1": "street sign for Korea Way"
+    },
+    "000000422998.jpg": {
+        "O_0": "person preparing a sandwich on a plate",
+        "O_1": "bottle of sauce"
+    },
+    "000000419974.jpg": {
+        "O_0": "man cutting meat on a cutting board",
+        "O_1": "woman sitting at a table"
+    },
+    "000000093965.jpg": {
+        "O_0": "zebra statue in the foreground and",
+        "O_1": "zebra statue in the background"
+    },
+    "000000125936.jpg": {
+        "O_0": "man wearing a white hat and apron",
+        "O_1": "woman wearing a white hat and apron"
+    },
+    "000000549136.jpg": {
+        "O_0": "teddy bear hanging from a pole",
+        "O_1": "fence"
+    },
+    "000000504635.jpg": {
+        "O_0": "zebra standing in the grass with its head down",
+        "O_1": "zebra standing in the grass with its head up"
+    },
+    "000000534639.jpg": {
+        "O_0": "train on the tracks",
+        "O_1": "traffic light"
+    },
+    "000000031093.jpg": {
+        "O_0": "person riding a skateboard",
+        "O_1": "skateboard"
+    },
+    "000000395575.jpg": {
+        "O_0": "bench",
+        "O_1": "statue"
+    },
+    "000000237984.jpg": {
+        "O_0": "green bench",
+        "O_1": "green chair"
+    },
+    "000000190637.jpg": {
+        "O_0": "child sitting on a couch",
+        "O_1": "child holding a Wii remote"
+    },
+    "000000532530.jpg": {
+        "O_0": "large map of the city of victoria",
+        "O_1": "sign that says metro train"
+    },
+    "000000041488.jpg": {
+        "O_0": "green sign with white letters that reads \"Queens Bronx\" and",
+        "O_1": "white sign with black letters that reads \"No Trucks"
+    },
+    "000000475387.jpg": {
+        "O_0": "train on the tracks",
+        "O_1": "train station"
+    },
+    "000000493613.jpg": {
+        "O_0": "skateboard with two shoes on it",
+        "O_1": "skateboard with one shoe on it"
+    },
+    "000000279730.jpg": {
+        "O_0": "person holding a sandwich",
+        "O_1": "person holding a drink"
+    },
+    "000000060507.jpg": {
+        "O_0": "baseball player swinging a bat",
+        "O_1": "catcher and an umpire behind him"
+    },
+    "000000423617.jpg": {
+        "O_0": "yellow taxi cab",
+        "O_1": "white bus"
+    },
+    "000000187734.jpg": {
+        "O_0": "woman holding a tennis racket",
+        "O_1": "man holding a tennis racket"
+    },
+    "000000127270.jpg": {
+        "O_0": "woman playing tennis",
+        "O_1": "tennis racket"
+    },
+    "000000163640.jpg": {
+        "O_0": "man wearing a black jacket and a backpack",
+        "O_1": "man wearing a white hat"
+    },
+    "000000446207.jpg": {
+        "O_0": "cell phone",
+        "O_1": "camera"
+    },
+    "000000201775.jpg": {
+        "O_0": "sink",
+        "O_1": "mirror"
+    },
+    "000000472030.jpg": {
+        "O_0": "bench in the woods",
+        "O_1": "backpack on the bench"
+    },
+    "000000434297.jpg": {
+        "O_0": "plate of food",
+        "O_1": "window"
+    },
+    "000000523807.jpg": {
+        "O_0": "hot dog in a bun",
+        "O_1": "person holding the hot dog"
+    },
+    "000000003501.jpg": {
+        "O_0": "bowl of food",
+        "O_1": "plate of food"
+    },
+    "000000219578.jpg": {
+        "O_0": "dog and",
+        "O_1": "cat lying on a couch"
+    },
+    "000000376365.jpg": {
+        "O_0": "glass of milk",
+        "O_1": "vase"
+    },
+    "000000237316.jpg": {
+        "O_0": "white toilet with the lid up",
+        "O_1": "white sink"
+    },
+    "000000446574.jpg": {
+        "O_0": "toilet with a closed lid",
+        "O_1": "bathtub with a shower curtain"
+    },
+    "000000389451.jpg": {
+        "O_0": "cow",
+        "O_1": "horse 3"
+    },
+    "000000072281.jpg": {
+        "O_0": "man performing a trick on a skateboard",
+        "O_1": "skateboard"
+    },
+    "000000085478.jpg": {
+        "O_0": "polar bear swimming in the water",
+        "O_1": "polar bear laying down in the water"
+    },
+    "000000530820.jpg": {
+        "O_0": "man wearing a bright orange shirt",
+        "O_1": "man holding a tennis racket"
+    },
+    "000000183648.jpg": {
+        "O_0": "woman wearing a blue shirt and a white hat",
+        "O_1": "man wearing a black suit and tie"
+    },
+    "000000578545.jpg": {
+        "O_0": "woman lying on a bed",
+        "O_1": "book"
+    },
+    "000000472046.jpg": {
+        "O_0": "dining table with chairs",
+        "O_1": "kitchen counter with a pineapple"
+    },
+    "000000455624.jpg": {
+        "O_0": "man riding a motorcycle",
+        "O_1": "crowd of people watching the man on motorcycle"
+    },
+    "000000192670.jpg": {
+        "O_0": "baseball player swinging a bat",
+        "O_1": "catcher wearing a baseball glove"
+    },
+    "000000474293.jpg": {
+        "O_0": "bakery with a window display of pastries",
+        "O_1": "person walking by the bakery"
+    },
+    "000000563648.jpg": {
+        "O_0": "skateboarder performing a trick in the air",
+        "O_1": "group of people watching the skateboarder"
+    },
+    "000000427649.jpg": {
+        "O_0": "boat in the water",
+        "O_1": "mountain in the background"
+    },
+    "000000581100.jpg": {
+        "O_0": "giraffe",
+        "O_1": "gazelle"
+    },
+    "000000086956.jpg": {
+        "O_0": "woman in a green and white striped shirt",
+        "O_1": "woman in a green shirt"
+    },
+    "000000249180.jpg": {
+        "O_0": "man walking up the stairs",
+        "O_1": "man walking down the stairs"
+    },
+    "000000303863.jpg": {
+        "O_0": "train on the tracks",
+        "O_1": "building in the background"
+    },
+    "000000047112.jpg": {
+        "O_0": "pizza on a white plate",
+        "O_1": "glass of beer"
+    },
+    "000000310200.jpg": {
+        "O_0": "plate with a pastry on it",
+        "O_1": "fork on the plate"
+    },
+    "000000253835.jpg": {
+        "O_0": "woman with a child in a stroller",
+        "O_1": "train"
+    },
+    "000000004134.jpg": {
+        "O_0": "man in a suit and tie",
+        "O_1": "man in a brown shirt"
+    },
+    "000000001425.jpg": {
+        "O_0": "plate with a sandwich on it",
+        "O_1": "bowl of sauce next to the plate"
+    },
+    "000000035326.jpg": {
+        "O_0": "stove top with a black glass surface",
+        "O_1": "rack of condiments"
+    },
+    "000000517069.jpg": {
+        "O_0": "woman sitting on a bench",
+        "O_1": "building in the background"
+    },
+    "000000169356.jpg": {
+        "O_0": "man performing a trick on a skateboard",
+        "O_1": "skateboard in the air"
+    },
+    "000000538364.jpg": {
+        "O_0": "police officer on a motorcycle",
+        "O_1": "car"
+    },
+    "000000331817.jpg": {
+        "O_0": "person wearing a striped shirt",
+        "O_1": "dining table with a variety of food items"
+    },
+    "000000569030.jpg": {
+        "O_0": "fire hydrant",
+        "O_1": "bench"
+    },
+    "000000076417.jpg": {
+        "O_0": "dog in the car window",
+        "O_1": "traffic light"
+    },
+    "000000021879.jpg": {
+        "O_0": "girl surfing on a blue surfboard",
+        "O_1": "boy in a wetsuit watching the girl surf"
+    },
+    "000000345361.jpg": {
+        "O_0": "boy in a yellow shirt and a yellow hat",
+        "O_1": "boy in a striped shirt"
+    },
+    "000000152465.jpg": {
+        "O_0": "fire hydrant",
+        "O_1": "tire"
+    },
+    "000000415716.jpg": {
+        "O_0": "vase with flowers in it",
+        "O_1": "chair"
+    },
+    "000000400082.jpg": {
+        "O_0": "hot dog in a bun",
+        "O_1": "box of fries with cheese"
+    },
+    "000000032610.jpg": {
+        "O_0": "black and red backpack",
+        "O_1": "laptop"
+    },
+    "000000146363.jpg": {
+        "O_0": "beach chair with an umbrella on it",
+        "O_1": "beach chair without an umbrella"
+    },
+    "000000478420.jpg": {
+        "O_0": "woman talking on a cell phone",
+        "O_1": "woman holding a baby"
+    },
+    "000000385997.jpg": {
+        "O_0": "dog lying in a dog bed",
+        "O_1": "chair"
+    },
+    "000000046252.jpg": {
+        "O_0": "baseball player in a red jersey and white pants",
+        "O_1": "catcher"
+    },
+    "000000007888.jpg": {
+        "O_0": "clock on a pole",
+        "O_1": "person standing in the background"
+    },
+    "000000398203.jpg": {
+        "O_0": "soccer ball",
+        "O_1": "group of young boys playing soccer"
+    },
+    "000000157601.jpg": {
+        "O_0": "woman eating a sandwich",
+        "O_1": "cup of coffee"
+    },
+    "000000531495.jpg": {
+        "O_0": "large body of water",
+        "O_1": "pier"
+    },
+    "000000528980.jpg": {
+        "O_0": "red umbrella",
+        "O_1": "red and white pole"
+    },
+    "000000002685.jpg": {
+        "O_0": "man standing behind a bar",
+        "O_1": "woman standing behind the bar"
+    },
+    "000000230983.jpg": {
+        "O_0": "person performing a trick on a skateboard",
+        "O_1": "green block"
+    },
+    "000000552842.jpg": {
+        "O_0": "baseball player on the field",
+        "O_1": "baseball glove"
+    },
+    "000000303893.jpg": {
+        "O_0": "little girl and",
+        "O_1": "little boy sitting on the ground"
+    },
+    "000000550471.jpg": {
+        "O_0": "plate with a slice of orange on it",
+        "O_1": "fork on the plate"
+    },
+    "000000436551.jpg": {
+        "O_0": "black swan with a red beak and a white beak",
+        "O_1": "black swan with a red beak"
+    },
+    "000000400044.jpg": {
+        "O_0": "man wearing a blue jacket and black pants",
+        "O_1": "man wearing a white shirt"
+    },
+    "000000054164.jpg": {
+        "O_0": "man surfing on a wave",
+        "O_1": "surfboard"
+    },
+    "000000351331.jpg": {
+        "O_0": "pizza on a plate",
+        "O_1": "fork on the table"
+    },
+    "000000402346.jpg": {
+        "O_0": "bowl of tomatoes",
+        "O_1": "flower in a vase"
+    },
+    "000000214703.jpg": {
+        "O_0": "person in the water with a surfboard",
+        "O_1": "person in the water without a surfboard"
+    },
+    "000000133087.jpg": {
+        "O_0": "street light",
+        "O_1": "traffic light 3"
+    },
+    "000000527616.jpg": {
+        "O_0": "television screen displaying a man in a suit and tie",
+        "O_1": "sign that says \"mitch\" on it"
+    },
+    "000000275198.jpg": {
+        "O_0": "woman holding a colorful umbrella",
+        "O_1": "girl holding a black umbrella"
+    },
+    "000000447342.jpg": {
+        "O_0": "trolley car",
+        "O_1": "bus"
+    },
+    "000000407298.jpg": {
+        "O_0": "young boy wearing a baseball glove",
+        "O_1": "baseball"
+    },
+    "000000478286.jpg": {
+        "O_0": "train on a bridge",
+        "O_1": "street light"
+    },
+    "000000100238.jpg": {
+        "O_0": "woman holding a yellow frisbee",
+        "O_1": "man holding a purple frisbee"
+    },
+    "000000135410.jpg": {
+        "O_0": "parking meter",
+        "O_1": "motorcycle"
+    },
+    "000000294831.jpg": {
+        "O_0": "slice of pizza on a plate",
+        "O_1": "cat in the background"
+    },
+    "000000388927.jpg": {
+        "O_0": "person holding a cell phone",
+        "O_1": "person standing in the background"
+    },
+    "000000116589.jpg": {
+        "O_0": "zebra standing in front of a log",
+        "O_1": "zebra standing behind another zebra"
+    },
+    "000000201148.jpg": {
+        "O_0": "train on the tracks",
+        "O_1": "traffic light"
+    },
+    "000000412531.jpg": {
+        "O_0": "parking meter",
+        "O_1": "fence"
+    },
+    "000000231527.jpg": {
+        "O_0": "wooden spoon",
+        "O_1": "glass jar with a wooden spoon in it"
+    },
+    "000000304291.jpg": {
+        "O_0": "horse",
+        "O_1": "fence"
+    },
+    "000000017436.jpg": {
+        "O_0": "man sitting on a bench",
+        "O_1": "building with a clock tower"
+    },
+    "000000123213.jpg": {
+        "O_0": "baseball player holding a bat",
+        "O_1": "catcher"
+    },
+    "000000255912.jpg": {
+        "O_0": "sandwich on a plate",
+        "O_1": "salad on the plate"
+    },
+    "000000520077.jpg": {
+        "O_0": "stack of books",
+        "O_1": "computer keyboard"
+    },
+    "000000490171.jpg": {
+        "O_0": "man in a wetsuit",
+        "O_1": "dog"
+    },
+    "000000062554.jpg": {
+        "O_0": "bowl of broccoli",
+        "O_1": "bowl of noodles"
+    },
+    "000000547502.jpg": {
+        "O_0": "black and white dog",
+        "O_1": "brown dog"
+    },
+    "000000383676.jpg": {
+        "O_0": "giraffe standing in front of a rock wall",
+        "O_1": "nother giraffe standing behind the first giraffe"
+    },
+    "000000407825.jpg": {
+        "O_0": "red apple with a clock face on it",
+        "O_1": "penguin card"
+    },
+    "000000438774.jpg": {
+        "O_0": "man in a red shirt",
+        "O_1": "woman in a red shirt"
+    },
+    "000000163611.jpg": {
+        "O_0": "pizza on a plate",
+        "O_1": "fork"
+    },
+    "000000427997.jpg": {
+        "O_0": "tennis player",
+        "O_1": "tennis racket"
+    },
+    "000000356505.jpg": {
+        "O_0": "woman wearing a bikini",
+        "O_1": "surfboard"
+    },
+    "000000359855.jpg": {
+        "O_0": "suitcase",
+        "O_1": "rock"
+    },
+    "000000112634.jpg": {
+        "O_0": "giraffe standing in a dirt field",
+        "O_1": "rock wall"
+    },
+    "000000357903.jpg": {
+        "O_0": "pizza with a fried egg on top of it",
+        "O_1": "pizza with spinach and cheese"
+    },
+    "000000141597.jpg": {
+        "O_0": "large van",
+        "O_1": "small car"
+    },
+    "000000570664.jpg": {
+        "O_0": "person holding a piece of food",
+        "O_1": "cat standing on its hind legs"
+    },
+    "000000488592.jpg": {
+        "O_0": "woman riding a bicycle",
+        "O_1": "woman walking with a handbag"
+    },
+    "000000559099.jpg": {
+        "O_0": "herd of cows grazing in a field",
+        "O_1": "blue sky"
+    },
+    "000000567740.jpg": {
+        "O_0": "pair of skis",
+        "O_1": "pair of skis 3"
+    },
+    "000000026690.jpg": {
+        "O_0": "man performing a trick on a skateboard",
+        "O_1": "group of people watching the skateboarder"
+    },
+    "000000379533.jpg": {
+        "O_0": "zebra grazing on grass",
+        "O_1": "n elephant and a baby elephant"
+    },
+    "000000472298.jpg": {
+        "O_0": "man and",
+        "O_1": "woman in a boat"
+    },
+    "000000445658.jpg": {
+        "O_0": "stove with a towel hanging on it",
+        "O_1": "microwave above the stove"
+    },
+    "000000120777.jpg": {
+        "O_0": "tray with two plates of food",
+        "O_1": "salt shaker"
+    },
+    "000000161609.jpg": {
+        "O_0": "person with a dog in a backpack",
+        "O_1": "person with a backpack"
+    },
+    "000000449996.jpg": {
+        "O_0": "large airplane on the runway",
+        "O_1": "small airplane on the runway 3"
+    },
+    "000000017905.jpg": {
+        "O_0": "man standing in front of a traffic light",
+        "O_1": "sign that says \"Australia traffic light"
+    },
+    "000000157365.jpg": {
+        "O_0": "man riding a skateboard down a street",
+        "O_1": "man walking down the street"
+    },
+    "000000528578.jpg": {
+        "O_0": "clock tower",
+        "O_1": "bridge"
+    },
+    "000000209829.jpg": {
+        "O_0": "man standing on a surfboard and",
+        "O_1": "man sitting on a surfboard"
+    },
+    "000000537812.jpg": {
+        "O_0": "toilet with the seat up",
+        "O_1": "bucket on a stool"
+    },
+    "000000063154.jpg": {
+        "O_0": "person",
+        "O_1": "surfboard 3"
+    },
+    "000000384468.jpg": {
+        "O_0": "man in a blue shirt",
+        "O_1": "woman in a black shirt"
+    },
+    "000000033104.jpg": {
+        "O_0": "group of people standing in the snow",
+        "O_1": "group of people wearing skis"
+    },
+    "000000429718.jpg": {
+        "O_0": "train on the tracks",
+        "O_1": "sign with a number 15 on it"
+    },
+    "000000166166.jpg": {
+        "O_0": "television set",
+        "O_1": "vase with flowers"
+    },
+    "000000116208.jpg": {
+        "O_0": "pizza on a table",
+        "O_1": "plate of pizza"
+    },
+    "000000042528.jpg": {
+        "O_0": "person holding a cell phone",
+        "O_1": "wooden chair"
+    },
+    "000000499109.jpg": {
+        "O_0": "sandwich",
+        "O_1": "pickle"
+    },
+    "000000284279.jpg": {
+        "O_0": "bird perched on a bird feeder",
+        "O_1": "bird feeder with birdseed in it"
+    },
+    "000000309678.jpg": {
+        "O_0": "person holding a tomato",
+        "O_1": "tomato sauce on a piece of bread"
+    },
+    "000000229659.jpg": {
+        "O_0": "laptop computer with a website open on the screen",
+        "O_1": "group of people sitting at tables in a restaurant"
+    },
+    "000000023751.jpg": {
+        "O_0": "statue of a man flying a kite",
+        "O_1": "statue of a woman holding a child"
+    },
+    "000000239627.jpg": {
+        "O_0": "sink with a faucet",
+        "O_1": "drain"
+    },
+    "000000515982.jpg": {
+        "O_0": "baseball player sliding into a base",
+        "O_1": "nother baseball player trying to catch the ball"
+    },
+    "000000209142.jpg": {
+        "O_0": "bowl of food",
+        "O_1": "fork"
+    },
+    "000000369771.jpg": {
+        "O_0": "bowl of food",
+        "O_1": "plate of food"
+    },
+    "000000563267.jpg": {
+        "O_0": "man wearing a brown shirt and jeans standing in front of a blackboard",
+        "O_1": "nother man wearing a white shirt standing behind the first man"
+    },
+    "000000579970.jpg": {
+        "O_0": "couch",
+        "O_1": "chair 3"
+    },
+    "000000405195.jpg": {
+        "O_0": "large display of donuts and pastries in a bakery",
+        "O_1": "clock on the wall"
+    },
+    "000000557672.jpg": {
+        "O_0": "woman wearing a pink and black dress",
+        "O_1": "backpack on her back"
+    },
+    "000000558114.jpg": {
+        "O_0": "man in a suit and tie",
+        "O_1": "man in a suit and tie with a tie clip"
+    },
+    "000000466256.jpg": {
+        "O_0": "plate of food",
+        "O_1": "fork"
+    },
+    "000000255824.jpg": {
+        "O_0": "plate with a pastry on it",
+        "O_1": "cup of coffee"
+    },
+    "000000292997.jpg": {
+        "O_0": "car that has crashed into a snow bank",
+        "O_1": "truck that is driving down the street"
+    },
+    "000000002153.jpg": {
+        "O_0": "baseball player holding a bat",
+        "O_1": "baseball player wearing a glove"
+    },
+    "000000048564.jpg": {
+        "O_0": "person",
+        "O_1": "cell phone"
+    },
+    "000000155051.jpg": {
+        "O_0": "clock with roman numerals",
+        "O_1": "moon in the sky"
+    },
+    "000000442993.jpg": {
+        "O_0": "clock tower",
+        "O_1": "building with a clock on it 3"
+    },
+    "000000226171.jpg": {
+        "O_0": "computer monitor",
+        "O_1": "laptop"
+    },
+    "000000528524.jpg": {
+        "O_0": "sheep with a black face and a black body",
+        "O_1": "sheep with a white face and a black body"
+    },
+    "000000447187.jpg": {
+        "O_0": "baseball player holding a bat",
+        "O_1": "baseball player wearing a catcher's mitt"
+    },
+    "000000153527.jpg": {
+        "O_0": "wooden bench",
+        "O_1": "wooden table"
+    },
+    "000000329614.jpg": {
+        "O_0": "yellow double decker bus",
+        "O_1": "blue car"
+    },
+    "000000298738.jpg": {
+        "O_0": "panda bear",
+        "O_1": "panda bear cub"
+    },
+    "000000050943.jpg": {
+        "O_0": "man surfing on a wave",
+        "O_1": "surfboard"
+    },
+    "000000025393.jpg": {
+        "O_0": "man wearing a white shirt and a black tie",
+        "O_1": "man wearing a pink shirt and a striped tie"
+    },
+    "000000066926.jpg": {
+        "O_0": "plate of glazed donuts",
+        "O_1": "plate of frosted donuts"
+    },
+    "000000446206.jpg": {
+        "O_0": "train on a bridge",
+        "O_1": "bus on the street"
+    },
+    "000000230450.jpg": {
+        "O_0": "parking meter",
+        "O_1": "parking meter 3"
+    },
+    "000000460682.jpg": {
+        "O_0": "horse",
+        "O_1": "fence"
+    },
+    "000000251572.jpg": {
+        "O_0": "woman with brown hair and glasses",
+        "O_1": "brown and white puppy"
+    },
+    "000000423798.jpg": {
+        "O_0": "street light",
+        "O_1": "traffic light 3"
+    },
+    "000000511760.jpg": {
+        "O_0": "cloudy sky",
+        "O_1": "group of palm trees 3"
+    },
+    "000000302107.jpg": {
+        "O_0": "baseball player swinging a bat",
+        "O_1": "catcher wearing a baseball glove"
+    },
+    "000000402433.jpg": {
+        "O_0": "pizza on a tray",
+        "O_1": "toy motorcycle"
+    },
+    "000000551439.jpg": {
+        "O_0": "woman",
+        "O_1": "book"
+    },
+    "000000053909.jpg": {
+        "O_0": "cell phone being held by a person",
+        "O_1": "keyboard in the background"
+    },
+    "000000355677.jpg": {
+        "O_0": "yellow surfboard with red and blue accents",
+        "O_1": "yellow lifeguard sign"
+    },
+    "000000571598.jpg": {
+        "O_0": "man in a black suit holding a white object",
+        "O_1": "man in a blue shirt and tie"
+    },
+    "000000100428.jpg": {
+        "O_0": "man standing in front of a mirror",
+        "O_1": "nother man's reflection in the mirror"
+    },
+    "000000455555.jpg": {
+        "O_0": "boy sitting on a skateboard and smiling",
+        "O_1": "nother boy is sitting on the ground and watching the first boy"
+    },
+    "000000274708.jpg": {
+        "O_0": "group of people skiing down a snowy hill",
+        "O_1": "person skiing down a snowy hill"
+    },
+    "000000060823.jpg": {
+        "O_0": "man sitting on a step",
+        "O_1": "cow"
+    },
+    "000000459153.jpg": {
+        "O_0": "man sitting on a bench",
+        "O_1": "laptop computer"
+    },
+    "000000007977.jpg": {
+        "O_0": "man riding a skateboard",
+        "O_1": "man wearing a hat"
+    },
+    "000000404923.jpg": {
+        "O_0": "baseball player holding a bat",
+        "O_1": "nother baseball player walking in the background"
+    },
+    "000000008211.jpg": {
+        "O_0": "man sitting on a chair",
+        "O_1": "woman standing next to the man"
+    },
+    "000000567825.jpg": {
+        "O_0": "sandwich",
+        "O_1": "glass of wine"
+    },
+    "000000448256.jpg": {
+        "O_0": "white truck",
+        "O_1": "blue boat"
+    },
+    "000000064868.jpg": {
+        "O_0": "man",
+        "O_1": "dog"
+    },
+    "000000210030.jpg": {
+        "O_0": "piece of cake on a plate",
+        "O_1": "fork on the plate"
+    },
+    "000000239717.jpg": {
+        "O_0": "man holding a plate of food",
+        "O_1": "man smiling"
+    },
+    "000000069106.jpg": {
+        "O_0": "zebra standing in front of a wall",
+        "O_1": "zebra standing next to a wall"
+    },
+    "000000147729.jpg": {
+        "O_0": "man wearing a black and white striped shirt",
+        "O_1": "man wearing a red shirt"
+    },
+    "000000230993.jpg": {
+        "O_0": "woman holding a red plaid umbrella",
+        "O_1": "woman holding a black umbrella"
+    },
+    "000000516916.jpg": {
+        "O_0": "black chair",
+        "O_1": "wooden desk"
+    },
+    "000000111609.jpg": {
+        "O_0": "man sleeping on a bed",
+        "O_1": "bed with a white pillow"
+    },
+    "000000172083.jpg": {
+        "O_0": "red and black glass piece",
+        "O_1": "green and black glass piece"
+    },
+    "000000485027.jpg": {
+        "O_0": "man wearing a blue shirt and plaid shorts",
+        "O_1": "tennis racket in the man's hand"
+    },
+    "000000117719.jpg": {
+        "O_0": "bar with a large number of bottles of liquor",
+        "O_1": "cello"
+    },
+    "000000140439.jpg": {
+        "O_0": "vase filled with water and flowers",
+        "O_1": "potted plant"
+    },
+    "000000160666.jpg": {
+        "O_0": "red and white toothbrush and",
+        "O_1": "tube of toothpaste"
+    },
+    "000000404534.jpg": {
+        "O_0": "fence in front of a building",
+        "O_1": "sign on top of the building"
+    },
+    "000000281929.jpg": {
+        "O_0": "man wearing a suit and tie",
+        "O_1": "bicycle"
+    },
+    "000000244496.jpg": {
+        "O_0": "man wearing a suit and tie",
+        "O_1": "man wearing a suit and tie with a flame design on the tie"
+    },
+    "000000172571.jpg": {
+        "O_0": "pizza pie on a plate",
+        "O_1": "glass of water"
+    },
+    "000000189752.jpg": {
+        "O_0": "person eating pizza and salad",
+        "O_1": "person eating pizza"
+    },
+    "000000495732.jpg": {
+        "O_0": "man standing in the center of the room holding a wii remote",
+        "O_1": "nother man standing to the left of the first man"
+    },
+    "000000257896.jpg": {
+        "O_0": "man wearing a suit and tie",
+        "O_1": "man wearing a hat"
+    },
+    "000000209747.jpg": {
+        "O_0": "sink",
+        "O_1": "cat"
+    },
+    "000000175535.jpg": {
+        "O_0": "plate with a sandwich cut in half",
+        "O_1": "bowl of sauce"
+    },
+    "000000496571.jpg": {
+        "O_0": "plate of food",
+        "O_1": "glass of water"
+    },
+    "000000312549.jpg": {
+        "O_0": "street sign that reads \"Anza\" and",
+        "O_1": "street sign that reads \"21 1/2 St"
+    },
+    "000000054593.jpg": {
+        "O_0": "boy in a red shirt and white pants holding a baseball bat",
+        "O_1": "boy in a catcher's uniform"
+    },
+    "000000333697.jpg": {
+        "O_0": "red and white sign that says no entry",
+        "O_1": "black and white sign that says one way"
+    },
+    "000000098018.jpg": {
+        "O_0": "pot on the floor",
+        "O_1": "blue box on floor"
+    },
+    "000000360951.jpg": {
+        "O_0": "computer monitor",
+        "O_1": "laptop"
+    },
+    "000000356428.jpg": {
+        "O_0": "table with bananas on it",
+        "O_1": "table with a bunch of hot dogs on it"
+    },
+    "000000182417.jpg": {
+        "O_0": "plate with a dessert on it",
+        "O_1": "spoon and fork on the plate"
+    },
+    "000000130826.jpg": {
+        "O_0": "man wearing a hat and sunglasses",
+        "O_1": "woman wearing a hat and a blue scarf"
+    },
+    "000000449432.jpg": {
+        "O_0": "group of people standing in line",
+        "O_1": "bus"
+    },
+    "000000507575.jpg": {
+        "O_0": "laptop computer on a desk",
+        "O_1": "desktop computer with a monitor"
+    },
+    "000000170613.jpg": {
+        "O_0": "woman in a black and blue wetsuit holding a surfboard",
+        "O_1": "woman in a pink wetsuit holding a surfboard"
+    },
+    "000000107554.jpg": {
+        "O_0": "blue plastic chair",
+        "O_1": "blue plastic shovel"
+    },
+    "000000169996.jpg": {
+        "O_0": "man riding a bicycle",
+        "O_1": "man riding a motorcycle"
+    },
+    "000000015335.jpg": {
+        "O_0": "boy eating a piece of food",
+        "O_1": "man and a woman sitting at a table"
+    },
+    "000000570782.jpg": {
+        "O_0": "laptop computer",
+        "O_1": "desktop computer"
+    },
+    "000000536038.jpg": {
+        "O_0": "woman lying in bed",
+        "O_1": "tablet computer"
+    },
+    "000000032285.jpg": {
+        "O_0": "toilet",
+        "O_1": "bathtub"
+    },
+    "000000357081.jpg": {
+        "O_0": "cow with a purple and white coat",
+        "O_1": "cow with a white and black coat"
+    },
+    "000000533493.jpg": {
+        "O_0": "man holding a frisbee",
+        "O_1": "nother man standing behind him"
+    },
+    "000000389684.jpg": {
+        "O_0": "man standing on the side of the road",
+        "O_1": "bus driving on the road"
+    },
+    "000000183965.jpg": {
+        "O_0": "cup of coffee with chocolate sprinkles on top",
+        "O_1": "plate with a pastry"
+    },
+    "000000251119.jpg": {
+        "O_0": "sandwich wrapped in plastic",
+        "O_1": "container of yogurt"
+    },
+    "000000490515.jpg": {
+        "O_0": "person wearing a helmet and goggles",
+        "O_1": "snowboard"
+    },
+    "000000393226.jpg": {
+        "O_0": "man crossing the street",
+        "O_1": "truck with a sign on it 3"
+    },
+    "000000225184.jpg": {
+        "O_0": "dog",
+        "O_1": "sheep"
+    },
+    "000000195754.jpg": {
+        "O_0": "large couch with a striped pattern",
+        "O_1": "coffee table"
+    },
+    "000000378673.jpg": {
+        "O_0": "skateboarder performing a trick in the air",
+        "O_1": "large crowd of people watching the skateboarder"
+    },
+    "000000163057.jpg": {
+        "O_0": "large group of people gathered in a park",
+        "O_1": "variety of kites being flown in the sky"
+    },
+    "000000512929.jpg": {
+        "O_0": "girl wearing a blue shirt and a blue bracelet",
+        "O_1": "girl wearing a brown shirt and a brown bracelet"
+    },
+    "000000183716.jpg": {
+        "O_0": "girl wearing a blue jacket and a blue tie",
+        "O_1": "girl wearing a blue jacket and a yellow tie"
+    },
+    "000000126592.jpg": {
+        "O_0": "stop sign on a pole",
+        "O_1": "street sign above the stop sign"
+    },
+    "000000051598.jpg": {
+        "O_0": "sink",
+        "O_1": "mirror"
+    },
+    "000000527220.jpg": {
+        "O_0": "gas pump",
+        "O_1": "sign that says \"regular\""
+    },
+    "000000482319.jpg": {
+        "O_0": "woman",
+        "O_1": "man"
+    },
+    "000000200162.jpg": {
+        "O_0": "train on the tracks",
+        "O_1": "traffic light"
+    },
+    "000000163118.jpg": {
+        "O_0": "man in an orange shirt jumping in the air to catch a frisbee",
+        "O_1": "nother man in a grey shirt also jumping in the air to catch the frisbee"
+    },
+    "000000090108.jpg": {
+        "O_0": "white sink",
+        "O_1": "white toilet"
+    },
+    "000000262631.jpg": {
+        "O_0": "large vase with a bird on it",
+        "O_1": "smaller vase"
+    },
+    "000000213035.jpg": {
+        "O_0": "person holding a cell phone",
+        "O_1": "person holding a wine glass"
+    },
+    "000000546626.jpg": {
+        "O_0": "green apple",
+        "O_1": "red coffee mug"
+    },
+    "000000322844.jpg": {
+        "O_0": "brown teddy bear",
+        "O_1": "stuffed fish"
+    },
+    "000000311295.jpg": {
+        "O_0": "zebra",
+        "O_1": "giraffe"
+    },
+    "000000546556.jpg": {
+        "O_0": "large herd of sheep",
+        "O_1": "grassy field"
+    },
+    "000000377393.jpg": {
+        "O_0": "clock tower",
+        "O_1": "fountain"
+    },
+    "000000536073.jpg": {
+        "O_0": "bottle of tequila",
+        "O_1": "lime"
+    },
+    "000000088250.jpg": {
+        "O_0": "baby elephant and",
+        "O_1": "nother elephant"
+    },
+    "000000451714.jpg": {
+        "O_0": "person wearing a red ski suit",
+        "O_1": "person wearing a blue ski suit"
+    },
+    "000000426372.jpg": {
+        "O_0": "red car on a trailer",
+        "O_1": "white truck with a trailer"
+    },
+    "000000530624.jpg": {
+        "O_0": "dog",
+        "O_1": "bed"
+    },
+    "000000206838.jpg": {
+        "O_0": "woman in a bikini riding a horse in the water",
+        "O_1": "nother woman in a bikini riding a horse in the water"
+    },
+    "000000181421.jpg": {
+        "O_0": "man",
+        "O_1": "woman"
+    },
+    "000000270297.jpg": {
+        "O_0": "train on the tracks",
+        "O_1": "person standing near the train"
+    },
+    "000000043737.jpg": {
+        "O_0": "clock on a pole",
+        "O_1": "street with cars parked on the side"
+    },
+    "000000065455.jpg": {
+        "O_0": "giraffe eating grass",
+        "O_1": "giraffe eating food from a person's hand"
+    },
+    "000000044877.jpg": {
+        "O_0": "woman in a wheelchair holding a tennis racket",
+        "O_1": "nother woman in a wheelchair"
+    },
+    "000000137294.jpg": {
+        "O_0": "man wearing a white shirt and sunglasses",
+        "O_1": "woman wearing a black shirt"
+    },
+    "000000125245.jpg": {
+        "O_0": "fish with a yellow and blue tail",
+        "O_1": "fish with a black and yellow tail"
+    },
+    "000000400794.jpg": {
+        "O_0": "man wearing a striped shirt",
+        "O_1": "plate of food"
+    },
+    "000000335800.jpg": {
+        "O_0": "street sign that reads Robinson St",
+        "O_1": "traffic light with a red hand signal"
+    },
+    "000000246454.jpg": {
+        "O_0": "girl sitting on the ground and",
+        "O_1": "dog"
+    },
+    "000000225670.jpg": {
+        "O_0": "black dog jumping in the air to catch a frisbee",
+        "O_1": "person in the water"
+    },
+    "000000166642.jpg": {
+        "O_0": "large elephant standing on a rocky surface",
+        "O_1": "smaller elephant in the background"
+    },
+    "000000542073.jpg": {
+        "O_0": "street sign that says \"Hollywood End\"",
+        "O_1": "street light with a white globe 3"
+    },
+    "000000356094.jpg": {
+        "O_0": "baseball player wearing a maroon shirt and a helmet",
+        "O_1": "nother person wearing a blue shirt and a baseball glove"
+    },
+    "000000557501.jpg": {
+        "O_0": "yellow countertop",
+        "O_1": "trash can"
+    },
+    "000000262227.jpg": {
+        "O_0": "computer monitor",
+        "O_1": "keyboard"
+    },
+    "000000459396.jpg": {
+        "O_0": "black cow and",
+        "O_1": "brown cow grazing in a field"
+    },
+    "000000008899.jpg": {
+        "O_0": "fire hydrant",
+        "O_1": "green door"
+    },
+    "000000240023.jpg": {
+        "O_0": "tennis player holding a tennis racket",
+        "O_1": "tennis ball"
+    },
+    "000000455301.jpg": {
+        "O_0": "baby girl",
+        "O_1": "woman"
+    },
+    "000000135673.jpg": {
+        "O_0": "large jetliner flying in the sky",
+        "O_1": "small plane flying in the sky"
+    },
+    "000000153510.jpg": {
+        "O_0": "plate of food",
+        "O_1": "bowl of food"
+    },
+    "000000525286.jpg": {
+        "O_0": "clock on the wall",
+        "O_1": "window next to the clock"
+    },
+    "000000553990.jpg": {
+        "O_0": "woman riding a horse",
+        "O_1": "horse jumping over a hurdle"
+    },
+    "000000538236.jpg": {
+        "O_0": "large group of croissants",
+        "O_1": "large group of pastries"
+    },
+    "000000073118.jpg": {
+        "O_0": "large teddy bear and",
+        "O_1": "smaller teddy bear"
+    },
+    "000000104612.jpg": {
+        "O_0": "plate of food",
+        "O_1": "bowl of food"
+    },
+    "000000522156.jpg": {
+        "O_0": "white plate with a piece of food on it",
+        "O_1": "green leaf"
+    },
+    "000000161799.jpg": {
+        "O_0": "person riding a skateboard",
+        "O_1": "skateboard"
+    },
+    "000000007991.jpg": {
+        "O_0": "plate of food",
+        "O_1": "pair of tongs"
+    },
+    "000000516871.jpg": {
+        "O_0": "baby in a bowl",
+        "O_1": "bowl of vegetables"
+    },
+    "000000019924.jpg": {
+        "O_0": "woman wearing a hat",
+        "O_1": "woman wearing a tie"
+    },
+    "000000141821.jpg": {
+        "O_0": "pizza with a lot of toppings",
+        "O_1": "person sitting at a table"
+    },
+    "000000377635.jpg": {
+        "O_0": "skateboarder performing a trick in the air",
+        "O_1": "skateboarder in the background"
+    },
+    "000000136033.jpg": {
+        "O_0": "sink",
+        "O_1": "mirror"
+    }
+}

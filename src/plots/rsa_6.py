@@ -273,7 +273,6 @@ def main():
     else:    
         all_rsa_results = {}
 
-    all_rsa_results = {}
     for model_id, model_label, fig_num in model_id_list:
         model_name = model_id.replace('/', '_')
         if model_label not in all_rsa_results:

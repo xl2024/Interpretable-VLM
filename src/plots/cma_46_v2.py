@@ -105,8 +105,8 @@ def plot_counting_trials(accs, save_path):
     print(f"Graph successfully saved to {save_path}")
 
 def main():
-    model_id = "Qwen/Qwen2.5-VL-7B-Instruct"
-    # model_id = "Qwen/Qwen2.5-VL-32B-Instruct"
+    # model_id = "Qwen/Qwen2.5-VL-7B-Instruct"
+    model_id = "Qwen/Qwen2.5-VL-32B-Instruct"
     model_name = model_id.replace('/', '_')
     # k_list = [0,10,20,50,100,150,200,250,300,400,500]
     k_list = [0,10,100,200,300,400]

@@ -4,6 +4,8 @@ import numpy as np
 from PIL import Image
 import gc
 import torch
+import json
+from pathlib import Path
 
 from src.math_core.rsa import compute_rsa_scores
 from src.mech_interp.tracer import rsa_tracer
@@ -261,11 +263,26 @@ def main():
     ]
     num_trials = 100
     repeat = 5
+
+    filename = f"src/data/cma/entr/fig_6_results.json"
+    file_path = Path(filename)
+    if file_path.exists():
+        print(f"Found {filename}! Loading results for entropy results...")
+        with open(filename, 'r') as f:
+            all_rsa_results = json.load(f)
+    else:    
+        all_rsa_results = {}
+
     all_rsa_results = {}
     for model_id, model_label, fig_num in model_id_list:
         model_name = model_id.replace('/', '_')
-        save_path = f"outputs/rsa/entr/rsa_fig_{fig_num}_{model_name}"
-        all_rsa_results[model_label] = rsa_entr_by_model(model_id, num_trials, repeat, save_path)
+        if model_label not in all_rsa_results:
+            save_path = f"outputs/rsa/entr/rsa_fig_{fig_num}_{model_name}"
+            all_rsa_results[model_label] = rsa_entr_by_model(model_id, num_trials, repeat, save_path)
+
+    with open(filename, 'w') as f:
+        json.dump(all_rsa_results, f, indent=4)
+    print(f"Entropy results successfully saved in {filename}.")
 
     plot_configs = process_rsa_data(all_rsa_results)
     save_paths = [f"outputs/rsa/entr/rsa_fig_7_{x}" for x in ['a','b','c']]

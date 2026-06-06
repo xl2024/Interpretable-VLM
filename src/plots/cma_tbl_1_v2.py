@@ -72,6 +72,8 @@ def cma_entr_get_embeds(model, processor, num_heads, color_list, shape_list, num
             image_list=image_lists[coord], 
             top_k_heads=top_k_heads
         )
+    for k, v in high_entr_embeds.items():
+        print("key:",k,"v:",v.keys())
     print("keys(get):",high_entr_embeds.keys())
     return corr_trials, high_entr_embeds
 
@@ -113,7 +115,8 @@ def cma_entr_intervs(model, processor, num_layers, num_heads, color_list, shape_
                 else:
                     print(f"pred={pred}, target_color={obj_indices[-1]['color']}, target_shape={obj_indices[-1]['shape']}")
                 print("obj index:",obj_indices[-1]["coords"])
-                print("keys:",embeds.keys())
+                for k,v in embeds.items():
+                    print("k:",k,"v:",v.keys())
                 predicted_word = cma_head_patching_by_generator(
                     model=model,
                     processor=processor,

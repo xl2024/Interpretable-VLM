@@ -87,7 +87,7 @@ def get_trial_data(model, processor, color_list, shape_list, num_trials):
             ['airplane', 'plane'],
             ['x', 'cross'],
             ['rectangle', 'square'],
-            ['light bulb', 'sun']
+            ['light bulb', 'sun with rays', 'sun']
             # ['dot', 'sun'] happens but shouldn't be equiv
         ]
         pred_color = pred[0].strip().lower()

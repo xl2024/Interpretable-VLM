@@ -113,7 +113,7 @@ def main():
     model_name = model_id.replace('/', '_')
     # k_list = [0,10,20,50,100,150,200,250,300,400,500]
     k_list = [0,10,20,50,100,200,300,500]
-    num_imgs = 10
+    num_imgs = 100
     dataset_path = "dataset/figure_46_v2"
     os.makedirs(dataset_path, exist_ok=True)
     dataset = get_counting_dataset(num_imgs, dataset_path)

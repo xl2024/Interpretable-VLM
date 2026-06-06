@@ -271,7 +271,6 @@ def main():
     else:
         fig_29_results = {}
 
-    print("fig_29_results.keys:",fig_29_results.keys())
     for model_id in model_ids:
         if model_id not in fig_29_results:
             print(f"Generating results in figure 29 for {model_id}...")

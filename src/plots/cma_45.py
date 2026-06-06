@@ -268,7 +268,7 @@ def main():
     # model_id = "Qwen/Qwen2.5-VL-7B-Instruct"    # 658/1000 -> 329 source + 329 target
     # model_id = "Qwen/Qwen2.5-VL-32B-Instruct"
     # model_id = "llava-hf/llava-1.5-7b-hf"    # 825/1000 -> 412 source + 413 target
-    model_id = "llava-hf/llava-1.5-13b-hf"
+    model_id = "llava-hf/llava-1.5-13b-hf"    # 427/1000 -> 213 source + 214 target
     k_list = [50,100,200]
     # k_list = [100]
     cache_dir = "src/data/cma/coco"

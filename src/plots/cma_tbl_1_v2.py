@@ -16,11 +16,8 @@ from src.plots.cma_1d import run_mediation_analysis
 def cma_entr_trials(model, processor, num_layers, num_heads, color_list, shape_list, num_trials, get_embeds, interv, top_k_heads=None, embeds=None):
     corr_trials = 0
     if get_embeds:
-        prompt_lists = {}
-        image_lists = {}
-        for pos in range(len(color_list)):
-            prompt_lists[get_coord_from_index(pos)] = []
-            image_lists[get_coord_from_index(pos)] = []
+        prompt_list = []
+        image_list = []
     if interv:
         corr_trials_interv = 0
     for i in range(num_trials):
@@ -32,7 +29,7 @@ def cma_entr_trials(model, processor, num_layers, num_heads, color_list, shape_l
 
         coords = [get_coord_from_index(j) for j in range(len(color_list))]
 
-        img = generate_custom_image(cols=3, rows=3, shapes=shapes, colors=colors, coords=coords)
+        img = generate_custom_image(cols=2, rows=2, shapes=shapes, colors=colors, coords=coords)
         
         obj_indices, text_prompt = get_dynamic_token_indices(
             model, processor, colors=colors, shapes=shapes, coords=coords, image=img, last_color=False
@@ -52,8 +49,8 @@ def cma_entr_trials(model, processor, num_layers, num_heads, color_list, shape_l
         if len(pred) >= 2 and pred_color == obj_indices[-1]['color'] and is_equiv(pred_shape, obj_indices[-1]['shape'], equiv_shapes):
             corr_trials += 1
             if get_embeds:
-                image_lists[obj_indices[-1]["coords"]].append(img)
-                prompt_lists[obj_indices[-1]["coords"]].append(text_prompt)
+                image_list.append(img)
+                prompt_list.append(text_prompt)
         else:
             print(f"pred={pred}, target_color={obj_indices[-1]['color']}, target_shape={obj_indices[-1]['shape']}")
         
@@ -65,7 +62,7 @@ def cma_entr_trials(model, processor, num_layers, num_heads, color_list, shape_l
                 num_heads=num_heads,
                 prompt_c1=text_prompt,
                 image_c1=img,
-                d_t_head_cache=embeds[obj_indices[-1]["coords"]],
+                d_t_head_cache=embeds,
                 top_k_heads=top_k_heads,
                 max_new_tokens=5
             )
@@ -78,17 +75,14 @@ def cma_entr_trials(model, processor, num_layers, num_heads, color_list, shape_l
                 print(f"pred_interv={pred_interv}, target_color={obj_indices[-1]['color']}, target_shape={obj_indices[-1]['shape']}")
 
     if get_embeds:
-        high_entr_embeds = {}
-        for pos in range(len(color_list)):
-            coord = get_coord_from_index(pos)
-            high_entr_embeds[coord] = get_head_embeddings(
-                model=model, 
-                processor=processor, 
-                num_heads=num_heads, 
-                prompt_list=prompt_lists[coord], 
-                image_list=image_lists[coord], 
-                top_k_heads=top_k_heads
-            )
+        high_entr_embeds = get_head_embeddings(
+            model=model, 
+            processor=processor, 
+            num_heads=num_heads, 
+            prompt_list=prompt_list, 
+            image_list=image_list, 
+            top_k_heads=top_k_heads
+        )
         return corr_trials, high_entr_embeds
     
     if interv:
@@ -108,12 +102,12 @@ def cma_entr_by_model(model_id, num_trials, top_k):
     top_k_heads = get_top_k_heads(mediation_scores, top_k)
     
     colors_list = [
-        ['red', 'yellow', 'gray', 'blue', 'pink', 'green', 'black', 'purple', 'orange'],
-        ['red', 'green', 'blue', 'red', 'blue', 'red', 'blue', 'green', 'green']
+        ['red', 'blue', 'green', 'purple'],
+        ['green', 'blue', 'blue', 'green']
     ]
     shapes_list = [
-        ['circle', 'star', 'plane', 'square', 'umbrella', 'triangle', 'sun', 'heart', 'cross'],
-        ['circle', 'circle', 'square', 'square', 'triangle', 'triangle', 'circle', 'triangle', 'square']
+        ['circle', 'square', 'triangle', 'heart'],
+        ['triangle', 'square', 'triangle', 'square']
     ]
 
     print("Conducting high entropy trials...")
@@ -179,7 +173,7 @@ def main():
         ("llava-hf/llava-1.5-7b-hf", "LLaVA 1.5 7B")
         ("llava-hf/llava-1.5-13b-hf", "LLaVA 1.5 13B")
     ]
-    num_trials = 10
+    num_trials = 100
     k_list = [2,5,10,20,50,100]
     for top_k in k_list:
         # top_k = 10
@@ -187,7 +181,7 @@ def main():
         for model_id, model_label in model_id_list:
             accs[model_label] = cma_entr_by_model(model_id, num_trials, top_k)
 
-        save_path = f"outputs/cma/entr/cma_tbl_1_k_{top_k}"
+        save_path = f"outputs/cma/entr_v2/cma_tbl_1_k_{top_k}"
         cma_save_table(accs, save_path)
 
 

@@ -2,6 +2,7 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 import os
+import re
 
 from src.model.loader import load_vlm
 from src.data.synthetic_generator import generate_custom_image
@@ -53,7 +54,7 @@ def cma_counting_trials(model, processor, num_heads, dataset, top_k_heads):
             max_new_tokens=200
         )
         pred = predicted_words.split('Answer: ')
-        if len(pred) >= 2 and pred[-1] == str(gt):
+        if len(pred) >= 2 and re.sub(r'\D', '',  pred[-1]) == str(gt):
             corr_trials += 1
         else:
             print(f"predicted_words={predicted_words}, \nindex={image_data['index']}, pred={pred}, target_count={gt}")

@@ -29,7 +29,7 @@ def plot_cma_sweeping_results(model_results, save_path=None):
         if alpha not in stage_data[k]:
             stage_data[k][alpha] = {"correct": 0, "total": 0}
             
-        correct = sum(1 for gt, pred in pairs if gt == pred)
+        correct = sum(1 for gt, pred in pairs if gt == pred.lower())
         
         stage_data[k][alpha]["correct"] += correct
         stage_data[k][alpha]["total"] += len(pairs)
@@ -161,6 +161,7 @@ def cma_binding_embeddings(model, processor, num_heads, top_k_heads, stage, est_
     image_list = []
     left_token_pos_list = [] if stage == 1 else None
     right_token_pos_list = [] if stage == 1 else None
+    # Qwen 2.5 VL 32B model always starts by In...
     system_format = "COLOR ANIMAL, replacing COLOR and ANIMAL with the missing color and animal in the image. Do not repeat the prompt words, just append with the requested format"
     for image_data in est_dataset:
         image_list.append(image_data["image"])
@@ -216,6 +217,7 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
         print(f"patching_acc (alpha={alpha}, position={pos}): {matchings}/{len(patching_results)}, patching_results: {patching_results}")
         # print(f"patching_acc (alpha={alpha}, position={pos}): {matchings}/{len(patching_results)}")
 
+    # Qwen 2.5 VL 32B model always starts by In...
     system_format = "COLOR ANIMAL, replacing COLOR and ANIMAL with the missing color and animal in the image. Do not repeat the prompt words, just append with the requested format"
     left_patching_results = {}
     right_patching_results = {}
@@ -284,18 +286,18 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
 
 def main():
     model_id_list = [
-        # ("llava-hf/llava-1.5-13b-hf", 42)                  # figure 42
+        ("llava-hf/llava-1.5-13b-hf", 42)                  # figure 42
         # ("Qwen/Qwen2.5-VL-3B-Instruct", 37),               # figure 37
         # ("Qwen/Qwen2.5-VL-7B-Instruct", 38),               # figure 38
-        ("Qwen/Qwen2.5-VL-32B-Instruct", 39)              # figure 39
+        # ("Qwen/Qwen2.5-VL-32B-Instruct", 39)              # figure 39
         # ("llava-hf/llava-1.5-7b-hf", 41),                  # figure 41
         # ("Qwen/Qwen2-VL-7B-Instruct", 40),                 # figure 40
         # ("llava-hf/llava-onevision-qwen2-7b-ov-hf", 43)    # figure 43
     ]
-    k_list = [2,5,10,20,50,100]
+    k_list = [2,5,10,20,50,200]
     alpha_lists = [
-        [5,10,20,50,100,300],
-        [1,2,4,10,15],
+        [1,2,5,10,30,100,200],
+        [1,3,5,10,30,100],
         [1,3,10,20,50,100]
     ]
 
@@ -315,7 +317,7 @@ def main():
             print(f"Found {filename}! Loading sweeping results for hyperparameters...")
             with open(filename, 'r') as f:
                 patching_results[model_id] = json.load(f)
-            # plot_cma_sweeping_results(patching_results[model_id], imgname)
+            plot_cma_sweeping_results(patching_results[model_id], imgname)
             continue
 
         config = load_config()

@@ -6,6 +6,7 @@ import gc
 import torch
 import json
 from pathlib import Path
+import numpy as np
 import matplotlib.pyplot as plt
 import random
 from typing import Tuple, Any
@@ -16,6 +17,79 @@ from src.plots.cma_1d import run_mediation_analysis
 from src.mech_interp.cma import cma_head_patching_by_logits, get_head_embeddings, get_top_k_heads
 from src.data.synthetic_generator import generate_custom_image
 
+
+def process_patching_data(patching_results):
+    aggregated_data = {}
+    
+    for model_id, splits in patching_results.items():
+        split_accs = []
+        split_iterable = splits.values() if isinstance(splits, dict) else splits
+        
+        for split_data in split_iterable:
+            correct = 0
+            total = 0
+            
+            # Aggregate accuracy from both "left" and "right" configurations
+            for side in ["left", "right"]:
+                for target, prediction in split_data[side]:
+                    if target == prediction:
+                        correct += 1
+                    total += 1
+            
+            # Calculate accuracy for this specific split
+            if total > 0:
+                split_accs.append(correct / total)
+                
+        mean_acc = np.mean(split_accs)
+        err_acc = np.std(split_accs, ddof=1) / np.sqrt(len(split_accs)) if len(split_accs) > 1 else 0.0
+        
+        aggregated_data[model_id] = {
+            'mean': mean_acc,
+            'error': err_acc
+        }
+        
+    return aggregated_data
+
+def plot_patching_accuracy(aggregated_data, save_path):
+    models = list(aggregated_data.keys())
+    means = [aggregated_data[m]['mean'] for m in models]
+    errors = [aggregated_data[m]['error'] for m in models]
+    
+    fig, ax = plt.subplots(figsize=(6, 4))
+    
+    # Plot bars
+    bars = ax.bar(
+        models, means, yerr=errors,
+        color='#86AF81',          # Sage green
+        edgecolor='black',        # Solid black outlines
+        linewidth=1.5,
+        error_kw=dict(lw=2, capsize=5)
+    )
+    
+    # Axis formatting
+    ax.set_ylim(0, 1.0)
+    ax.set_ylabel('Intervention Accuracy', fontsize=12)
+    ax.set_xlabel('Model', fontsize=12)
+    
+    # X-ticks formatting (Tilted and aligned correctly to avoid overlap)
+    ax.set_xticks(range(len(models)))
+    ax.set_xticklabels(
+        models, 
+        rotation=15, 
+        ha='right',    # Horizontal Alignment
+        rotation_mode='anchor',    # rotates the text first, and then aligns it
+        fontsize=12
+    )
+    
+    for spine in ax.spines.values():
+        spine.set_linewidth(1.5)
+        
+    ax.tick_params(direction='out', width=1.5, length=5)
+
+    plt.tight_layout()
+    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.close(fig) 
+    print(f"Bar Chart Saved at: {save_path}")
 
 def get_token_pos_for_object(
         model_id: str,
@@ -179,26 +253,26 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
 
 def main():
     model_id_list = [
-        "Qwen/Qwen2-VL-7B-Instruct",    # left: 61/212, right: 3/212    split: 432 total, 220 in est, 212 in eval
-        "Qwen/Qwen2.5-VL-3B-Instruct",    # left: 135/212, right: 86/212
-        "Qwen/Qwen2.5-VL-7B-Instruct",    # left: 70/212, right: 41/212
-        "Qwen/Qwen2.5-VL-32B-Instruct",
-        "llava-hf/llava-1.5-7b-hf",    # left: 16/212, right: 6/212
-         "llava-hf/llava-1.5-13b-hf"
+        ("Qwen/Qwen2.5-VL-3B-Instruct", "Qwen-2.5-VL-3B"),
+        ("Qwen/Qwen2.5-VL-7B-Instruct", "Qwen-2.5-VL-7B"),
+        ("Qwen/Qwen2.5-VL-32B-Instruct", "Qwen-2.5-VL-32B"),
+        ("Qwen/Qwen2-VL-7B-Instruct", "Qwen-2-VL"),
+        ("llava-hf/llava-1.5-7b-hf", "Llava-1.5-7B"),
+        ("llava-hf/llava-1.5-13b-hf", "Llava-1.5-13B")
     ]
 
     image_list, color_list, shape_list = generate_dataset()
     print(f"Generated {len(image_list)} images.")
     
     patching_results = {}
-    for model_id in model_id_list:
+    for model_id, model_label in model_id_list:
         model_name = model_id.replace('/', '_')
         filename = f"src/data/cma/color/{model_name}.json"
         file_path = Path(filename)
         if file_path.exists():
             print(f"Found {filename}! Loading results for keys intervention...")
             with open(filename, 'r') as f:
-                patching_results[model_id] = json.load(f)
+                patching_results[model_label] = json.load(f)
             continue
 
         config = load_config()
@@ -213,7 +287,7 @@ def main():
         top_k_kv_heads = to_kv_heads(top_k_heads, num_heads, num_kv_heads)
         # print("top_k_kv_heads:", top_k_kv_heads)
 
-        patching_results[model_id] = {}
+        patching_results[model_label] = {}
         for split in range(3):
             image_dataset = {"est": [], "eval": []}
             color_dataset = {"est": [], "eval": []}
@@ -254,11 +328,11 @@ def main():
                 color_list=color_dataset["eval"]
             )
         
-            patching_results[model_id][split] = {"left": left_patching_results, "right": right_patching_results}
+            patching_results[model_label][split] = {"left": left_patching_results, "right": right_patching_results}
             
         with open(filename, 'w') as f:
             # indent=4 formats it nicely to read it in a text editor
-            json.dump(patching_results[model_id], f, indent=4)
+            json.dump(patching_results[model_label], f, indent=4)
         print(f"Keys intervention results successfully saved in {filename}.")
 
         del model
@@ -266,7 +340,9 @@ def main():
         gc.collect()
         torch.cuda.empty_cache()
 
-    # print("final patching_results: ", patching_results)
+    save_path = "outputs/cma/cma_fig_4.png"
+    aggregated_data = process_patching_data(patching_results)
+    plot_patching_accuracy(aggregated_data, save_path)
 
 
 if __name__ == "__main__":

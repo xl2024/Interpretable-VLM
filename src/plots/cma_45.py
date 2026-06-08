@@ -1,18 +1,19 @@
 import os
 import glob
 import json
-import torch
 from PIL import Image
 import torch
 import random
 import numpy as np
+import matplotlib.pyplot as plt
 from typing import List, Dict, Tuple, Any
-
 
 from src.model.loader import load_vlm
 from src.utils.tools import load_config, get_text_prompt, get_num_hidden_layers, _resolve_text_model_dims, setup_dataset_from_zip, predict, get_token_position
 from src.mech_interp.cma import cma_head_patching_by_generator, get_head_embeddings, get_top_k_heads
 from src.plots.cma_1d import run_mediation_analysis
+
+# Reproduces Figure 45
 
 
 # def get_coco_objects(model, processor, coco_val_dir, cache_file, max_images=None):
@@ -247,13 +248,73 @@ def get_coco_stats(coco_results, num_splits=3):
         
         # 5. Calculate Final Statistics (Mean and Error)
         mean_acc = np.mean(split_accuracies_k)
-        std_err = np.std(split_accuracies_k)    # for the error bar
+        std_err = np.std(split_accuracies_k, ddof=1) / np.sqrt(len(split_accuracies_k)) if len(split_accuracies_k) > 1 else 0
         split_accuracies[str(k)] = {"mean_acc": mean_acc, "std_err": std_err}
         
         print(f"Accuracies across {num_splits} splits (k={k}): {[f'{acc*100:.2f}%' for acc in split_accuracies_k]}")
         print(f"Mean Accuracy (k={k}): {mean_acc*100:.2f}% ± {std_err*100:.2f}%")
     
     return split_accuracies
+
+def plot_coco_stats(stats, k_list, save_path):
+    models = list(stats.keys())
+    means = {k: [] for k in k_list}
+    errors = {k: [] for k in k_list}
+    
+    for m in models:
+        for k in k_list:
+            means[k].append(stats[m][str(k)]["mean_acc"])
+            errors[k].append(stats[m][str(k)]["std_err"])
+            
+    fig, ax = plt.subplots(figsize=(6, 4))
+    
+    x = np.arange(len(models))
+    width = 0.25 # Width of a single bar
+    
+    # Colors from the image
+    colors = {
+        50: '#F08D88',  # Light salmon
+        100: '#EB645C', # Medium coral
+        200: '#DD5252'  # Dark red
+    }
+    
+    offsets = [-width, 0, width]
+    for i, k in enumerate(k_list):
+        ax.bar(
+            x + offsets[i], 
+            means[k], 
+            width, 
+            yerr=errors[k], 
+            label=f'top {k}', 
+            color=colors[k], 
+            edgecolor='white',   # Creates the clean white line between bars
+            error_kw=dict(lw=1.5, capsize=5)
+        )
+
+    ax.set_ylabel('Mean Accuracy')
+    ax.set_ylim(bottom=0)
+    
+    ax.set_xticks(x)
+    ax.set_xticklabels(models)
+
+    ax.tick_params(axis='y', labelsize=8)
+    ax.tick_params(axis='x', labelsize=9)
+    ax.tick_params(bottom=False, left=False)
+    
+    ax.legend(
+        title='Intervention', 
+        loc='best',
+        frameon=True,
+        edgecolor='#cccccc' # Light gray
+    )
+    
+    for spine in ax.spines.values():
+        spine.set_color('#777777') # Dark gray
+        
+    plt.tight_layout()
+    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.close(fig) 
+    print(f"Bar Chart Saved at: {save_path}")
 
 def main():
     data_url = "http://images.cocodataset.org/zips/val2017.zip"
@@ -264,16 +325,22 @@ def main():
         print("No coco_directory.")
         return
     
-    # model_id = "Qwen/Qwen2.5-VL-3B-Instruct"    # 844/1000 -> 422 source + 422 target
-    # model_id = "Qwen/Qwen2.5-VL-7B-Instruct"    # 658/1000 -> 329 source + 329 target
-    model_id = "Qwen/Qwen2.5-VL-32B-Instruct"    # 948/1000 -> 474 source + 474 target
-    # model_id = "llava-hf/llava-1.5-7b-hf"    # 825/1000 -> 412 source + 413 target
-    # model_id = "llava-hf/llava-1.5-13b-hf"    # 427/1000 -> 213 source + 214 target
+    model_id_list = [
+        ("llava-hf/llava-1.5-13b-hf", "LLava-1.5-13b"),      # 427/1000 -> 213 source + 214 target
+        ("Qwen/Qwen2.5-VL-7B-Instruct", "Qwen-2.5-7b"),      # 658/1000 -> 329 source + 329 target
+        ("Qwen/Qwen2.5-VL-3B-Instruct", "Qwen-2.5-3b"),      # 844/1000 -> 422 source + 422 target
+        ("llava-hf/llava-1.5-7b-hf", "LLava-1.5-7b"),        # 825/1000 -> 412 source + 413 target
+        ("Qwen/Qwen2.5-VL-32B-Instruct", "Qwen-2.5-32b")     # 948/1000 -> 474 source + 474 target
+    ]
     k_list = [50,100,200]
-    # k_list = [100]
     cache_dir = "src/data/cma/coco"
-    coco_results = run_cma_coco(model_id, k_list, coco_directory, cache_dir)
-    coco_stats = get_coco_stats(coco_results)
+    coco_stats = {}
+    for model_id, model_label in model_id_list:
+        coco_results = run_cma_coco(model_id, k_list, coco_directory, cache_dir)
+        coco_stats[model_label] = get_coco_stats(coco_results)
+    
+    figpath = "outputs/cma/cma_fig_45.png"
+    plot_coco_stats(coco_stats, k_list, figpath)
 
 
 if __name__ == "__main__":

@@ -5,15 +5,88 @@ import json
 from pathlib import Path
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
-import random
+import numpy as np
 
 from src.model.loader import load_vlm
 from src.utils.tools import load_config, _resolve_text_model_dims, get_text_prompt, get_num_hidden_layers, get_token_position
 from src.plots.cma_1d import run_mediation_analysis
 from src.mech_interp.cma import cma_head_patching_by_logits, get_head_embeddings, get_top_k_heads
 
-# Reproduces Figure 3 and 37-43
+# Reproduces Figure 3b and 37-43
 
+
+def plot_stage_comparison_bar(patching_results, save_path=None):
+    """
+    Parses the nested patching_results dictionary and generates a grouped bar chart
+    comparing the maximum intervention accuracy of different models across 3 stages.
+    """
+    models = list(patching_results.keys())
+    stages = [1, 2, 3]
+    stage_names = {
+        1: "ID Retrieval",
+        2: "ID Selection",
+        3: "Feature Retrieval"
+    }
+    colors = {
+        1: '#4A90E2', # Light Blue
+        2: '#E06666', # Light Red/Coral
+        3: '#82C07C'  # Light Green
+    }
+    stage_accs = {s: [] for s in stages}
+    for model in models:
+        for s in stages:
+            stage_data = patching_results[model][str(s)]
+            best_acc = 0.0
+            for k_val, dirs in stage_data.items():
+                for direction, alphas in dirs.items():
+                    for alpha_val, pairs in alphas.items():
+                        correct = sum(1 for gt, pred in pairs if gt == pred.lower())
+                        acc = correct / len(pairs)
+                        if acc > best_acc:
+                            best_acc = acc
+                            
+            stage_accs[s].append(best_acc)
+            
+    fig, ax = plt.subplots(figsize=(6, 4))
+    
+    x = np.arange(len(models))
+    width = 0.25 # Width of the bars
+    offsets = [-width, 0, width] # Offsets to group the 3 bars
+    for i, s in enumerate(stages):
+        ax.bar(
+            x + offsets[i], 
+            stage_accs[s], 
+            width, 
+            label=stage_names[s], 
+            color=colors[s],
+            edgecolor='white' # Clean white gap between grouped bars
+        )
+        
+    ax.set_ylabel('Accuracy', fontweight='bold')
+    ax.set_ylim(0, 1.05)
+    ax.set_xticks(x)
+    ax.set_xticklabels(models, rotation=15, ha='right', rotation_mode='anchor')
+    
+    # Horizontal gridlines that sit *behind* the bars
+    ax.set_axisbelow(True) 
+    ax.yaxis.grid(True, color='#D3D3D3', linestyle='-', linewidth=1.5)
+    ax.xaxis.grid(False)
+    
+    for spine in ax.spines.values():
+        spine.set_color('#AAAAAA')
+        spine.set_linewidth(1.5)
+        
+    ax.legend(title='Stage', loc='lower center', framealpha=0.7, edgecolor='#DDDDDD')
+    
+    ax.tick_params(bottom=False, left=False) # Hides tick lines
+    
+    plt.tight_layout()
+    
+    if save_path:
+        plt.savefig(save_path, dpi=300, bbox_inches='tight')
+        print(f"Comparison bar chart saved to {save_path}")
+    
+    # plt.show()
 
 def plot_cma_sweeping_results(model_results, save_path=None):
     """
@@ -286,13 +359,13 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
 
 def main():
     model_id_list = [
-        ("llava-hf/llava-1.5-13b-hf", 42),                 # figure 42
-        ("Qwen/Qwen2.5-VL-3B-Instruct", 37),               # figure 37
-        ("Qwen/Qwen2.5-VL-7B-Instruct", 38),               # figure 38
-        ("Qwen/Qwen2.5-VL-32B-Instruct", 39),              # figure 39
-        ("llava-hf/llava-1.5-7b-hf", 41),                  # figure 41
-        ("Qwen/Qwen2-VL-7B-Instruct", 40),                 # figure 40
-        ("llava-hf/llava-onevision-qwen2-7b-ov-hf", 43)    # figure 43
+        ("llava-hf/llava-1.5-7b-hf", "Llava-1.5-7B", 41),                        # figure 41
+        ("llava-hf/llava-1.5-13b-hf", "Llava-1.5-13B", 42),                      # figure 42
+        ("Qwen/Qwen2.5-VL-3B-Instruct", "Qwen-2.5-VL-3B", 37),                   # figure 37
+        ("Qwen/Qwen2.5-VL-7B-Instruct", "Qwen-2.5-VL-7B", 38),                   # figure 38
+        ("Qwen/Qwen2.5-VL-32B-Instruct", "Qwen-2.5-VL-32B", 39),                 # figure 39
+        ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "Llava-OneVision-7B", 43),   # figure 43
+        ("Qwen/Qwen2-VL-7B-Instruct", "Qwen-2-VL", 40)                           # figure 40
     ]
     k_list = [2,5,10,20,50,200]
     alpha_lists = [
@@ -308,7 +381,7 @@ def main():
     eval_dataset = cma_loading_ue5_dataset("eval")
 
     patching_results = {}
-    for model_id, fig_num in model_id_list:
+    for model_id, model_label, fig_num in model_id_list:
         model_name = model_id.replace('/', '_')
         filename = f"src/data/cma/sweeping/{model_name}.json"
         imgname = f"outputs/cma/sweeping/cma_fig_{fig_num}_{model_name}.png"
@@ -316,8 +389,8 @@ def main():
         if file_path.exists():
             print(f"Found {filename}! Loading sweeping results for hyperparameters...")
             with open(filename, 'r') as f:
-                patching_results[model_id] = json.load(f)
-            plot_cma_sweeping_results(patching_results[model_id], imgname)
+                patching_results[model_label] = json.load(f)
+            # plot_cma_sweeping_results(patching_results[model_label], imgname)
             continue
 
         config = load_config()
@@ -327,13 +400,13 @@ def main():
         _, num_heads = _resolve_text_model_dims(model)
         mediation_scores_list = run_mediation_analysis(model_id)
 
-        patching_results[model_id] = {}
+        patching_results[model_label] = {}
         for stage in range(1, 4):
             # [Note: In stage 3 (feature retrival), patching the output of attn heads would let the model to predict the feature information in the patching embeddings, 
             # while patching the query embeddings asks the moddel about the feature of the position ID gotten from stage 2 and stored in the patchings.]
             mediation_scores = mediation_scores_list[stage-1]
 
-            patching_results[model_id][str(stage)] = {}
+            patching_results[model_label][str(stage)] = {}
             for k in k_list:
                 top_k_heads = get_top_k_heads(mediation_scores, k)
                 print(f"Calculating binding embeddings (stage={stage}, k={k})...")
@@ -360,16 +433,16 @@ def main():
                     eval_dataset=eval_dataset
                 )
                 
-                patching_results[model_id][str(stage)][str(k)] = {"left": left_patching_results, "right": right_patching_results}
+                patching_results[model_label][str(stage)][str(k)] = {"left": left_patching_results, "right": right_patching_results}
         
         with open(filename, 'w') as f:
             # indent=4 formats it nicely to read it in a text editor
-            json.dump(patching_results[model_id], f, indent=4)
+            json.dump(patching_results[model_label], f, indent=4)
         print(f"Sweeping results successfully saved in {filename}.")
 
-        plot_cma_sweeping_results(patching_results[model_id], imgname)
+        plot_cma_sweeping_results(patching_results[model_label], imgname)
 
-    # print("final patching_results: ", patching_results)
+    plot_stage_comparison_bar(patching_results, save_path="outputs/cma/sweeping/cma_fig_3.png")
 
 
 if __name__ == "__main__":

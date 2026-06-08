@@ -40,7 +40,7 @@ python -m src.plots.pca_1b
 │   ├── rsa/
 │   └── v0/                   # Historic reference outputs
 ├── src/
-│   ├── data/                 # Dataset processing and experiment data records
+│   ├── data/                 # Dataset generation and experiment data records
 │   │   ├── cma/
 │   │   ├── test_samples/
 │   │   ├── generate_pug_dataset.py
@@ -68,7 +68,7 @@ python -m src.plots.pca_1b
 
 The following table details which script maps to which figure, alongside their datasets and output directories.
 
-| Script | Reproduced Target | Dataset | Raw Data Filepath | Figure Filepath | Notes |
+| Script | Reproduced Target | Dataset | Raw Data Filepath | Figure/Table Filepath | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `pca_1b.py` | Figure 1(b) | - | - | `outputs/pca/pca_fig_1b.png` | - |
 | `rsa_1c.py` | Figures 1(c), 14–19 | - | - | `outputs/rsa/stage/` | - |

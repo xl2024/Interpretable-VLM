@@ -1,7 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
-from typing import Dict, List, Tuple, Any
+from matplotlib.colors import LinearSegmentedColormap
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+from typing import List, Tuple, Any
 from pathlib import Path
 
 from src.model.loader import load_vlm
@@ -67,18 +69,18 @@ def run_mediation_analysis(model_id: str) -> Tuple[List[List[Any]], List[List[An
 
 def plot_causal_mediation(
     mediation_scores: Tuple[List[List[Any]], List[List[Any]], List[List[Any]]],
-    save_path: str
+    save_paths: List[str]
 ):
     num_layers, num_heads = mediation_scores[0].shape
-    scores_blue, scores_red, scores_green = mediation_scores
+    raw_blue, raw_red, raw_green = mediation_scores
 
-    scores_blue = np.clip(scores_blue, 0, None)
-    scores_red = np.clip(scores_red, 0, None)
-    scores_green = np.clip(scores_green, 0, None)
+    raw_blue = np.clip(raw_blue, 0, None)
+    raw_red = np.clip(raw_red, 0, None)
+    raw_green = np.clip(raw_green, 0, None)
     
-    scores_blue /= scores_blue.max()
-    scores_red /= scores_red.max()
-    scores_green /= scores_green.max()
+    scores_blue = raw_blue / raw_blue.max()
+    scores_red = raw_red / raw_red.max()
+    scores_green = raw_green / raw_green.max()
 
     fig, ax = plt.subplots(figsize=(6, 5))
     
@@ -111,32 +113,80 @@ def plot_causal_mediation(
         text.set_color('black')
 
     plt.tight_layout()
-    plt.savefig(save_path, dpi=300, bbox_inches='tight')
-    print(f"Graph successfully saved to {save_path}")
-    plt.show()
+    plt.savefig(save_paths[0], dpi=300, bbox_inches='tight')
+    plt.close(fig)
+    print(f"Graph successfully saved to {save_paths[0]}")
+
+    configs = [
+        (raw_blue, save_paths[1], "#257EEA"),  # Blue gradient
+        (raw_red, save_paths[2], "#E55353"),   # Red gradient
+        (raw_green, save_paths[3], "#6DB36D")  # Green gradient
+    ]
+    
+    for data, path, target_color in configs:
+        figsize = (5, 8) if num_layers == 64 else (6, 6)
+        tick_fontsize = 4 if num_heads == 40 else 6
+        fig, ax = plt.subplots(figsize=figsize)
+        cmap = LinearSegmentedColormap.from_list("custom", ["black", target_color])
+        
+        # imshow natively handles 2D matrices and perfectly pairs with colorbars
+        im = ax.imshow(data, cmap=cmap, aspect='auto')
+        
+        ax.set_xlabel('Head Index', fontsize=14, fontweight='bold')
+        ax.set_ylabel('Layer Index', fontsize=14, fontweight='bold')
+        
+        ax.set_xticks(np.arange(num_heads))
+        ax.set_yticks(np.arange(num_layers))
+        ax.set_xticklabels(np.arange(num_heads), fontweight='bold', fontsize=tick_fontsize)
+        ax.set_yticklabels(np.arange(num_layers), fontweight='bold', fontsize=tick_fontsize)
+        
+        # Create minor ticks shifted by 0.5 to draw the faint cell borders (Grid)
+        ax.set_xticks(np.arange(-0.5, num_heads, 1), minor=True)
+        ax.set_yticks(np.arange(-0.5, num_layers, 1), minor=True)
+        ax.grid(which='minor', color='#333333', linestyle='-', linewidth=0.5)
+        ax.tick_params(which='both', bottom=False, left=False) # Hide physical major and minor tick lines
+        
+        divider = make_axes_locatable(ax)
+        # Heatmap Width + (Heatmap Width * 0.05) + Padding(0.1 inches) = 100% Total Space
+        cax = divider.append_axes("right", size="5%", pad=0.1)
+        cbar = plt.colorbar(im, cax=cax)
+        cbar.set_label('CMA Score', fontsize=14, fontweight='bold')
+        cbar.ax.tick_params(labelsize=8)
+        cbar.outline.set_edgecolor('none')
+        
+        plt.tight_layout()
+        plt.savefig(path, dpi=300, bbox_inches='tight')
+        plt.close(fig)
+        print(f"Individual channel graph saved to {path}")
 
 def main():
     print("=== Execution Suite: Live Mechanistic Head Interventions ===")
 
     model_id_list = [
-                    # ("Qwen/Qwen2-VL-7B-Instruct", "1d"), 
-                    # ("Qwen/Qwen2.5-VL-3B-Instruct", "20"),
-                    #  ("Qwen/Qwen2.5-VL-7B-Instruct", "21")
-                    #  ("llava-hf/llava-1.5-7b-hf", "23"),
-                    #  ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "25"),
-                    #  ("HuggingFaceM4/idefics2-8b-chatty", "x"),
-                    #  ("HuggingFaceM4/idefics2-8b", "x")
-                    #  ("llava-hf/llava-1.5-13b-hf", "24"),
-                     ("Qwen/Qwen2.5-VL-32B-Instruct", "22")
+        ("Qwen/Qwen2-VL-7B-Instruct", "1d"), 
+        ("Qwen/Qwen2.5-VL-3B-Instruct", "20"),
+        ("Qwen/Qwen2.5-VL-7B-Instruct", "21"),
+        ("Qwen/Qwen2.5-VL-32B-Instruct", "22"),
+        ("llava-hf/llava-1.5-7b-hf", "23"),
+        ("llava-hf/llava-1.5-13b-hf", "24"),
+        ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "25"),
+        ("HuggingFaceM4/idefics2-8b-chatty", "x"),
+        ("HuggingFaceM4/idefics2-8b", "x")
     ]
     for model_id, fig_num in model_id_list:
-        mediation_scores = run_mediation_analysis(model_id)
+        mediation_scores = run_mediation_analysis(model_id)    # data stored in f"src/data/cma/scores/{model_name}.npz"
 
         model_name = model_id.replace('/', '_')
         plot_causal_mediation(
             mediation_scores=mediation_scores,
-            save_path=f"outputs/cma/scores/cma_fig_{fig_num}_{model_name}.png"
+            save_paths=[
+                f"outputs/cma/scores/cma_fig_{fig_num}_{model_name}.png",
+                f"outputs/cma/scores/cma_fig_{fig_num}a_{model_name}.png",
+                f"outputs/cma/scores/cma_fig_{fig_num}b_{model_name}.png",
+                f"outputs/cma/scores/cma_fig_{fig_num}c_{model_name}.png"
+            ]
         )
+
 
 if __name__ == "__main__":
     main()

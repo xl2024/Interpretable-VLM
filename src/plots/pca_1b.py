@@ -10,7 +10,7 @@ from src.data.synthetic_generator import generate_custom_image
 from src.utils.tools import _resolve_layer_path, load_config, get_permutations, get_text_prompt, get_layer_path_template
 from src.mech_interp.tracer import gc_collect
 
-model_id = "Qwen/Qwen2-VL-7B-Instruct"
+# Reproduces Figure 1b
 
 
 def collect_hidden_states_for_pca(
@@ -184,7 +184,7 @@ def main():
     print("=== Figure 1b Reproduction: PCA ===")
     config = load_config()
     
-    # model_id = "Qwen/Qwen2-VL-7B-Instruct"
+    model_id = "Qwen/Qwen2-VL-7B-Instruct"
     tier = config['pipeline']['tier']
     model, processor = load_vlm(model_id, tier)
 
@@ -201,6 +201,7 @@ def main():
         feat_labels=feat_labels,
         save_path="outputs/pca/pca_fig_1b.png"
     )
+
 
 if __name__ == "__main__":
     main()

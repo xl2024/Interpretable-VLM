@@ -268,7 +268,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-"""
-This version patches on the queries and shows it doesn't work as well as patching the keys, for the tokens spanning the objects.
-"""

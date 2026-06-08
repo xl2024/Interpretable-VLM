@@ -198,7 +198,7 @@ def get_num_hidden_layers(model: Any) -> int:
 
     raise AttributeError("Could not infer number of hidden layers from model object.")
 
-def load_config(config_path: str = "configs/local.yaml"):
+def load_config(config_path: str = "configs/config.yaml"):
     with open(config_path, "r") as f:
         return yaml.safe_load(f)
 

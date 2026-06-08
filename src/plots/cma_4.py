@@ -17,6 +17,8 @@ from src.plots.cma_1d import run_mediation_analysis
 from src.mech_interp.cma import cma_head_patching_by_logits, get_head_embeddings, get_top_k_heads
 from src.data.synthetic_generator import generate_custom_image
 
+# Reproduces Figure 4
+
 
 def process_patching_data(patching_results):
     aggregated_data = {}

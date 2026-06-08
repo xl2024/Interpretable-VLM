@@ -4,8 +4,7 @@ import json
 from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
-import random
-from typing import Tuple, Any
+import matplotlib.patches as mpatches
 
 from src.model.loader import load_vlm
 from src.utils.tools import load_config, _resolve_text_model_dims, get_text_prompt, get_num_hidden_layers, predict, get_coord_from_index, is_equiv
@@ -13,6 +12,107 @@ from src.plots.cma_1d import run_mediation_analysis
 from src.mech_interp.cma import cma_head_patching_by_generator, get_head_embeddings, get_top_k_heads
 from src.data.synthetic_generator import generate_custom_image
 
+# Reproduces Figure 5
+
+
+def process_intervention_data(results):
+    """
+    Parses the nested results dictionary and calculates the 'Before' and 'After'
+    accuracy percentages for each direction.
+    """
+    directions = ["above", "below", "left", "right"]
+    aggregated = {}
+    
+    for model_id, pos_data in results.items():
+        # Initialize counts for this model
+        stats = {d: {"before": 0, "after": 0, "total": 0} for d in directions}
+        
+        # Handle whether pos_data was saved as a list or a dict
+        pos_iterable = pos_data.values() if isinstance(pos_data, dict) else pos_data
+        
+        for dir_data in pos_iterable:
+            for d in directions:
+                for target, before_pred, after_pred in dir_data[d]:
+                    if target == before_pred.lower():
+                        stats[d]["before"] += 1
+                    if target == after_pred.lower():
+                        stats[d]["after"] += 1
+                    stats[d]["total"] += 1
+        
+        # Convert counts to percentages (0 to 100)
+        agg_accs = {d: {"before": 0.0, "after": 0.0} for d in directions}
+        for d in directions:
+            total = stats[d]["total"]
+            agg_accs[d]["before"] = (stats[d]["before"] / total) * 100.0
+            agg_accs[d]["after"] = (stats[d]["after"] / total) * 100.0
+                
+        aggregated[model_id] = agg_accs
+        
+    return aggregated
+
+def plot_intervention_grid(aggregated_data, save_path):
+    """
+    Plots the aggregated data in a 2x3 grid, placing the legend in the top right.
+    """
+    directions = ["above", "below", "left", "right"]
+    models = list(aggregated_data.keys())
+    
+    # 1. Create a 3x3 grid
+    fig, axes = plt.subplots(nrows=3, ncols=3, figsize=(11, 9))
+    axes = axes.flatten() # Flatten for easy indexing
+    
+    plot_indices = [0, 1, 3, 4, 5, 6, 7]    # index 2 for legend
+    
+    width = 0.35
+    x = np.arange(len(directions))
+    after_color = '#808080'
+    before_color = '#333333'
+    
+    # 2. Plot the data for 5 models
+    for idx, model_id in enumerate(models):
+        ax = axes[plot_indices[idx]]
+        
+        before_accs = [aggregated_data[model_id][d]["before"] for d in directions]
+        after_accs = [aggregated_data[model_id][d]["after"] for d in directions]
+        
+        # 'After' is plotted first (shifted left, colored gray)
+        ax.bar(x - width/2, after_accs, width, color=after_color, label='After')
+        # 'Before' is plotted second (shifted right, colored dark gray)
+        ax.bar(x + width/2, before_accs, width, color=before_color, label='Before')
+        
+        # Formatting
+        ax.set_title(model_id, fontsize=13)
+        ax.set_ylabel('Accuracy (%)', fontsize=12)
+        ax.set_ylim(0, 100)
+        
+        ax.set_xticks(x)
+        # ax.set_xticklabels(directions, rotation=30, ha='right', rotation_mode='anchor', fontsize=11)
+        ax.set_xticklabels(directions, fontsize=12)
+    
+    # 3. Hijack the top-right subplot (axes[2]) to draw the shared legend
+    ax_legend = axes[2]
+    ax_legend.axis('off')
+    
+    # Create manual legend patches to guarantee colors match
+    after_patch = mpatches.Patch(color=after_color, label='After')
+    before_patch = mpatches.Patch(color=before_color, label='Before')
+    
+    ax_legend.legend(
+        handles=[after_patch, before_patch], 
+        title='Intervention',
+        loc='center',
+        fontsize=16, 
+        title_fontsize=16,
+        frameon=True
+    )
+
+    axes[-1].axis('off')
+    
+    plt.tight_layout()
+    # plt.subplots_adjust(wspace=0.3, hspace=0.3)
+    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.close(fig) 
+    print(f"Bar Chart Saved at: {save_path}")
 
 def cma_position_IDs_in_desc(model, processor, num_heads, top_k_heads, color_list, shape_list):
     ids_in_desc = {}
@@ -163,27 +263,27 @@ def get_intervention_results(model, processor, num_layers, num_heads, top_k_head
 
 def main():
     model_id_list = [
-        "Qwen/Qwen2-VL-7B-Instruct",
-        "Qwen/Qwen2.5-VL-3B-Instruct",
-        "Qwen/Qwen2.5-VL-7B-Instruct",
-        "Qwen/Qwen2.5-VL-32B-Instruct",
-        "llava-hf/llava-1.5-7b-hf",
-        "llava-hf/llava-1.5-13b-hf",
-        "llava-hf/llava-onevision-qwen2-7b-ov-hf"
+        ("llava-hf/llava-1.5-13b-hf", "Llava-1.5-13B"),
+        ("llava-hf/llava-1.5-7b-hf", "Llava-1.5-7B"),
+        ("Qwen/Qwen2-VL-7B-Instruct", "Qwen-2-VL"),
+        ("Qwen/Qwen2.5-VL-3B-Instruct", "Qwen-2.5-VL-3B"),
+        ("Qwen/Qwen2.5-VL-7B-Instruct", "Qwen-2.5-VL-7B"),
+        ("Qwen/Qwen2.5-VL-32B-Instruct", "Qwen-2.5-VL-32B"),
+        ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "Llava-Onevision")
     ]
 
     shape_list=['circle', 'star', 'plane', 'square', 'umbrella', 'triangle', 'sun', 'heart', 'cross']
     color_list=['red', 'yellow', 'gray', 'blue', 'pink', 'green', 'black', 'purple', 'orange']
     
     patching_results = {}
-    for model_id in model_id_list:
+    for model_id, model_label in model_id_list:
         model_name = model_id.replace('/', '_')
         filename = f"src/data/cma/reuse/{model_name}.json"
         file_path = Path(filename)
         if file_path.exists():
             print(f"Found {filename}! Loading results for spatial reasoning intervention...")
             with open(filename, 'r') as f:
-                patching_results[model_id] = json.load(f)
+                patching_results[model_label] = json.load(f)
             continue
 
         config = load_config()
@@ -217,11 +317,11 @@ def main():
             shape_list=shape_list
         )
         
-        patching_results[model_id] = all_patching_results
+        patching_results[model_label] = all_patching_results
         
         with open(filename, 'w') as f:
             # indent=4 formats it nicely to read it in a text editor
-            json.dump(patching_results[model_id], f, indent=4)
+            json.dump(patching_results[model_label], f, indent=4)
         print(f"Spatial reasoning intervention results successfully saved in {filename}.")
 
         del model
@@ -229,7 +329,9 @@ def main():
         gc.collect()
         torch.cuda.empty_cache()
 
-    # print("final patching_results: ", patching_results)
+    save_path = "outputs/cma/cma_fig_5.png"
+    aggregated = process_intervention_data(patching_results)
+    plot_intervention_grid(aggregated, save_path)
 
 
 if __name__ == "__main__":

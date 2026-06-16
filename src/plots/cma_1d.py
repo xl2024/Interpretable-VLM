@@ -5,9 +5,10 @@ from matplotlib.colors import LinearSegmentedColormap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from typing import List, Tuple, Any
 from pathlib import Path
+import itertools
 
 from src.model.loader import load_vlm
-from src.utils.tools import load_config, _resolve_text_model_dims, get_model_id, get_num_hidden_layers
+from src.utils.tools import load_config, _resolve_text_model_dims, get_model_id, get_num_hidden_layers, get_permutations
 from src.mech_interp.cma import run_cma_for_ID_retrieval, run_cma_for_ID_selection, run_cma_for_feature_retrieval
 
 # Reproduces Figure 1d and 20-25
@@ -46,15 +47,31 @@ def run_mediation_analysis(model_id: str) -> Tuple[List[List[Any]], List[List[An
 
         print("Preparing Causal Mediation Analysis...")
 
-        shapes = ["circle", "square"]
-        colors = ["blue", "red"]
+        shapes_list = ["circle", "square", "triangle"]
+        colors_list = ["blue", "red", "green"]
+        mediation_scores_1 = None
+        mediation_scores_2 = None
+        mediation_scores_3 = None
+        count = 0
 
-        mediation_scores_1 = run_cma_for_ID_retrieval(model, processor, num_layers, num_heads, shapes, colors)
-                                
-        mediation_scores_2 = run_cma_for_ID_selection(model, processor, num_layers, num_heads, shapes, colors)
+        for shapes in itertools.permutations(shapes_list, 2):
+            for all_colors in get_permutations(colors_list):
+                colors = all_colors[0:2]
+                new_color = all_colors[-1]
+                count += 1
+                print(f"count: {count}")
 
-        new_color = "green"
-        mediation_scores_3 = run_cma_for_feature_retrieval(model, processor, num_layers, num_heads, shapes, colors, new_color)
+                mediation_scores_1 = run_cma_for_ID_retrieval(model, processor, num_layers, num_heads, shapes, colors, mediation_scores_1)
+                                        
+                mediation_scores_2 = run_cma_for_ID_selection(model, processor, num_layers, num_heads, shapes, colors, mediation_scores_2)
+
+                mediation_scores_3 = run_cma_for_feature_retrieval(model, processor, num_layers, num_heads, shapes, colors, new_color, mediation_scores_3)
+
+        for l in range(num_layers):
+            for h in range(num_heads):
+                mediation_scores_1[l,h] /= count
+                mediation_scores_2[l,h] /= count
+                mediation_scores_3[l,h] /= count
 
         print("cma finished")
     
@@ -163,15 +180,15 @@ def main():
     print("=== Execution Suite: Live Mechanistic Head Interventions ===")
 
     model_id_list = [
-        ("Qwen/Qwen2-VL-7B-Instruct", "1d"), 
-        ("Qwen/Qwen2.5-VL-3B-Instruct", "20"),
-        ("Qwen/Qwen2.5-VL-7B-Instruct", "21"),
-        ("Qwen/Qwen2.5-VL-32B-Instruct", "22"),
-        ("llava-hf/llava-1.5-7b-hf", "23"),
-        ("llava-hf/llava-1.5-13b-hf", "24"),
-        ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "25"),
-        ("HuggingFaceM4/idefics2-8b-chatty", "x"),
-        ("HuggingFaceM4/idefics2-8b", "x")
+        # ("Qwen/Qwen2-VL-7B-Instruct", "1d"), 
+        # ("Qwen/Qwen2.5-VL-3B-Instruct", "20"),
+        # ("Qwen/Qwen2.5-VL-7B-Instruct", "21"),
+        # ("Qwen/Qwen2.5-VL-32B-Instruct", "22"),
+        ("llava-hf/llava-1.5-7b-hf", "23")
+        # ("llava-hf/llava-1.5-13b-hf", "24"),
+        # ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "25"),
+        # ("HuggingFaceM4/idefics2-8b-chatty", "x"),
+        # ("HuggingFaceM4/idefics2-8b", "x")
     ]
     for model_id, fig_num in model_id_list:
         mediation_scores = run_mediation_analysis(model_id)    # data stored in f"src/data/cma/scores/{model_name}.npz"

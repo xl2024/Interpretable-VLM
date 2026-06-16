@@ -1,4 +1,4 @@
-This repository contains the code to reproduce all experimental results and figures from [arXiv:2506.15871](https://arxiv.org/pdf/2506.15871) using the `nnsight` library. 
+This repository contains the code to reproduce all experimental results and figures from [arXiv:2506.15871](https://arxiv.org/pdf/2506.15871) using the `nnsight` library. A summary is available at [Blog](https://xiangpingliu.pages.dev/blog/reproduction-of-visual-symbolic-mechanisms-emergent-symbol-processing-in-vision-language-models/).
 
 For a fast, interactive introduction to the codebase, please see [`demo.ipynb`](demo.ipynb).
 

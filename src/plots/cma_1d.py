@@ -59,6 +59,7 @@ def run_mediation_analysis(model_id: str) -> Tuple[List[List[Any]], List[List[An
                 colors = all_colors[0:2]
                 new_color = all_colors[-1]
                 count += 1
+                print(f"count: {count}")
 
                 mediation_scores_1 = run_cma_for_ID_retrieval(model, processor, num_layers, num_heads, shapes, colors, mediation_scores_1)
                                         

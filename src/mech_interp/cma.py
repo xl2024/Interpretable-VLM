@@ -118,7 +118,8 @@ def run_cma_for_ID_retrieval(
     """
     # ID Retrieval Heads
     print("cma for ID Retrieval Heads...")
-
+    if _mediation_scores is None:
+        print("_mediation_scores is None")
     num_objs = len(shapes)
     prompt = "In this image there is a"
     for i in range(num_objs-1):

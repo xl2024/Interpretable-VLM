@@ -194,7 +194,7 @@ def cma_test_by_model(model_id):
     cma_by_model = {}
     # [Note: alpha=3, k=0 -> 'purple', k=1,...,21 -> 'orange', k>=22 -> 'blue']
     # top_k = int(0.1*num_layers*num_heads)
-    for k in range(100):
+    for k in range(50):
         top_k_heads = get_top_k_heads(mediation_scores, k)
         cma_by_model[k] = {}
         for repeat in range(6):

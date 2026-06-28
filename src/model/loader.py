@@ -101,16 +101,6 @@ def ungroup_nnsight_vlm(model, hidden_size, num_heads, num_kv_heads):
 
     print(f"Ungrouping weights: Expanding {num_kv_heads} KV heads -> {num_heads} isolated KV heads...")
     
-    def get_fp_weights(proj_layer):
-        """Safely extracts weights as float16/bfloat16, unpacking 4-bit if necessary."""
-        if hasattr(proj_layer.weight, "quant_state"):  # bitsandbytes 4-bit detection
-            # Dequantize to the active compute dtype (usually bfloat16 or float16)
-            return bnb.functional.dequantize_4bit(
-                proj_layer.weight.data, 
-                proj_layer.weight.quant_state
-            ).to(raw_model.dtype)
-        return proj_layer.weight.data.to(raw_model.dtype)
-    
     def create_expanded_linear(old_proj):
         # 1. Safely dequantize the bitsandbytes tensor to float16/bfloat16
         if hasattr(old_proj.weight, "quant_state"):

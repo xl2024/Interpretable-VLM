@@ -162,8 +162,8 @@ def get_token_pos_for_object(
 
 def generate_dataset():
     color_set = ["red", "blue", "green"]
-    shape_set = ["circle", "square", "triangle", "cross", "star", "heart", "sun", "umbrella", "plane"]
-    # shape_set = ["circle", "square", "triangle"]
+    # shape_set = ["circle", "square", "triangle", "cross", "star", "heart", "sun", "umbrella", "plane"]
+    shape_set = ["circle", "square", "triangle"]
     color_list = []
     shape_list = []
     image_list = []
@@ -258,8 +258,8 @@ def main():
         # ("Qwen/Qwen2.5-VL-3B-Instruct", "Qwen-2.5-VL-3B"),
         # ("Qwen/Qwen2.5-VL-7B-Instruct", "Qwen-2.5-VL-7B"),
         # ("Qwen/Qwen2.5-VL-32B-Instruct", "Qwen-2.5-VL-32B"),
-        ("Qwen/Qwen2-VL-7B-Instruct", "Qwen-2-VL")
-        # ("llava-hf/llava-1.5-7b-hf", "Llava-1.5-7B"),
+        # ("Qwen/Qwen2-VL-7B-Instruct", "Qwen-2-VL"),
+        ("llava-hf/llava-1.5-7b-hf", "Llava-1.5-7B"),
         # ("llava-hf/llava-1.5-13b-hf", "Llava-1.5-13B")
     ]
 

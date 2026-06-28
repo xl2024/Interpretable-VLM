@@ -255,10 +255,10 @@ def get_patching_results(model, processor, num_layers, num_heads, top_k_heads, l
 
 def main():
     model_id_list = [
-        # ("Qwen/Qwen2.5-VL-3B-Instruct", "Qwen-2.5-VL-3B"),
-        # ("Qwen/Qwen2.5-VL-7B-Instruct", "Qwen-2.5-VL-7B"),
+        ("Qwen/Qwen2.5-VL-3B-Instruct", "Qwen-2.5-VL-3B"),
+        ("Qwen/Qwen2.5-VL-7B-Instruct", "Qwen-2.5-VL-7B"),
         # ("Qwen/Qwen2.5-VL-32B-Instruct", "Qwen-2.5-VL-32B"),
-        # ("Qwen/Qwen2-VL-7B-Instruct", "Qwen-2-VL"),
+        ("Qwen/Qwen2-VL-7B-Instruct", "Qwen-2-VL"),
         ("llava-hf/llava-1.5-7b-hf", "Llava-1.5-7B"),
         # ("llava-hf/llava-1.5-13b-hf", "Llava-1.5-13B")
     ]

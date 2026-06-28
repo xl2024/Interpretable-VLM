@@ -3,7 +3,7 @@ import torch.nn as nn
 from transformers import AutoProcessor, AutoModelForImageTextToText, Qwen2VLForConditionalGeneration, Qwen2_5_VLForConditionalGeneration, LlavaOnevisionForConditionalGeneration, Idefics2ForConditionalGeneration
 from nnsight import LanguageModel
 from src.utils.hardware import get_hardware_config
-from src.utils.tools import get_config_from_model
+from src.utils.tools import set_num_key_value_heads
 
 def load_vlm(model_id: str, tier: str):
     """
@@ -136,9 +136,7 @@ def ungroup_nnsight_vlm(model, hidden_size, num_heads, num_kv_heads):
                 module.num_key_value_groups = 1
 
     # Update global config objects so standard SDPA / FlashAttention treats it as MHA
-    cfg = get_config_from_model(model)
-    cfg.num_key_value_heads = num_heads
-    model.config.num_key_value_heads = num_heads
+    set_num_key_value_heads(model, num_heads)
 
     print("Model successfully ungrouped. Ready for clean surgical Causal Mediation Analysis.")
     return model

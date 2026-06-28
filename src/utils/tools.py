@@ -198,13 +198,17 @@ def get_num_hidden_layers(model: Any) -> int:
 
     raise AttributeError("Could not infer number of hidden layers from model object.")
 
-def get_config_from_model(model: Any) -> Any:
+def set_num_key_value_heads(model: Any, num_heads: int) -> Any:
     """
-    Resolve VLM config.
+    Set num_key_value_heads in VLM config.
     """
     # Typical HF multimodal configs (e.g., LlavaForConditionalGeneration)
-    if hasattr(model, "config") and hasattr(model.config, "text_config"):
-        return model.config.text_config
+    if hasattr(model, "config"):
+        # Set root first
+        model.config.num_key_value_heads = num_heads
+        # Typical HF multimodal configs (e.g., LLaVA standard)
+        if hasattr(model.config, "text_config") and model.config.text_config is not None:
+            model.config.text_config.num_key_value_heads = num_heads
 
     # Some wrappers expose the nested module path directly
     if (
@@ -212,7 +216,7 @@ def get_config_from_model(model: Any) -> Any:
         and hasattr(model.model, "language_model")
         and hasattr(model.model.language_model, "config")
     ):
-        return model.model.language_model.config
+        model.model.language_model.config.num_key_value_heads = num_heads
 
     # IDEFICS2: nested model.text_model
     if (
@@ -220,7 +224,7 @@ def get_config_from_model(model: Any) -> Any:
         and hasattr(model.model, "text_model")
         and hasattr(model.model.text_model, "config")
     ):
-        return model.model.text_model.config
+        model.model.text_model.config.num_key_value_heads = num_heads
 
     # Legacy/alternate wrapper pattern
     if (
@@ -228,9 +232,7 @@ def get_config_from_model(model: Any) -> Any:
         and hasattr(model.local_model, "config")
         and hasattr(model.local_model.config, "text_config")
     ):
-        return model.local_model.config.text_config
-
-    raise AttributeError("Could not infer config from model object.")
+        model.local_model.config.text_config.num_key_value_heads = num_heads
 
 def load_config(config_path: str = "configs/config.yaml"):
     with open(config_path, "r") as f:

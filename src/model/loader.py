@@ -79,8 +79,12 @@ def load_vlm(model_id: str, tier: str):
 
 def ungroup_nnsight_vlm(model, hidden_size, num_heads, num_kv_heads):
     """
-    Surgically ungroups an nnsight-wrapped Hugging Face VLM in-place, converting 
-    shared Grouped Query Attention into isolated Multi-Head Attention.
+    Surgically ungroups a Hugging Face VLM, converting shared Grouped Query
+    Attention into isolated Multi-Head Attention.
+
+    NNsight builds an Envoy tree over the modules that exist when the model is
+    wrapped. Since ungrouping replaces k_proj/v_proj modules, rebuild the wrapper
+    after the surgery so later traces point at the modules that actually run.
     """
     if num_kv_heads == num_heads:
         return model
@@ -90,6 +94,10 @@ def ungroup_nnsight_vlm(model, hidden_size, num_heads, num_kv_heads):
 
     # Access the raw PyTorch model underneath nnsight's wrapper
     raw_model = getattr(model, "_model", model)
+    was_nnsight_wrapped = isinstance(model, LanguageModel)
+    tokenizer = getattr(model, "tokenizer", None)
+    repo_id = getattr(model, "repo_id", getattr(raw_model, "name_or_path", None))
+    revision = getattr(model, "revision", None)
 
     print(f"Ungrouping weights: Expanding {num_kv_heads} KV heads -> {num_heads} isolated KV heads...")
     
@@ -131,12 +139,14 @@ def ungroup_nnsight_vlm(model, hidden_size, num_heads, num_kv_heads):
             
         return new_proj
     
+    expanded_projection_pairs = 0
     for name, module in raw_model.named_modules():
         # Locate self-attention modules containing standard HF projection linear layers
         if hasattr(module, "k_proj") and hasattr(module, "v_proj"):
             if module.k_proj.out_features < module.q_proj.out_features:
                 module.k_proj = create_expanded_linear(module.k_proj)
                 module.v_proj = create_expanded_linear(module.v_proj)
+                expanded_projection_pairs += 1
             
                 # --- Update internal attention routing flags ---
                 if hasattr(module, "num_key_value_heads"):
@@ -145,7 +155,18 @@ def ungroup_nnsight_vlm(model, hidden_size, num_heads, num_kv_heads):
                     module.num_key_value_groups = 1
 
     # Update global config objects so standard SDPA / FlashAttention treats it as MHA
-    set_num_key_value_heads(model, num_heads)
+    set_num_key_value_heads(raw_model, num_heads)
 
-    print("Model successfully ungrouped. Ready for clean surgical Causal Mediation Analysis.")
+    if was_nnsight_wrapped and expanded_projection_pairs > 0:
+        model = LanguageModel(raw_model, tokenizer=tokenizer)
+        if repo_id is not None:
+            model.repo_id = repo_id
+        if revision is not None:
+            model.revision = revision
+
+    print(
+        "Model successfully ungrouped "
+        f"({expanded_projection_pairs} attention layers expanded). "
+        "Ready for clean surgical Causal Mediation Analysis."
+    )
     return model

@@ -1,7 +1,11 @@
 import torch
+import torch.nn as nn
 from transformers import AutoProcessor, AutoModelForImageTextToText, Qwen2VLForConditionalGeneration, Qwen2_5_VLForConditionalGeneration, LlavaOnevisionForConditionalGeneration, Idefics2ForConditionalGeneration
 from nnsight import LanguageModel
+import bitsandbytes as bnb
+
 from src.utils.hardware import get_hardware_config
+from src.utils.tools import set_num_key_value_heads
 
 def load_vlm(model_id: str, tier: str):
     """
@@ -72,3 +76,87 @@ def load_vlm(model_id: str, tier: str):
     model = LanguageModel(hf_model)
     print("Load sequence complete. Model is ready for intervention.")
     return model, processor
+
+def ungroup_nnsight_vlm(model, hidden_size, num_heads, num_kv_heads):
+    """
+    Surgically ungroups a Hugging Face VLM, converting shared Grouped Query
+    Attention into isolated Multi-Head Attention.
+
+    NNsight builds an Envoy tree over the modules that exist when the model is
+    wrapped. Since ungrouping replaces k_proj/v_proj modules, rebuild the wrapper
+    after the surgery so later traces point at the modules that actually run.
+    """
+    if num_kv_heads == num_heads:
+        return model
+    
+    num_groups = num_heads // num_kv_heads
+    head_dim = hidden_size // num_heads
+
+    # Access the raw PyTorch model underneath nnsight's wrapper
+    raw_model = getattr(model, "_model", model)
+    was_nnsight_wrapped = isinstance(model, LanguageModel)
+    tokenizer = getattr(model, "tokenizer", None)
+    repo_id = getattr(model, "repo_id", getattr(raw_model, "name_or_path", None))
+    revision = getattr(model, "revision", None)
+
+    print(f"Ungrouping weights: Expanding {num_kv_heads} KV heads -> {num_heads} isolated KV heads...")
+    
+    def create_expanded_linear(old_proj):
+        # 1. Safely dequantize the bitsandbytes tensor to float16/bfloat16
+        if hasattr(old_proj.weight, "quant_state"):
+            import bitsandbytes as bnb
+            w_fp = bnb.functional.dequantize_4bit(old_proj.weight.data, old_proj.weight.quant_state).to(raw_model.dtype)
+        else:
+            w_fp = old_proj.weight.data.to(raw_model.dtype)
+        
+        # 2. Reshape and clone the heads
+        new_w = w_fp.view(num_kv_heads, head_dim, -1).repeat_interleave(num_groups, dim=0).view(num_heads * head_dim, -1)
+        
+        # 3. Create a BRAND NEW standard nn.Linear to replace the Linear4bit
+        new_proj = nn.Linear(
+            in_features=old_proj.in_features,
+            out_features=num_heads * head_dim,
+            bias=old_proj.bias is not None,
+            dtype=new_w.dtype,
+            device=new_w.device # Automatically places on correct GPU
+        )
+        new_proj.weight = nn.Parameter(new_w, requires_grad=False)
+        
+        if old_proj.bias is not None:
+            b_fp = old_proj.bias.data.to(raw_model.dtype)
+            new_b = b_fp.view(num_kv_heads, head_dim).repeat_interleave(num_groups, dim=0).view(-1)
+            new_proj.bias = nn.Parameter(new_b, requires_grad=False)
+            
+        return new_proj
+    
+    expanded_projection_pairs = 0
+    for name, module in raw_model.named_modules():
+        # Locate self-attention modules containing standard HF projection linear layers
+        if hasattr(module, "k_proj") and hasattr(module, "v_proj"):
+            if module.k_proj.out_features < module.q_proj.out_features:
+                module.k_proj = create_expanded_linear(module.k_proj)
+                module.v_proj = create_expanded_linear(module.v_proj)
+                expanded_projection_pairs += 1
+            
+                # --- Update internal attention routing flags ---
+                if hasattr(module, "num_key_value_heads"):
+                    module.num_key_value_heads = num_heads
+                if hasattr(module, "num_key_value_groups"):
+                    module.num_key_value_groups = 1
+
+    # Update global config objects so standard SDPA / FlashAttention treats it as MHA
+    set_num_key_value_heads(raw_model, num_heads)
+
+    if was_nnsight_wrapped and expanded_projection_pairs > 0:
+        model = LanguageModel(raw_model, tokenizer=tokenizer)
+        if repo_id is not None:
+            model.repo_id = repo_id
+        if revision is not None:
+            model.revision = revision
+
+    print(
+        "Model successfully ungrouped "
+        f"({expanded_projection_pairs} attention layers expanded). "
+        "Ready for clean surgical Causal Mediation Analysis."
+    )
+    return model

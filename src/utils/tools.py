@@ -198,6 +198,43 @@ def get_num_hidden_layers(model: Any) -> int:
 
     raise AttributeError("Could not infer number of hidden layers from model object.")
 
+def set_num_key_value_heads(model: Any, num_heads: int) -> Any:
+    """
+    Set num_key_value_heads in VLM config.
+    """
+    model = getattr(model, "_model", model)
+    # Typical HF multimodal configs (e.g., LlavaForConditionalGeneration)
+    if hasattr(model, "config"):
+        # Set root first
+        model.config.num_key_value_heads = num_heads
+        # Typical HF multimodal configs (e.g., LLaVA standard)
+        if hasattr(model.config, "text_config") and model.config.text_config is not None:
+            model.config.text_config.num_key_value_heads = num_heads
+
+    # Some wrappers expose the nested module path directly
+    if (
+        hasattr(model, "model")
+        and hasattr(model.model, "language_model")
+        and hasattr(model.model.language_model, "config")
+    ):
+        model.model.language_model.config.num_key_value_heads = num_heads
+
+    # IDEFICS2: nested model.text_model
+    if (
+        hasattr(model, "model")
+        and hasattr(model.model, "text_model")
+        and hasattr(model.model.text_model, "config")
+    ):
+        model.model.text_model.config.num_key_value_heads = num_heads
+
+    # Legacy/alternate wrapper pattern
+    if (
+        hasattr(model, "local_model")
+        and hasattr(model.local_model, "config")
+        and hasattr(model.local_model.config, "text_config")
+    ):
+        model.local_model.config.text_config.num_key_value_heads = num_heads
+
 def load_config(config_path: str = "configs/config.yaml"):
     with open(config_path, "r") as f:
         return yaml.safe_load(f)

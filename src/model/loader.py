@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 from transformers import AutoProcessor, AutoModelForImageTextToText, Qwen2VLForConditionalGeneration, Qwen2_5_VLForConditionalGeneration, LlavaOnevisionForConditionalGeneration, Idefics2ForConditionalGeneration
 from nnsight import LanguageModel
+import bitsandbytes as bnb
+
 from src.utils.hardware import get_hardware_config
 from src.utils.tools import set_num_key_value_heads
 
@@ -94,7 +96,6 @@ def ungroup_nnsight_vlm(model, hidden_size, num_heads, num_kv_heads):
     def get_fp_weights(proj_layer):
         """Safely extracts weights as float16/bfloat16, unpacking 4-bit if necessary."""
         if hasattr(proj_layer.weight, "quant_state"):  # bitsandbytes 4-bit detection
-            import bitsandbytes as bnb
             # Dequantize to the active compute dtype (usually bfloat16 or float16)
             return bnb.functional.dequantize_4bit(
                 proj_layer.weight.data, 
@@ -102,34 +103,41 @@ def ungroup_nnsight_vlm(model, hidden_size, num_heads, num_kv_heads):
             ).to(raw_model.dtype)
         return proj_layer.weight.data.to(raw_model.dtype)
     
+    def create_expanded_linear(old_proj):
+        # 1. Safely dequantize the bitsandbytes tensor to float16/bfloat16
+        if hasattr(old_proj.weight, "quant_state"):
+            import bitsandbytes as bnb
+            w_fp = bnb.functional.dequantize_4bit(old_proj.weight.data, old_proj.weight.quant_state).to(raw_model.dtype)
+        else:
+            w_fp = old_proj.weight.data.to(raw_model.dtype)
+        
+        # 2. Reshape and clone the heads
+        new_w = w_fp.view(num_kv_heads, head_dim, -1).repeat_interleave(num_groups, dim=0).view(num_heads * head_dim, -1)
+        
+        # 3. Create a BRAND NEW standard nn.Linear to replace the Linear4bit
+        new_proj = nn.Linear(
+            in_features=old_proj.in_features,
+            out_features=num_heads * head_dim,
+            bias=old_proj.bias is not None,
+            dtype=new_w.dtype,
+            device=new_w.device # Automatically places on correct GPU
+        )
+        new_proj.weight = nn.Parameter(new_w, requires_grad=False)
+        
+        if old_proj.bias is not None:
+            b_fp = old_proj.bias.data.to(raw_model.dtype)
+            new_b = b_fp.view(num_kv_heads, head_dim).repeat_interleave(num_groups, dim=0).view(-1)
+            new_proj.bias = nn.Parameter(new_b, requires_grad=False)
+            
+        return new_proj
+    
     for name, module in raw_model.named_modules():
         # Locate self-attention modules containing standard HF projection linear layers
         if hasattr(module, "k_proj") and hasattr(module, "v_proj"):
-            
-            # --- 1. Expand k_proj ---
-            k_w = get_fp_weights(module.k_proj)
-            # Reshape to (kv_heads, head_dim, hidden), repeat heads, flatten back
-            new_k_w = k_w.view(num_kv_heads, head_dim, -1).repeat_interleave(num_groups, dim=0).view(num_heads * head_dim, -1)
-            module.k_proj.weight = nn.Parameter(new_k_w)
-            module.k_proj.out_features = num_heads * head_dim
-            
-            if module.k_proj.bias is not None:
-                k_b = module.k_proj.bias.data
-                new_k_b = k_b.view(num_kv_heads, head_dim).repeat_interleave(num_groups, dim=0).view(-1)
-                module.k_proj.bias = nn.Parameter(new_k_b)
-
-            # --- 2. Expand v_proj ---
-            v_w = get_fp_weights(module.v_proj)
-            new_v_w = v_w.view(num_kv_heads, head_dim, -1).repeat_interleave(num_groups, dim=0).view(num_heads * head_dim, -1)
-            module.v_proj.weight = nn.Parameter(new_v_w)
-            module.v_proj.out_features = num_heads * head_dim
-            
-            if module.v_proj.bias is not None:
-                v_b = module.v_proj.bias.data
-                new_v_b = v_b.view(num_kv_heads, head_dim).repeat_interleave(num_groups, dim=0).view(-1)
-                module.v_proj.bias = nn.Parameter(new_v_b)
-
-            # --- 3. Update internal attention routing flags ---
+            module.k_proj = create_expanded_linear(module.k_proj)
+            module.v_proj = create_expanded_linear(module.v_proj)
+        
+            # --- Update internal attention routing flags ---
             if hasattr(module, "num_key_value_heads"):
                 module.num_key_value_heads = num_heads
             if hasattr(module, "num_key_value_groups"):

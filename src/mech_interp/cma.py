@@ -395,35 +395,36 @@ def get_head_embeddings(
         prompt_c2, image_c2 = prompt_list[i], image_list[i]
         inputs_c2 = processor(text=prompt_c2, images=image_c2, return_tensors="pt").to(model.device)
         with torch.no_grad():
-            with model.trace() as tracer:
-                with tracer.invoke(**inputs_c2):
-                    for l, heads_in_this_layer in sorted(heads_by_layer.items()):
-                        layer_module = _resolve_layer_path(model, layer_template.format(l))
-                        # Safely intercept full 3D tensor: [batch, seq_len, hidden_dim]
-                        if stage == 4:    # for section 4.3
-                            attn_out = layer_module.self_attn.k_proj.output[0]
-                        elif stage == 3:    # Feature Retrieval
-                            attn_out = layer_module.self_attn.q_proj.output[0]
-                        else:
-                            attn_out = layer_module.self_attn.o_proj.input[0]
+            _ = model._model(**inputs_c2)
+            # with model.trace() as tracer:
+            #     with tracer.invoke(**inputs_c2):
+            #         for l, heads_in_this_layer in sorted(heads_by_layer.items()):
+            #             layer_module = _resolve_layer_path(model, layer_template.format(l))
+            #             # Safely intercept full 3D tensor: [batch, seq_len, hidden_dim]
+            #             if stage == 4:    # for section 4.3
+            #                 attn_out = layer_module.self_attn.k_proj.output[0]
+            #             elif stage == 3:    # Feature Retrieval
+            #                 attn_out = layer_module.self_attn.q_proj.output[0]
+            #             else:
+            #                 attn_out = layer_module.self_attn.o_proj.input[0]
 
-                        hs_heads = einops.rearrange(attn_out, 's (h d) -> s h d', h=num_heads)
-                        for h in sorted(heads_in_this_layer):
-                            token_pos = token_pos_list[i] if token_pos_list is not None else [-1]
-                            if len(token_pos) == 1:
-                                states = hs_heads[token_pos[0]:, h, :].save()
-                            elif len(token_pos) == 2:
-                                states = hs_heads[token_pos[0]:token_pos[1]+1, h, :].save()
-                            else:
-                                states = hs_heads[token_pos, h, :].save()
-                            c2_head_cache[l, h] = c2_head_cache.get((l, h), 0) + states
+            #             hs_heads = einops.rearrange(attn_out, 's (h d) -> s h d', h=num_heads)
+            #             for h in sorted(heads_in_this_layer):
+            #                 token_pos = token_pos_list[i] if token_pos_list is not None else [-1]
+            #                 if len(token_pos) == 1:
+            #                     states = hs_heads[token_pos[0]:, h, :].save()
+            #                 elif len(token_pos) == 2:
+            #                     states = hs_heads[token_pos[0]:token_pos[1]+1, h, :].save()
+            #                 else:
+            #                     states = hs_heads[token_pos, h, :].save()
+            #                 c2_head_cache[l, h] = c2_head_cache.get((l, h), 0) + states
 
-            gc_collect()
+            # gc_collect()
 
-    for l, h in c2_head_cache:
-        c2_head_cache[l, h] = c2_head_cache[l, h] / num_runs
-    # print(c2_head_cache.keys())
-    return c2_head_cache
+    # for l, h in c2_head_cache:
+    #     c2_head_cache[l, h] = c2_head_cache[l, h] / num_runs
+    # # print(c2_head_cache.keys())
+    # return c2_head_cache
 
 def get_head_embeddings_and_generation(
     model: Any,

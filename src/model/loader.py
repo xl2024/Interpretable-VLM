@@ -89,13 +89,24 @@ def ungroup_nnsight_vlm(model, hidden_size, num_heads, num_kv_heads):
     raw_model = getattr(model, "_model", model)
 
     print(f"Ungrouping weights: Expanding {num_kv_heads} KV heads -> {num_heads} isolated KV heads...")
-
+    
+    def get_fp_weights(proj_layer):
+        """Safely extracts weights as float16/bfloat16, unpacking 4-bit if necessary."""
+        if hasattr(proj_layer.weight, "quant_state"):  # bitsandbytes 4-bit detection
+            import bitsandbytes as bnb
+            # Dequantize to the active compute dtype (usually bfloat16 or float16)
+            return bnb.functional.dequantize_4bit(
+                proj_layer.weight.data, 
+                proj_layer.weight.quant_state
+            ).to(raw_model.dtype)
+        return proj_layer.weight.data.to(raw_model.dtype)
+    
     for name, module in raw_model.named_modules():
         # Locate self-attention modules containing standard HF projection linear layers
         if hasattr(module, "k_proj") and hasattr(module, "v_proj"):
             
             # --- 1. Expand k_proj ---
-            k_w = module.k_proj.weight.data
+            k_w = get_fp_weights(module.k_proj)
             # Reshape to (kv_heads, head_dim, hidden), repeat heads, flatten back
             new_k_w = k_w.view(num_kv_heads, head_dim, -1).repeat_interleave(num_groups, dim=0).view(num_heads * head_dim, -1)
             module.k_proj.weight = nn.Parameter(new_k_w)
@@ -107,7 +118,7 @@ def ungroup_nnsight_vlm(model, hidden_size, num_heads, num_kv_heads):
                 module.k_proj.bias = nn.Parameter(new_k_b)
 
             # --- 2. Expand v_proj ---
-            v_w = module.v_proj.weight.data
+            v_w = get_fp_weights(module.v_proj)
             new_v_w = v_w.view(num_kv_heads, head_dim, -1).repeat_interleave(num_groups, dim=0).view(num_heads * head_dim, -1)
             module.v_proj.weight = nn.Parameter(new_v_w)
             module.v_proj.out_features = num_heads * head_dim

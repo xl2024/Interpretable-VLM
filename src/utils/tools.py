@@ -202,6 +202,7 @@ def set_num_key_value_heads(model: Any, num_heads: int) -> Any:
     """
     Set num_key_value_heads in VLM config.
     """
+    model = getattr(model, "_model", model)
     # Typical HF multimodal configs (e.g., LlavaForConditionalGeneration)
     if hasattr(model, "config"):
         # Set root first

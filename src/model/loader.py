@@ -1,4 +1,5 @@
 import torch
+import torch.nn as nn
 from transformers import AutoProcessor, AutoModelForImageTextToText, Qwen2VLForConditionalGeneration, Qwen2_5_VLForConditionalGeneration, LlavaOnevisionForConditionalGeneration, Idefics2ForConditionalGeneration
 from nnsight import LanguageModel
 from src.utils.hardware import get_hardware_config
@@ -72,3 +73,60 @@ def load_vlm(model_id: str, tier: str):
     model = LanguageModel(hf_model)
     print("Load sequence complete. Model is ready for intervention.")
     return model, processor
+
+def ungroup_nnsight_vlm(model, hidden_size, num_heads, num_kv_heads):
+    """
+    Surgically ungroups an nnsight-wrapped Hugging Face VLM in-place, converting 
+    shared Grouped Query Attention into isolated Multi-Head Attention.
+    """
+    if num_kv_heads == num_heads:
+        return model
+    
+    num_groups = num_heads // num_kv_heads
+    head_dim = hidden_size // num_heads
+
+    # Access the raw PyTorch model underneath nnsight's wrapper
+    raw_model = getattr(model, "_model", model)
+
+    print(f"Ungrouping weights: Expanding {num_kv_heads} KV heads -> {num_heads} isolated KV heads...")
+
+    for name, module in raw_model.named_modules():
+        # Locate self-attention modules containing standard HF projection linear layers
+        if hasattr(module, "k_proj") and hasattr(module, "v_proj"):
+            
+            # --- 1. Expand k_proj ---
+            k_w = module.k_proj.weight.data
+            # Reshape to (kv_heads, head_dim, hidden), repeat heads, flatten back
+            new_k_w = k_w.view(num_kv_heads, head_dim, -1).repeat_interleave(num_groups, dim=0).view(num_heads * head_dim, -1)
+            module.k_proj.weight = nn.Parameter(new_k_w)
+            module.k_proj.out_features = num_heads * head_dim
+            
+            if module.k_proj.bias is not None:
+                k_b = module.k_proj.bias.data
+                new_k_b = k_b.view(num_kv_heads, head_dim).repeat_interleave(num_groups, dim=0).view(-1)
+                module.k_proj.bias = nn.Parameter(new_k_b)
+
+            # --- 2. Expand v_proj ---
+            v_w = module.v_proj.weight.data
+            new_v_w = v_w.view(num_kv_heads, head_dim, -1).repeat_interleave(num_groups, dim=0).view(num_heads * head_dim, -1)
+            module.v_proj.weight = nn.Parameter(new_v_w)
+            module.v_proj.out_features = num_heads * head_dim
+            
+            if module.v_proj.bias is not None:
+                v_b = module.v_proj.bias.data
+                new_v_b = v_b.view(num_kv_heads, head_dim).repeat_interleave(num_groups, dim=0).view(-1)
+                module.v_proj.bias = nn.Parameter(new_v_b)
+
+            # --- 3. Update internal attention routing flags ---
+            if hasattr(module, "num_key_value_heads"):
+                module.num_key_value_heads = num_heads
+            if hasattr(module, "num_key_value_groups"):
+                module.num_key_value_groups = 1
+
+    # Update global config objects so standard SDPA / FlashAttention treats it as MHA
+    cfg = getattr(model.config, "text_config", model.config)
+    cfg.num_key_value_heads = num_heads
+    model.config.num_key_value_heads = num_heads
+
+    print("Model successfully ungrouped. Ready for clean surgical Causal Mediation Analysis.")
+    return model

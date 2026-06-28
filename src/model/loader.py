@@ -90,6 +90,15 @@ def ungroup_nnsight_vlm(model, hidden_size, num_heads, num_kv_heads):
 
     print(f"Ungrouping weights: Expanding {num_kv_heads} KV heads -> {num_heads} isolated KV heads...")
     
+    def resolve_config(model):
+        """Safely extracts the text configuration"""
+        root_config = getattr(model, "config", getattr(raw_model, "config", None))
+        
+        # If text_config exists AND is actually populated, use it. Otherwise, use root.
+        if getattr(root_config, "text_config", None) is not None:
+            return root_config.text_config
+        return root_config
+
     def get_fp_weights(proj_layer):
         """Safely extracts weights as float16/bfloat16, unpacking 4-bit if necessary."""
         if hasattr(proj_layer.weight, "quant_state"):  # bitsandbytes 4-bit detection
@@ -135,7 +144,7 @@ def ungroup_nnsight_vlm(model, hidden_size, num_heads, num_kv_heads):
                 module.num_key_value_groups = 1
 
     # Update global config objects so standard SDPA / FlashAttention treats it as MHA
-    cfg = getattr(model.config, "text_config", model.config)
+    cfg = resolve_config(model)
     cfg.num_key_value_heads = num_heads
     model.config.num_key_value_heads = num_heads
 

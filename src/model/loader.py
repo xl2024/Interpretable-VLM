@@ -134,14 +134,15 @@ def ungroup_nnsight_vlm(model, hidden_size, num_heads, num_kv_heads):
     for name, module in raw_model.named_modules():
         # Locate self-attention modules containing standard HF projection linear layers
         if hasattr(module, "k_proj") and hasattr(module, "v_proj"):
-            module.k_proj = create_expanded_linear(module.k_proj)
-            module.v_proj = create_expanded_linear(module.v_proj)
-        
-            # --- Update internal attention routing flags ---
-            if hasattr(module, "num_key_value_heads"):
-                module.num_key_value_heads = num_heads
-            if hasattr(module, "num_key_value_groups"):
-                module.num_key_value_groups = 1
+            if module.k_proj.out_features < module.q_proj.out_features:
+                module.k_proj = create_expanded_linear(module.k_proj)
+                module.v_proj = create_expanded_linear(module.v_proj)
+            
+                # --- Update internal attention routing flags ---
+                if hasattr(module, "num_key_value_heads"):
+                    module.num_key_value_heads = num_heads
+                if hasattr(module, "num_key_value_groups"):
+                    module.num_key_value_groups = 1
 
     # Update global config objects so standard SDPA / FlashAttention treats it as MHA
     set_num_key_value_heads(model, num_heads)

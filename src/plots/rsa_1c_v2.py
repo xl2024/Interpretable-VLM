@@ -195,7 +195,7 @@ def main():
         # ("llava-hf/llava-1.5-7b-hf", "17"),
         # ("llava-hf/llava-1.5-13b-hf", "x"),
         # ("llava-hf/llava-onevision-qwen2-7b-ov-hf", "18"),
-        # ("HuggingFaceM4/idefics2-8b", "19b")
+        # ("HuggingFaceM4/idefics2-8b-base", "19b")
     ]
     for model_id, fig_num in model_id_list:
         model_name = model_id.replace('/', '_')

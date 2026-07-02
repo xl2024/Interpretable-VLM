@@ -314,7 +314,22 @@ def get_text_prompt(model, text, image, processor, format="color_first", use_sys
         return "<image>\n" + text
     
     raise ValueError(f"Unknown model: {model_id_lower}")
+
+def get_base_model_prompt(model: Any, text: str) -> str:
+    """
+    Constructs a prompt for Base (pre-trained) VLMs.
+    This forces the model into a standard text-completion task.
+    """
+    model_id_lower = get_model_id(model).lower()
+    if "qwen" in model_id_lower:
+        return f"Image: <|vision_start|><|image_pad|><|vision_end|>\nQuestion: {text}\nAnswer:"
+    
+    elif any(name in model_id_lower for name in ["llava", "onevision", "idefics"]):
+        return f"Image: <image>\nQuestion: {text}\nAnswer:"
         
+    else:
+        raise ValueError(f"Model architecture '{model_id_lower}' is not supported.")
+    
 def get_layer_path_template(model):
     model_id_lower = get_model_id(model).lower()
     if "idefics" in model_id_lower:
